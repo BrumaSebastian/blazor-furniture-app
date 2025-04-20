@@ -1,6 +1,5 @@
-using MudBlazor.Services;
-using BlazorFurniture.Client.Pages;
 using BlazorFurniture.Components;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

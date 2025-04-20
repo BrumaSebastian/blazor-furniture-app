@@ -12,4 +12,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Exceptions\" />
+    <Folder Include="Common\Mappings\" />
+    <Folder Include="Common\Models\" />
+    <Folder Include="Features\" />
+    <Folder Include="Infrastructure\Data\" />
+    <Folder Include="Infrastructure\Logging\" />
+  </ItemGroup>
+
 </Project>
