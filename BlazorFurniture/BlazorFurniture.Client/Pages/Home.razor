@@ -2,22 +2,123 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudGrid Justify="Justify.Center" Class="flex-wrap">
-    <MudItem xs="12" md="6">
-        <TextBlock Title="Discover your perfect rental property today"
-                   Description="Explore a wide range of rental properties that fit your lifestyle and budget. Your dream home is just a click away!" />
+<MudGrid Class="px-10 mb-10">
+    <MudItem xs="12" md="6" Class="align-content-center">
+        <div class="d-flex flex-column gap-3">
+            <TextBlock Title="Discover your perfect rental property today"
+                       Description="Explore a wide range of rental properties that fit your lifestyle and budget. Your dream home is just a click away!" />
 
-        <MudContainer Gutters=false Class="d-flex gap-2">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary">Explore</MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Secondary">Sign Up</MudButton>
-        </MudContainer>
+            <MudContainer Gutters=false Class="d-flex gap-2">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary">Explore</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary">Sign Up</MudButton>
+            </MudContainer>
+        </div>
     </MudItem>
 
     <MudItem xs="12" md="6">
-       <MasonryMediaWall Sources="@Enumerable.Repeat("/media/placeholder600x400.png", 6).ToList()"/>
+        <MasonryMediaWall Sources="@Enumerable.Repeat("/media/placeholder600x400.png", 6).ToList()" />
+    </MudItem>
+</MudGrid>
+
+<div class="d-flex flex-column my-15 px-10 gap-10">
+    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom=true>
+        Discover the ultimate rental experience with our user-friendly app
+    </MudText>
+
+    <MudGrid Justify="Justify.Center" Class="flex-wrap">
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3 align-center">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Find your perfect property with just flew clicks"
+                           Description="Our app simplifies the booking process, making it quick and hassle-free" />
+                <MudLink Href="#" Underline="Underline.Always">Learn More ></MudLink>
+            </MudContainer>
+        </MudItem>
+
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3 align-center">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Explore a diverse selection fo your properties tailored to your needs"
+                           Description="Choose from a wide variety of listings, fro cozy apartments to luxury homes." />
+                <MudLink Href="#" Underline="Underline.Always">Sign Up ></MudLink>
+            </MudContainer>
+        </MudItem>
+
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3 align-center">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Enjoy competitive prices that fit your budget"
+                           Description="We offer affordable options without compromising on quality or comfort." />
+                <MudLink Href="#" Underline="Underline.Always">Explore ></MudLink>
+            </MudContainer>
+        </MudItem>
+    </MudGrid>
+</div>
+
+<MudGrid Class="px-10 my-15 justify-center">
+    <MudItem xs="12" md="6" Class="align-content-center">
+        <MudText Typo="Typo.h3">
+            Discover the advantages of our seamless rental service experience today
+        </MudText>
+        <MudText Typo="Typo.subtitle1">
+            Our rental service prioritizes user experience, ensuring a smooth and ejoyable process. 
+            Enjoy significat cost savings and dedicated
+            customer support, making your rental journey effortless.
+        </MudText>
+    </MudItem>
+
+    <MudItem xs="12" md="6" Class="d-flex justify-center">
+        <MudImage Src="/media/placeholder600x400.png" Fluid=true></MudImage>
     </MudItem>
 </MudGrid>
 
 
-@code{
+<div class="d-flex flex-column my-15 px-10">
+    <MudGrid Class="px-10 my-15 justify-center">
+        <MudItem xs="12" md="6" Class="align-content-center">
+            <MudText Typo="Typo.h4">
+                Discover how easy it is to rent your next home
+            </MudText>
+        </MudItem>
+
+        <MudItem xs="12" md="6" Class="d-flex">
+            <MudText Typo="Typo.subtitle1">
+                Our rental app simplifies the process of finding and booking properties. 
+                Start by browsing listings that match your preferences. 
+                Once you find a place you love, booking is just a click away!
+            </MudText>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid Justify="Justify.Center" Class="flex-wrap">
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Follow These Simple Steps to Secure Your Rental Property"
+                           Description="Using our app is quick and user-friendly." />
+                <MudLink Href="#" Underline="Underline.Always">Get Started ></MudLink>
+            </MudContainer>
+        </MudItem>
+
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Easily Search for Properties That Fit Your Needs"
+                           Description="Filter by location, price, and amenities to find your perfect match." />
+                <MudLink Href="#" Underline="Underline.Always">Search ></MudLink>
+            </MudContainer>
+        </MudItem>
+
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Book Your Dream Rental in Just a Few Clicks"
+                           Description="Finalize your booking with secure payment options and instant confirmation." />
+                <MudLink Href="#" Underline="Underline.Always">Book Now ></MudLink>
+            </MudContainer>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
 }

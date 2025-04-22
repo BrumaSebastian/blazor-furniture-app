@@ -2,10 +2,11 @@
     display: grid;
     grid-template-columns: repeat(1, minmax(150px, 1fr));
     grid-template-rows: masonry;
-    gap: calc(var(--spacing) * 5)
+    gap: 5px;
 }
 
-img{
-    height:100%;
-    width:100%;
+img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
 }

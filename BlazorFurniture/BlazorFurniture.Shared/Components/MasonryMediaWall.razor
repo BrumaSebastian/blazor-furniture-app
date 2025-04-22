@@ -4,12 +4,12 @@
     <MudBlazor.MudItem xs="6">
         <div class="grid-masonry">
             <div style="block-size: calc(1em * @size);">
-                <MudBlazor.MudImage ObjectFit="ObjectFit.Contain" Class="rounded-lg" src="@Sources[0]" />
+                <img class="rounded-lg" src="@Sources[0]" />
             </div>
             @for (int i = 1; i < Sources.Count / 2; i++)
             {
                 <div style="block-size: calc(2em * @size);">
-                    <MudBlazor.MudImage ObjectFit="ObjectFit.Contain" Class="rounded-lg" src="@Sources[i]" />
+                    <img class="rounded-lg" src="@Sources[i]" />
                 </div>
             }
         </div>
@@ -20,11 +20,11 @@
             @for (int i = Sources.Count / 2; i < Sources.Count - 1; i++)
             {
                 <div style="block-size: calc(2em * @size);">
-                    <MudBlazor.MudImage ObjectFit="ObjectFit.Contain" Class="rounded-lg" src="@Sources[i]" />
+                    <img class="rounded-lg" src="@Sources[i]" />
                 </div>
             }
             <div style="block-size: calc(1em * @size);">
-                <MudBlazor.MudImage ObjectFit="ObjectFit.Contain" Class="rounded-lg" src="@Sources[Sources.Count - 1]" />
+                <img class="rounded-lg" src="@Sources[Sources.Count - 1]" />
             </div>
         </div>
     </MudBlazor.MudItem>
@@ -33,7 +33,7 @@
 
 
 @code {
-    private int size = 5;
+    private int size = 7;
     [Parameter] public List<string> Sources { get; set; } = [];
 
     protected override void OnParametersSet()
