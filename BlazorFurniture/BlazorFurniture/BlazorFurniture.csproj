@@ -22,4 +22,8 @@
     <Folder Include="Infrastructure\Logging\" />
   </ItemGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+	    <MudAllowedAttributePattern>LowerCase</MudAllowedAttributePattern>
+    </PropertyGroup>
+
 </Project>

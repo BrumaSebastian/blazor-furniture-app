@@ -2,17 +2,18 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudGrid Class="px-10 mb-10">
-    <MudItem xs="12" md="6" Class="align-content-center">
-        <div class="d-flex flex-column gap-3">
+<MudGrid class="px-10 mb-10">
+    <MudItem xs="12" md="6" class="align-content-center">
+        <MudStack Spacing="3">
             <TextBlock Title="Discover your perfect rental property today"
-                       Description="Explore a wide range of rental properties that fit your lifestyle and budget. Your dream home is just a click away!" />
+                       Description="Explore a wide range of rental properties that fit your lifestyle and budget.
+                                    Your dream home is just a click away!" />
 
-            <MudContainer Gutters=false Class="d-flex gap-2">
+            <MudContainer Gutters=false class="d-flex gap-2">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary">Explore</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary">Sign Up</MudButton>
             </MudContainer>
-        </div>
+        </MudStack>
     </MudItem>
 
     <MudItem xs="12" md="6">
@@ -20,12 +21,12 @@
     </MudItem>
 </MudGrid>
 
-<div class="d-flex flex-column my-15 px-10 gap-10">
+<MudStack class="my-15 px-10 gap-10">
     <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom=true>
         Discover the ultimate rental experience with our user-friendly app
     </MudText>
 
-    <MudGrid Justify="Justify.Center" Class="flex-wrap">
+    <MudGrid Justify="Justify.Center" class="flex-wrap">
         <MudItem sm="12" md="4">
             <MudContainer class="d-flex flex-column gap-3 align-center">
                 <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
@@ -53,44 +54,43 @@
             </MudContainer>
         </MudItem>
     </MudGrid>
-</div>
+</MudStack>
 
-<MudGrid Class="px-10 my-15 justify-center">
-    <MudItem xs="12" md="6" Class="align-content-center">
+<MudGrid class="px-10 my-15 justify-center">
+    <MudItem xs="12" md="6" class="align-content-center">
         <MudText Typo="Typo.h3">
             Discover the advantages of our seamless rental service experience today
         </MudText>
         <MudText Typo="Typo.subtitle1">
-            Our rental service prioritizes user experience, ensuring a smooth and ejoyable process. 
+            Our rental service prioritizes user experience, ensuring a smooth and ejoyable process.
             Enjoy significat cost savings and dedicated
             customer support, making your rental journey effortless.
         </MudText>
     </MudItem>
 
-    <MudItem xs="12" md="6" Class="d-flex justify-center">
+    <MudItem xs="12" md="6" class="d-flex justify-center">
         <MudImage Src="/media/placeholder600x400.png" Fluid=true></MudImage>
     </MudItem>
 </MudGrid>
 
-
-<div class="d-flex flex-column my-15 px-10">
-    <MudGrid Class="px-10 my-15 justify-center">
-        <MudItem xs="12" md="6" Class="align-content-center">
+<MudStack class="my-15 px-10">
+    <MudGrid class="px-10 my-15 justify-center">
+        <MudItem xs="12" md="6" class="align-content-center">
             <MudText Typo="Typo.h4">
                 Discover how easy it is to rent your next home
             </MudText>
         </MudItem>
 
-        <MudItem xs="12" md="6" Class="d-flex">
+        <MudItem xs="12" md="6" class="d-flex">
             <MudText Typo="Typo.subtitle1">
-                Our rental app simplifies the process of finding and booking properties. 
-                Start by browsing listings that match your preferences. 
+                Our rental app simplifies the process of finding and booking properties.
+                Start by browsing listings that match your preferences.
                 Once you find a place you love, booking is just a click away!
             </MudText>
         </MudItem>
     </MudGrid>
 
-    <MudGrid Justify="Justify.Center" Class="flex-wrap">
+    <MudGrid Justify="Justify.Center" class="flex-wrap">
         <MudItem sm="12" md="4">
             <MudContainer class="d-flex flex-column gap-3">
                 <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
@@ -118,7 +118,28 @@
             </MudContainer>
         </MudItem>
     </MudGrid>
-</div>
+</MudStack>
+
+<MudContainer class="my-10 py-5" style="background-image: url(media/placeholder600x400.png); background-position: center; background-size: cover;">
+    <MudStack>
+        <MudText Typo="Typo.h3">
+            Unlock your perfect rental today
+        </MudText>
+
+        <MudText Typo="Typo.subtitle1">
+            Join our community and find your next rental effortlessly with our user-friendly app.
+        </MudText>
+
+        <MudStack Row=true>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled">
+                Download
+            </MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled">
+                Download
+            </MudButton>
+        </MudStack>
+    </MudStack>
+</MudContainer>
 
 @code {
 }

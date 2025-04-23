@@ -20,4 +20,8 @@
     <ItemGroup>
       <Folder Include="wwwroot\" />
     </ItemGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<MudAllowedAttributePattern>LowerCase</MudAllowedAttributePattern>
+	</PropertyGroup>
 </Project>

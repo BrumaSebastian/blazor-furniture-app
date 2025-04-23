@@ -17,4 +17,8 @@
     <ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Shared.csproj" />
   </ItemGroup>
 
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<MudAllowedAttributePattern>LowerCase</MudAllowedAttributePattern>
+	</PropertyGroup>
+
 </Project>
