@@ -2,7 +2,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudGrid class="px-10 mb-10">
+<MudGrid id="section-1" class="px-10 mb-10">
     <MudItem xs="12" md="6" class="align-content-center">
         <MudStack Spacing="3">
             <TextBlock Title="Discover your perfect rental property today"
@@ -21,7 +21,7 @@
     </MudItem>
 </MudGrid>
 
-<MudStack class="my-15 px-10 gap-10">
+<MudStack id="section-2" class="my-15 px-10 gap-10">
     <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom=true>
         Discover the ultimate rental experience with our user-friendly app
     </MudText>
@@ -56,7 +56,7 @@
     </MudGrid>
 </MudStack>
 
-<MudGrid class="px-10 my-15 justify-center">
+<MudGrid id="section-3" class="px-10 my-15 justify-center">
     <MudItem xs="12" md="6" class="align-content-center">
         <MudText Typo="Typo.h3">
             Discover the advantages of our seamless rental service experience today
@@ -73,7 +73,7 @@
     </MudItem>
 </MudGrid>
 
-<MudStack class="my-15 px-10">
+<MudStack id="section-4" class="my-15 px-10">
     <MudGrid class="px-10 my-15 justify-center">
         <MudItem xs="12" md="6" class="align-content-center">
             <MudText Typo="Typo.h4">
@@ -120,7 +120,9 @@
     </MudGrid>
 </MudStack>
 
-<MudContainer class="my-10 py-5" style="background-image: url(media/placeholder600x400.png); background-position: center; background-size: cover;">
+<MudContainer id="section-5" class="mx-0 my-10 py-15 w-full"
+              MaxWidth="MaxWidth.False"
+              style="background-image: url(media/placeholder600x400.png); background-position: center; background-size: cover;">
     <MudStack>
         <MudText Typo="Typo.h3">
             Unlock your perfect rental today
@@ -140,6 +142,111 @@
         </MudStack>
     </MudStack>
 </MudContainer>
+
+<MudGrid id="section-6" class="px-10 my-15 justify-center">
+    <MudItem xs="12" md="6" class="align-content-center">
+        <MudText Typo="Typo.h3">
+            Stay Updated With Our News
+        </MudText>
+        <MudText Typo="Typo.subtitle1">
+            Join our community to receive the latest updates and exclusives offers directly to your inbox
+        </MudText>
+        <MudStack Row=true>
+            <MudTextField T="string" FullWidth=false InputType="InputType.Email" Label="Your Email Here"></MudTextField>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Join Now</MudButton>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                <MudSpacer></MudSpacer>
+            </MudHidden>
+        </MudStack>
+        <MudText Typo="Typo.subtitle2">
+            By clicking Join Now, you accept our Terms and Conditions
+        </MudText>
+    </MudItem>
+
+    <MudItem xs="12" md="6" class="d-flex justify-center">
+        <MudImage Src="/media/placeholder600x400.png" Fluid=true></MudImage>
+    </MudItem>
+</MudGrid>
+
+<MudGrid id="section-7" class="px-10 my-15 justify-center">
+    <MudItem xs="12" md="6" class="align-content-center">
+        <MudText Typo="Typo.h3">
+            Logo
+        </MudText>
+        <MudText Typo="Typo.subtitle1">
+            Subscribe to our newsletter for the latest features and updates
+        </MudText>
+        <MudStack Row=true>
+            <MudTextField T="string" FullWidth=false InputType="InputType.Email" Label="Your Email Here"></MudTextField>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Join</MudButton>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                <MudSpacer></MudSpacer>
+            </MudHidden>
+        </MudStack>
+        <MudText Typo="Typo.subtitle2">
+            By subscribing, you consent to our Policy and receiving updates.
+        </MudText>
+    </MudItem>
+
+    <MudItem xs="12" md="6" class="align-content-center">
+        <MudStack Row=true Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Justify="Justify.Center">
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.h5">Quick Links</MudText>
+                <MudNavLink Target="/">
+                    Home
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    About Us
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Contact Us
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Support Center
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Blog Posts
+                </MudNavLink>
+            </MudStack>
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.h5">Resources</MudText>
+                <MudNavLink Target="/">
+                    FAQs
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    User Guides
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Community Forum
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Feedback
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Careers
+                </MudNavLink>
+            </MudStack>
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.h5">Quick Links</MudText>
+                <MudNavLink Icon="@Icons.Custom.Brands.Facebook" Target="/">
+                    Facebook
+                </MudNavLink>
+                <MudNavLink Icon="@Icons.Custom.Brands.Instagram" Target="/">
+                    Instragram
+                </MudNavLink>
+                <MudNavLink Icon="@Icons.Custom.Brands.X" Target="/">
+                    X
+                </MudNavLink>
+                <MudNavLink Icon="@Icons.Custom.Brands.LinkedIn" Target="/">
+                    LinkedIn
+                </MudNavLink>
+                <MudNavLink Icon="@Icons.Custom.Brands.YouTube" Target="/">
+                    YouTube
+                </MudNavLink>
+            </MudStack>
+        </MudStack>
+    </MudItem>
+</MudGrid>
 
 @code {
 }
