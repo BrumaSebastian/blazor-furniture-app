@@ -1,3 +1,4 @@
+using BlazorFurniture.Common.Extensions;
 using BlazorFurniture.Components;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MudBlazor.Services;
@@ -13,16 +14,19 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
-        options.Authority = "http://localhost:18080/realms/dev-realm";
+        options.RequireHttpsMetadata = false;
+        options.Audience = builder.Configuration["Authentication:Audience"]!;
+        options.MetadataAddress = builder.Configuration["Authentication:MetadataAddress"]!;
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
-            ValidateAudience = false // Keycloak doesn't use 'aud' by default
+            ValidIssuer = builder.Configuration["Authentication:ValidIssuer"]!,
         };
-        options.RequireHttpsMetadata = false;
     });
 
 builder.Services.AddAuthorization();
@@ -33,6 +37,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
@@ -47,6 +53,8 @@ app.UseAntiforgery();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
