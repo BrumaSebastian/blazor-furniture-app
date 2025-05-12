@@ -16,6 +16,7 @@ public class ProductController : ControllerBase
     };
 
     [HttpGet]
+    [Authorize(Policy = "ProductOwner")]
     public IActionResult GetAll() => Ok(_products);
 
     [HttpGet("{id}")]

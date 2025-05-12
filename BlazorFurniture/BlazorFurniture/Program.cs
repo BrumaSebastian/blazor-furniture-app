@@ -1,7 +1,10 @@
 using BlazorFurniture.Common.Extensions;
+using BlazorFurniture.Common.Services;
 using BlazorFurniture.Components;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MudBlazor.Services;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
 
+builder.Services.AddTransient<IClaimsTransformation, KeycloakRoleClaimsTransformer>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
@@ -26,10 +31,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
             ValidIssuer = builder.Configuration["Authentication:ValidIssuer"]!,
+            RoleClaimType = ClaimTypes.Role
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ProductManager", policy => policy.RequireRole("product-manager"));
+    options.AddPolicy("ProductOwner", policy => policy.RequireRole("Product-Owner"));
+});
 
 var app = builder.Build();
 
