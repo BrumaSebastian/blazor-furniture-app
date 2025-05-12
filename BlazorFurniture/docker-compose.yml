@@ -1,0 +1,21 @@
+services:
+  blazorfurniture:
+    image: ${DOCKER_REGISTRY-}blazorfurniture
+    container_name: BlazorFurniture
+    build:
+      context: .
+      dockerfile: BlazorFurniture/Dockerfile
+    depends_on:
+      - keycloak
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: Keycloak
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - 18080:8080
+    volumes:
+      - ./.containers/identity:/opt/keycloack/data
