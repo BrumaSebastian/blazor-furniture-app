@@ -20,6 +20,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
 
+builder.Services.AddHttpClient<KeycloakService>();
+builder.Services.AddScoped<KeycloakService>();
+
 builder.Services.AddTransient<IClaimsTransformation, KeycloakRoleClaimsTransformer>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -11,15 +11,15 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: Keycloak
-    command:
-        - start
-        - --https-port=8443
-        - --https-key-store-file=/opt/keycloak/conf/truststores/keycloak.p12
-        - --https-key-store-password=changeit
-        - --https-key-store-type=PKCS12
-        - --hostname=localhost
-        - --hostname-strict=false
-        - --truststore-paths=/opt/keycloak/conf/truststores/keycloak.p12
+    # command:
+    #     - start
+    #     - --https-port=8443
+    #     - --https-key-store-file=/opt/keycloak/conf/truststores/keycloak.p12
+    #     - --https-key-store-password=changeit
+    #     - --https-key-store-type=PKCS12
+    #     - --hostname=localhost
+    #     - --hostname-strict=false
+    #     - --truststore-paths=/opt/keycloak/conf/truststores/keycloak.p12
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -29,8 +29,8 @@ services:
       KC_DB_PASSWORD: Banana10
     depends_on:
       - mssql
-    ports:
-      - 18443:8443 
+    # ports:
+    #   - 18443:8443 
     volumes:
       - ./.containers/identity:/opt/keycloak/data
       - ./BlazorFurniture/certs/keycloak.p12:/opt/keycloak/conf/truststores/keycloak.p12:ro
@@ -47,6 +47,6 @@ services:
       MSSQL_PID: "Developer"
     volumes:
       - mssql_data:/var/opt/mssql
-
+ 
 volumes:
   mssql_data:
