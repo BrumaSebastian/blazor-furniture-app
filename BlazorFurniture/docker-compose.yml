@@ -1,0 +1,62 @@
+services:
+  blazorfurniture:
+    image: ${DOCKER_REGISTRY-}blazorfurniture
+    container_name: BlazorFurniture
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Keycloak__AuthorizationUrl=http://localhost:18080/realms/master/protocol/openid-connect/auth
+      - Keycloak__BaseUrl=http://keycloak:8080/auth
+      - Keycloak__Realm=master
+      # - Keycloak__ClientId=admin-service-client
+      # - Keycloak__ClientSecret=your-client-secret
+      - Authentication__Audience=account   
+      - Authentication__ValidIssuer=http://localhost:18080/realms/master   
+      - Authentication__MetadataAddress=http://keycloak:8080/realms/master/.well-known/openid-configuration   
+    build:
+      context: .
+      dockerfile: BlazorFurniture/Dockerfile
+    depends_on:
+      - keycloak
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: Keycloak
+    # command:
+    #     - start
+    #     - --https-port=8443
+    #     - --https-key-store-file=/opt/keycloak/conf/truststores/keycloak.p12
+    #     - --https-key-store-password=changeit
+    #     - --https-key-store-type=PKCS12
+    #     - --hostname=localhost
+    #     - --hostname-strict=false
+    #     - --truststore-paths=/opt/keycloak/conf/truststores/keycloak.p12
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: mssql
+      KC_DB_URL: jdbc:sqlserver://mssql:1433;databaseName=KeycloakDB;encrypt=true;trustServerCertificate=true
+      KC_DB_USERNAME: sa
+      KC_DB_PASSWORD: Banana10
+    depends_on:
+      - mssql
+    # ports:
+    #   - 18443:8443 
+    volumes:
+      - ./.containers/identity:/opt/keycloak/data
+      - ./BlazorFurniture/certs/keycloak.p12:/opt/keycloak/conf/truststores/keycloak.p12:ro
+      - ./BlazorFurniture/drivers/mssql-jdbc-12.10.0.jre11.jar:/opt/keycloak/providers/mssql-jdbc.jar:ro
+ 
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    ports:
+      - "1400:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Banana10"
+      MSSQL_PID: "Developer"
+    volumes:
+      - mssql_data:/var/opt/mssql
+ 
+volumes:
+  mssql_data:

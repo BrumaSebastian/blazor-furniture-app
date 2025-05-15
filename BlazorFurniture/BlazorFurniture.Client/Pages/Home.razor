@@ -2,58 +2,251 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Hello, world! @RendererInfo.Name @RendererInfo.IsInteractive</MudText>
-<MudText Class="mb-8">Welcome to your new app, powered by MudBlazor and the .NET 9 Template!</MudText>
+<MudGrid id="section-1" class="px-10 mb-10">
+    <MudItem xs="12" md="6" class="align-content-center">
+        <MudStack Spacing="3">
+            <TextBlock Title="Discover your perfect rental property today"
+                       Description="Explore a wide range of rental properties that fit your lifestyle and budget.
+                                    Your dream home is just a click away!" />
 
-<MudAlert Severity="Severity.Normal" ContentAlignment="HorizontalAlignment.Start">
-    You can find documentation and examples on our website here:
-    <MudLink Href="https://mudblazor.com" Target="_blank" Typo="Typo.body2" Color="Color.Primary">
-        <b>www.mudblazor.com</b>
-    </MudLink>
-</MudAlert>
+            <MudContainer Gutters=false class="d-flex gap-2">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary">Explore</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary">Sign Up</MudButton>
+            </MudContainer>
+        </MudStack>
+    </MudItem>
 
-<br />
-<MudText Typo="Typo.h5" GutterBottom="true">Interactivity in this Template</MudText>
-<br />
-<MudText Typo="Typo.body2">
-    When you opt for the "Global" Interactivity Location, <br />
-    the render modes are defined in App.razor and consequently apply to all child components.<br />
-    In this case, providers are globally set in the MainLayout.<br />
-    <br />
-    On the other hand, if you choose the "Per page/component" Interactivity Location,<br />
-    it is necessary to include the <br />
-    <br />
-    &lt;MudPopoverProvider /&gt; <br />
-    &lt;MudDialogProvider /&gt; <br />
-    &lt;MudSnackbarProvider /&gt; <br />
-    <br />
-    components on every interactive page.<br />
-    <br />
-    If a render mode is not specified for a page, it defaults to Server-Side Rendering (SSR),<br />
-    similar to this page. While MudBlazor allows pages to be rendered in SSR,<br />
-    please note that interactive features, such as buttons and dropdown menus, will not be functional.
-</MudText>
+    <MudItem xs="12" md="6">
+        <MasonryMediaWall Sources="@Enumerable.Repeat("/media/placeholder600x400.png", 6).ToList()" />
+    </MudItem>
+</MudGrid>
 
-<br />
-<MudText Typo="Typo.h5" GutterBottom="true">What's New in Blazor with the Release of .NET 9</MudText>
-<br />
+<MudStack id="section-2" class="my-15 px-10 gap-10">
+    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom=true>
+        Discover the ultimate rental experience with our user-friendly app
+    </MudText>
 
-<MudText Typo="Typo.h6" GutterBottom="true">Prerendering</MudText>
-<MudText Typo="Typo.body2" GutterBottom="true">
-    If you're exploring the features of .NET 9 Blazor,<br /> you might be pleasantly surprised to learn that each page is prerendered on the server,<br /> regardless of the selected render mode.<br /><br />
-    This means that you'll need to inject all necessary services on the server,<br /> even when opting for the wasm (WebAssembly) render mode.<br /><br />
-    This prerendering functionality is crucial to ensuring that WebAssembly mode feels fast and responsive,<br /> especially when it comes to initial page load times.<br /><br />
-    For more information on how to detect prerendering and leverage the RenderContext, you can refer to the following link:
-    <MudLink Href="https://github.com/dotnet/aspnetcore/issues/51468#issuecomment-1783568121" Target="_blank" Typo="Typo.body2" Color="Color.Primary">
-        More details
-    </MudLink>
-</MudText>
+    <MudGrid Justify="Justify.Center" class="flex-wrap">
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3 align-center">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Find your perfect property with just flew clicks"
+                           Description="Our app simplifies the booking process, making it quick and hassle-free" />
+                <MudLink Href="#" Underline="Underline.Always">Learn More ></MudLink>
+            </MudContainer>
+        </MudItem>
 
-<br />
-<MudText Typo="Typo.h6" GutterBottom="true">InteractiveAuto</MudText>
-<MudText Typo="Typo.body2">
-    A discussion on how to achieve this can be found here:
-    <MudLink Href="https://github.com/dotnet/aspnetcore/issues/51468#issue-1950424116" Target="_blank" Typo="Typo.body2" Color="Color.Primary">
-        More details
-    </MudLink>
-</MudText>
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3 align-center">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Explore a diverse selection fo your properties tailored to your needs"
+                           Description="Choose from a wide variety of listings, fro cozy apartments to luxury homes." />
+                <MudLink Href="#" Underline="Underline.Always">Sign Up ></MudLink>
+            </MudContainer>
+        </MudItem>
+
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3 align-center">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Enjoy competitive prices that fit your budget"
+                           Description="We offer affordable options without compromising on quality or comfort." />
+                <MudLink Href="#" Underline="Underline.Always">Explore ></MudLink>
+            </MudContainer>
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+<MudGrid id="section-3" class="px-10 my-15 justify-center">
+    <MudItem xs="12" md="6" class="align-content-center">
+        <MudText Typo="Typo.h3">
+            Discover the advantages of our seamless rental service experience today
+        </MudText>
+        <MudText Typo="Typo.subtitle1">
+            Our rental service prioritizes user experience, ensuring a smooth and ejoyable process.
+            Enjoy significat cost savings and dedicated
+            customer support, making your rental journey effortless.
+        </MudText>
+    </MudItem>
+
+    <MudItem xs="12" md="6" class="d-flex justify-center">
+        <MudImage Src="/media/placeholder600x400.png" Fluid=true></MudImage>
+    </MudItem>
+</MudGrid>
+
+<MudStack id="section-4" class="my-15 px-10">
+    <MudGrid class="px-10 my-15 justify-center">
+        <MudItem xs="12" md="6" class="align-content-center">
+            <MudText Typo="Typo.h4">
+                Discover how easy it is to rent your next home
+            </MudText>
+        </MudItem>
+
+        <MudItem xs="12" md="6" class="d-flex">
+            <MudText Typo="Typo.subtitle1">
+                Our rental app simplifies the process of finding and booking properties.
+                Start by browsing listings that match your preferences.
+                Once you find a place you love, booking is just a click away!
+            </MudText>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid Justify="Justify.Center" class="flex-wrap">
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Follow These Simple Steps to Secure Your Rental Property"
+                           Description="Using our app is quick and user-friendly." />
+                <MudLink Href="#" Underline="Underline.Always">Get Started ></MudLink>
+            </MudContainer>
+        </MudItem>
+
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Easily Search for Properties That Fit Your Needs"
+                           Description="Filter by location, price, and amenities to find your perfect match." />
+                <MudLink Href="#" Underline="Underline.Always">Search ></MudLink>
+            </MudContainer>
+        </MudItem>
+
+        <MudItem sm="12" md="4">
+            <MudContainer class="d-flex flex-column gap-3">
+                <MudIcon Icon="@Icons.Material.Filled.FeaturedPlayList" />
+                <TextBlock Title="Book Your Dream Rental in Just a Few Clicks"
+                           Description="Finalize your booking with secure payment options and instant confirmation." />
+                <MudLink Href="#" Underline="Underline.Always">Book Now ></MudLink>
+            </MudContainer>
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+<MudContainer id="section-5" class="mx-0 my-10 py-15 w-full"
+              MaxWidth="MaxWidth.False"
+              style="background-image: url(media/placeholder600x400.png); background-position: center; background-size: cover;">
+    <MudStack>
+        <MudText Typo="Typo.h3">
+            Unlock your perfect rental today
+        </MudText>
+
+        <MudText Typo="Typo.subtitle1">
+            Join our community and find your next rental effortlessly with our user-friendly app.
+        </MudText>
+
+        <MudStack Row=true>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled">
+                Download
+            </MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled">
+                Download
+            </MudButton>
+        </MudStack>
+    </MudStack>
+</MudContainer>
+
+<MudGrid id="section-6" class="px-10 my-15 justify-center">
+    <MudItem xs="12" md="6" class="align-content-center">
+        <MudText Typo="Typo.h3">
+            Stay Updated With Our News
+        </MudText>
+        <MudText Typo="Typo.subtitle1">
+            Join our community to receive the latest updates and exclusives offers directly to your inbox
+        </MudText>
+        <MudStack Row=true>
+            <MudTextField T="string" FullWidth=false InputType="InputType.Email" Label="Your Email Here"></MudTextField>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Join Now</MudButton>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                <MudSpacer></MudSpacer>
+            </MudHidden>
+        </MudStack>
+        <MudText Typo="Typo.subtitle2">
+            By clicking Join Now, you accept our Terms and Conditions
+        </MudText>
+    </MudItem>
+
+    <MudItem xs="12" md="6" class="d-flex justify-center">
+        <MudImage Src="/media/placeholder600x400.png" Fluid=true></MudImage>
+    </MudItem>
+</MudGrid>
+
+<MudGrid id="section-7" class="px-10 my-15 justify-center">
+    <MudItem xs="12" md="6" class="align-content-center">
+        <MudText Typo="Typo.h3">
+            Logo
+        </MudText>
+        <MudText Typo="Typo.subtitle1">
+            Subscribe to our newsletter for the latest features and updates
+        </MudText>
+        <MudStack Row=true>
+            <MudTextField T="string" FullWidth=false InputType="InputType.Email" Label="Your Email Here"></MudTextField>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Join</MudButton>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                <MudSpacer></MudSpacer>
+            </MudHidden>
+        </MudStack>
+        <MudText Typo="Typo.subtitle2">
+            By subscribing, you consent to our Policy and receiving updates.
+        </MudText>
+    </MudItem>
+
+    <MudItem xs="12" md="6" class="align-content-center">
+        <MudStack Row=true Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Justify="Justify.Center">
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.h5">Quick Links</MudText>
+                <MudNavLink Target="/">
+                    Home
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    About Us
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Contact Us
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Support Center
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Blog Posts
+                </MudNavLink>
+            </MudStack>
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.h5">Resources</MudText>
+                <MudNavLink Target="/">
+                    FAQs
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    User Guides
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Community Forum
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Feedback
+                </MudNavLink>
+                <MudNavLink Target="/">
+                    Careers
+                </MudNavLink>
+            </MudStack>
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.h5">Quick Links</MudText>
+                <MudNavLink Icon="@Icons.Custom.Brands.Facebook" Target="/">
+                    Facebook
+                </MudNavLink>
+                <MudNavLink Icon="@Icons.Custom.Brands.Instagram" Target="/">
+                    Instragram
+                </MudNavLink>
+                <MudNavLink Icon="@Icons.Custom.Brands.X" Target="/">
+                    X
+                </MudNavLink>
+                <MudNavLink Icon="@Icons.Custom.Brands.LinkedIn" Target="/">
+                    LinkedIn
+                </MudNavLink>
+                <MudNavLink Icon="@Icons.Custom.Brands.YouTube" Target="/">
+                    YouTube
+                </MudNavLink>
+            </MudStack>
+        </MudStack>
+    </MudItem>
+</MudGrid>
+
+@code {
+}

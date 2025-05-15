@@ -1,0 +1,12 @@
+.grid-masonry {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(150px, 1fr));
+    grid-template-rows: masonry;
+    gap: 5px;
+}
+
+img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}

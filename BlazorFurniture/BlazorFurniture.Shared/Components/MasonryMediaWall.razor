@@ -1,0 +1,51 @@
+﻿@using MudBlazor
+
+<MudBlazor.MudGrid Justify="MudBlazor.Justify.Center">
+    <MudBlazor.MudItem xs="6">
+        <div class="grid-masonry">
+            <div style="block-size: calc(1em * @size);">
+                <img class="rounded-lg" src="@Sources[0]" />
+            </div>
+            @for (int i = 1; i < Sources.Count / 2; i++)
+            {
+                <div style="block-size: calc(2em * @size);">
+                    <img class="rounded-lg" src="@Sources[i]" />
+                </div>
+            }
+        </div>
+    </MudBlazor.MudItem>
+
+    <MudBlazor.MudItem xs="6" Class="px-4">
+        <div class="grid-masonry">
+            @for (int i = Sources.Count / 2; i < Sources.Count - 1; i++)
+            {
+                <div style="block-size: calc(2em * @size);">
+                    <img class="rounded-lg" src="@Sources[i]" />
+                </div>
+            }
+            <div style="block-size: calc(1em * @size);">
+                <img class="rounded-lg" src="@Sources[Sources.Count - 1]" />
+            </div>
+        </div>
+    </MudBlazor.MudItem>
+
+</MudBlazor.MudGrid>
+
+
+@code {
+    private int size = 7;
+    [Parameter] public List<string> Sources { get; set; } = [];
+
+    protected override void OnParametersSet()
+    {
+        if (Sources == null)
+        {
+            throw new ArgumentNullException(nameof(Sources), "Sources cannot be null.");
+        }
+
+        if (Sources.Count % 2 != 0)
+        {
+            throw new ArgumentException("Sources must contain an even number of items.");
+        }
+    }
+}

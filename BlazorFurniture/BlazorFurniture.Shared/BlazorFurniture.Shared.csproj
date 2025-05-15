@@ -1,20 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+	  <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.4" />
+    <PackageReference Include="MudBlazor" Version="8.5.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\" />
-  </ItemGroup>
+    <ItemGroup>
+	    <SupportedPlatform Include="browser" />
+    </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
+    </ItemGroup>
 
-
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<MudAllowedAttributePattern>LowerCase</MudAllowedAttributePattern>
+	</PropertyGroup>
 </Project>
