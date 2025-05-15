@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace BlazorFurniture.Common.Services;
+namespace BlazorFurniture.Modules.Keycloak.Extensions;
 
 public class KeycloakRoleClaimsTransformer : IClaimsTransformation
 {

@@ -1,10 +1,6 @@
 using BlazorFurniture.Common.Extensions;
-using BlazorFurniture.Common.Services;
 using BlazorFurniture.Components;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MudBlazor.Services;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,23 +16,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
 
-builder.Services.AddHttpClient<KeycloakService>();
-builder.Services.AddScoped<KeycloakService>();
-
-builder.Services.AddTransient<IClaimsTransformation, KeycloakRoleClaimsTransformer>();
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.Audience = builder.Configuration["Authentication:Audience"]!;
-        options.MetadataAddress = builder.Configuration["Authentication:MetadataAddress"]!;
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-        {
-            ValidIssuer = builder.Configuration["Authentication:ValidIssuer"]!,
-            RoleClaimType = ClaimTypes.Role
-        };
-    });
+builder.Services.AddMemoryCache();
+builder.Services.AddKeycloakServices(builder.Configuration);
+builder.Services.AddKeycloakAuthentication(builder.Configuration);
 
 builder.Services.AddAuthorization(options =>
 {

@@ -22,6 +22,7 @@
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
     <Folder Include="Common\Models\" />
+    <Folder Include="Common\Services\" />
     <Folder Include="Features\" />
     <Folder Include="Infrastructure\Data\" />
     <Folder Include="Infrastructure\Logging\" />
