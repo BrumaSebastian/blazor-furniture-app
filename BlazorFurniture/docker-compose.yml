@@ -7,11 +7,11 @@ services:
       - Keycloak__BaseUrl=http://keycloak:8080
       - Keycloak__Endpoints__Authorization=/protocol/openid-connect/auth
       - Keycloak__Authentication__Audience=account
-      - Keycloak__Authentication__ValidIssuer=http://localhost:18080/realms/master   
+      - Keycloak__Authentication__ValidIssuer=http://localhost:18080/realms/master
       - Keycloak__Authentication__MetadataAddress=http://keycloak:8080/realms/master/.well-known/openid-configuration
       - Keycloak__ServiceClient__Realm=master
       - Keycloak__ServiceClient__ClientId=service-account
-      - Keycloak__ServiceClient__ClientSecret=
+      - Keycloak__ServiceClient__ClientSecret=am7DhCSMkogY04czwlMc4Y7Zj5phvngr
     build:
       context: .
       dockerfile: BlazorFurniture/Dockerfile
@@ -40,12 +40,21 @@ services:
     depends_on:
       - mssql
     # ports:
-    #   - 18443:8443 
+    #   - 18443:8443
     volumes:
       - ./.containers/identity:/opt/keycloak/data
       - ./BlazorFurniture/certs/keycloak.p12:/opt/keycloak/conf/truststores/keycloak.p12:ro
       - ./BlazorFurniture/drivers/mssql-jdbc-12.10.0.jre11.jar:/opt/keycloak/providers/mssql-jdbc.jar:ro
- 
+      # - ./BlazorFurniture/keycloak-providers/SmsAuthenticator.jar:/opt/keycloak/providers/SmsAuthenticator.jar:ro
+      # - ./BlazorFurniture/keycloak-theme:/opt/keycloak/themes/mytheme:ro
+
+  maildev:
+    image: maildev/maildev
+    container_name: maildev
+    ports:
+      - "1080:1080" # Web UI
+      - "1025:1025" # SMTP
+
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql
@@ -57,6 +66,6 @@ services:
       MSSQL_PID: "Developer"
     volumes:
       - mssql_data:/var/opt/mssql
- 
+
 volumes:
   mssql_data:
