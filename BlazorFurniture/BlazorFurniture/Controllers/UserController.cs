@@ -63,6 +63,14 @@ public class UserController : ControllerBase
 
         return Ok();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ResetPasswordSms()
+    {
+        var users = await _keycloakService.GetUsersAsync();
+
+        return Ok();
+    }
 }
 
 public record CreateUserRequest(string Username, string Email, string FirstName, string LastName);

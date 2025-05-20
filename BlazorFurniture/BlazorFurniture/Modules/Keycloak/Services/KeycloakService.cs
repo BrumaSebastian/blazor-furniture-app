@@ -20,6 +20,15 @@ internal class KeycloakService(KeycloakHttpClient keycloakHttpClient, IMemoryCac
         throw new NotImplementedException();
     }
 
+    public async Task<User> GetUserByPhoneNumberAsync(string phoneNumber)
+    {
+        var token = await GetCachedServiceTokenAsync();
+        var endpoint = $"{_keycloakConfiguration.BaseUrl}/admin/realms/{_keycloakConfiguration.ServiceClient.Realm}/users?q=phone:${phoneNumber}&exact=true";
+        var users = await _keycloakHttpClient.GetAsync<List<User>>(endpoint, token);
+
+        return users.First();
+    }
+
     public async Task<List<User>> GetUsersAsync()
     {
         var token = await GetCachedServiceTokenAsync();

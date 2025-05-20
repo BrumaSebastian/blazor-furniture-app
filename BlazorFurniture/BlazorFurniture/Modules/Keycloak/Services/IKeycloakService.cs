@@ -6,4 +6,5 @@ public interface IKeycloakService
 {
     Task<User> GetUserAsync(Guid id);
     Task<List<User>> GetUsersAsync();
+    Task<User> GetUserByPhoneNumberAsync(string phoneNumber);
 }

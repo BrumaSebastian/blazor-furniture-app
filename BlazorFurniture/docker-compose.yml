@@ -45,8 +45,8 @@ services:
       - ./.containers/identity:/opt/keycloak/data
       - ./BlazorFurniture/certs/keycloak.p12:/opt/keycloak/conf/truststores/keycloak.p12:ro
       - ./BlazorFurniture/drivers/mssql-jdbc-12.10.0.jre11.jar:/opt/keycloak/providers/mssql-jdbc.jar:ro
-      # - ./BlazorFurniture/keycloak-providers/SmsAuthenticator.jar:/opt/keycloak/providers/SmsAuthenticator.jar:ro
-      # - ./BlazorFurniture/keycloak-theme:/opt/keycloak/themes/mytheme:ro
+      # - ./BlazorFurniture/Modules/Keycloak/SPIs/authenticator-example.jar:/opt/keycloak/providers/authenticator-example.jar:ro
+      - ./BlazorFurniture/Modules/Keycloak/SPIs/phone_authentication-1.0-SNAPSHOT.jar:/opt/keycloak/providers/phone_authentication.jar:ro
 
   maildev:
     image: maildev/maildev

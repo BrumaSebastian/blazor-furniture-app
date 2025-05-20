@@ -4,10 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>authenticator-example</artifactId>
+    <groupId>pg.spi</groupId>
+    <artifactId>phone_authentication</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -46,6 +45,16 @@
     </properties>
 
     <build>
-        <finalName>authenticator-example</finalName>
-    </build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>3.2.2</version> <!-- Use the latest stable version -->
+      <configuration>
+        <outputDirectory>C:\Users\Sebastian Bruma\Desktop\Blazor\blazor-furniture-app\BlazorFurniture\BlazorFurniture\Modules\Keycloak\SPIs\</outputDirectory>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+
 </project>
