@@ -1,6 +1,7 @@
 package pg.spi.requiredActions;
 
-import java.time.LocalDate;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.RequiredActionContext;
@@ -9,6 +10,10 @@ import org.keycloak.authentication.actiontoken.resetcred.ResetCredentialsActionT
 import org.keycloak.common.util.Time;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.UserModel;
+
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 
 public class PhonePasswordResetRequiredAction implements RequiredActionProvider{
     private static final Logger log = Logger.getLogger(PhonePasswordResetRequiredAction.class);
@@ -50,10 +55,38 @@ public class PhonePasswordResetRequiredAction implements RequiredActionProvider{
         String tokenString = resetToken.serialize(session, context.getRealm(), context.getUriInfo());
         log.info("Token " + tokenString);
 
-        // // Send SMS
-        // SmsService smsService = session.getProvider(SmsService.class);
-        // smsService.sendResetSms(phoneNumber, resetToken);
+        String ACCOUNT_SID = "-";
+        String AUTH_TOKEN = "-";
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+
+        String resetUrl = "http://localhost:18080/realms/master/login-actions/action-token?key=" + URLEncoder.encode(tokenString, StandardCharsets.UTF_8);
+        String messageBody = "To reset your password, please visit: " + resetUrl;
         
+        System.out.println(messageBody);
+
+
+
+
+        
+
+
+        Message message = Message
+        .creator(
+            new PhoneNumber("+18777804236"),
+            new PhoneNumber("+18162392534"),
+            messageBody
+        )
+        .create();
+        System.out.println(message.getSid());
+
+        message = Message
+        .creator(
+            new PhoneNumber("+18777804236"),
+            new PhoneNumber("+18162392534"),
+            "Test"
+        )
+        .create();
+
         context.challenge(context.form().createForm("phone-reset-sent.ftl"));
     }
 

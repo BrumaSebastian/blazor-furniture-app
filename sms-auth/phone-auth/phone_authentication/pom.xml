@@ -37,6 +37,11 @@
             <artifactId>jakarta.ws.rs-api</artifactId>
             <version>4.0.0</version>
         </dependency>
+        <dependency>
+          <groupId>com.twilio.sdk</groupId>
+          <artifactId>twilio</artifactId>
+          <version>10.0.0</version>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -44,16 +49,37 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
-    <build>
-  <plugins>
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-jar-plugin</artifactId>
-      <version>3.2.2</version> <!-- Use the latest stable version -->
-      <configuration>
-        <outputDirectory>C:\Users\Sebastian Bruma\Desktop\Blazor\blazor-furniture-app\BlazorFurniture\BlazorFurniture\Modules\Keycloak\SPIs\</outputDirectory>
-      </configuration>
-    </plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+            <configuration>
+              <outputDirectory>C:\Users\Sebastian Bruma\Desktop\Blazor\blazor-furniture-app\BlazorFurniture\BlazorFurniture\Modules\Keycloak\SPIs\</outputDirectory>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>org/keycloak/**</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+              </transformers>
+              <tasks>
+                <copy file="${project.build.directory}/${project.build.finalName}-shaded.jar"
+                      tofile="C:/Users/Sebastian Bruma/Desktop/Blazor/blazor-furniture-app/BlazorFurniture/BlazorFurniture/Modules/Keycloak/SPIs/${project.build.finalName}.jar"/>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
   </plugins>
 </build>
 
