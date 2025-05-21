@@ -64,28 +64,49 @@ public class PhonePasswordResetRequiredAction implements RequiredActionProvider{
         
         System.out.println(messageBody);
 
+        // Send token to your endpoint
+        try {
+            String endpointUrl = "http://blazorfurniture:8080/api/Shorten/shorten";
+            java.net.URL url = new java.net.URL(endpointUrl);
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
 
+            String jsonPayload = "{\"url\": \"" + resetUrl + "\"}";
+            try (java.io.OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            }
 
+            int responseCode = conn.getResponseCode();
+            log.info("POST Response Code :: " + responseCode);
 
-        
+            // Optionally, read the response
+            try (java.io.BufferedReader br = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+                log.info("Response: " + response.toString());
 
+                String shortUrl = response.toString().split("\"shortUrl\":\"")[1].split("\"")[0];
 
-        Message message = Message
-        .creator(
-            new PhoneNumber("+18777804236"),
-            new PhoneNumber("+18162392534"),
-            messageBody
-        )
-        .create();
-        System.out.println(message.getSid());
-
-        message = Message
-        .creator(
-            new PhoneNumber("+18777804236"),
-            new PhoneNumber("+18162392534"),
-            "Test"
-        )
-        .create();
+                Message message = Message
+                .creator(
+                    new PhoneNumber("+18777804236"),
+                    new PhoneNumber("+18162392534"),
+                    shortUrl
+                )
+                .create();
+                System.out.println(message.getSid());
+            }
+            conn.disconnect();
+        } catch (Exception e) {
+            log.error("Failed to send token to endpoint", e);
+        }
 
         context.challenge(context.form().createForm("phone-reset-sent.ftl"));
     }

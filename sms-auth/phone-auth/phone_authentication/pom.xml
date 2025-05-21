@@ -60,7 +60,7 @@
             <phase>package</phase>
             <goals><goal>shade</goal></goals>
             <configuration>
-              <outputDirectory>C:\Users\Sebastian Bruma\Desktop\Blazor\blazor-furniture-app\BlazorFurniture\BlazorFurniture\Modules\Keycloak\SPIs\</outputDirectory>
+              <outputDirectory>../../../BlazorFurniture\BlazorFurniture\Modules\Keycloak\SPIs\</outputDirectory>
               <filters>
                 <filter>
                   <artifact>*:*</artifact>
@@ -74,7 +74,7 @@
               </transformers>
               <tasks>
                 <copy file="${project.build.directory}/${project.build.finalName}-shaded.jar"
-                      tofile="C:/Users/Sebastian Bruma/Desktop/Blazor/blazor-furniture-app/BlazorFurniture/BlazorFurniture/Modules/Keycloak/SPIs/${project.build.finalName}.jar"/>
+                      tofile="../../../BlazorFurniture/BlazorFurniture/Modules/Keycloak/SPIs/${project.build.finalName}.jar"/>
               </tasks>
             </configuration>
           </execution>
