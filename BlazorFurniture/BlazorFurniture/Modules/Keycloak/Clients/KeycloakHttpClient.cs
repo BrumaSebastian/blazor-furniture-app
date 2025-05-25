@@ -5,9 +5,12 @@ using System.Net.Http.Headers;
 
 namespace BlazorFurniture.Modules.Keycloak.Clients;
 
-internal class KeycloakHttpClient(HttpClient httpClient, IOptions<KeycloakConfiguration> keycloakConfiguration)
+internal class KeycloakHttpClient(HttpClient httpClient, 
+    IOptions<KeycloakConfiguration> keycloakConfiguration, 
+    KeycloakEndpoints keycloakEndpoints)
 {
     private readonly HttpClient _httpClient = httpClient;
+    private readonly KeycloakEndpoints keycloakEndpoints = keycloakEndpoints;
     private readonly KeycloakConfiguration _keycloakConfiguration = keycloakConfiguration.Value;
 
     public async Task<KeycloakTokenResponse> GetServiceTokenAsync()
@@ -20,7 +23,7 @@ internal class KeycloakHttpClient(HttpClient httpClient, IOptions<KeycloakConfig
                 { "client_secret", _keycloakConfiguration.ServiceClient.ClientSecret }
             });
 
-        var response = await _httpClient.PostAsync(_keycloakConfiguration.Endpoints.Token, requestBody);
+        var response = await _httpClient.PostAsync(keycloakEndpoints.Token, requestBody);
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadFromJsonAsync<KeycloakTokenResponse>();
 

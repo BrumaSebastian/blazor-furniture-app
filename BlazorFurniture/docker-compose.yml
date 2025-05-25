@@ -5,7 +5,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Keycloak__BaseUrl=http://keycloak:8080
-      - Keycloak__Endpoints__Authorization=/protocol/openid-connect/auth
       - Keycloak__Authentication__Audience=account
       - Keycloak__Authentication__ValidIssuer=http://localhost:18080/realms/master
       - Keycloak__Authentication__MetadataAddress=http://keycloak:8080/realms/master/.well-known/openid-configuration

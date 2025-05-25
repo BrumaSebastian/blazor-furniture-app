@@ -15,46 +15,58 @@ internal static class ServiceCollectionExtensions
         KeycloakConfiguration keycloakConfig = configuration.GetSection("Keycloak").Get<KeycloakConfiguration>() ??
             throw new Exception("Keycloak configuration is not configured");
 
+        var supportedRealms = new[] { "master", "test-realm" };
+
         services.AddSwaggerGen(options =>
         {
             options.CustomSchemaIds(id => id.FullName!.Replace('+', '-'));
 
-            options.AddSecurityDefinition("Keycloak", new OpenApiSecurityScheme
+            // Add a security definition for each realm
+            foreach (var realm in supportedRealms)
             {
-                Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows
+                var securitySchemeName = $"Keycloak-{realm}";
+
+                // Build the authorization URL with the specific realm
+                var auth = $"{keycloakConfig.LocalUrl}/realms/master/protocol/openid-connect/auth";
+                var authUrl = auth.Replace("/realms/master", $"/realms/{realm}");
+
+                options.AddSecurityDefinition(securitySchemeName, new OpenApiSecurityScheme
                 {
-                    Implicit = new OpenApiOAuthFlow
+                    Type = SecuritySchemeType.OAuth2,
+                    Description = $"Keycloak authentication for {realm} realm",
+                    Flows = new OpenApiOAuthFlows
                     {
-                        AuthorizationUrl = new Uri($"{keycloakConfig.Authentication.ValidIssuer}{keycloakConfig.Endpoints.Authorization}"!),
-                        Scopes = new Dictionary<string, string>
+                        Implicit = new OpenApiOAuthFlow
                         {
-                            { "openid", "openid" },
-                            { "profile", "profile" },
+                            AuthorizationUrl = new Uri(authUrl),
+                            Scopes = new Dictionary<string, string>
+                            {
+                                { "openid", "openid" },
+                                { "profile", "profile" },
+                            }
                         }
                     }
-                }
-            });
+                });
 
-            var securityRequirement = new OpenApiSecurityRequirement
-            {
+                // Add security requirement for this realm
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference
+                        new OpenApiSecurityScheme
                         {
-                            Id = "Keycloak",
-                            Type = ReferenceType.SecurityScheme
+                            Reference = new OpenApiReference
+                            {
+                                Id = securitySchemeName,
+                                Type = ReferenceType.SecurityScheme
+                            },
+                            Scheme = JwtBearerDefaults.AuthenticationScheme,
+                            Name = JwtBearerDefaults.AuthenticationScheme,
+                            In = ParameterLocation.Header
                         },
-                        In = ParameterLocation.Header,
-                        Name = JwtBearerDefaults.AuthenticationScheme,
-                        Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    },
-                    []
-                }
-            };
-
-            options.AddSecurityRequirement(securityRequirement);
+                        new List<string>()
+                    }
+                });
+            }
         });
 
         return services;
@@ -64,7 +76,7 @@ internal static class ServiceCollectionExtensions
     {
         services.Configure<KeycloakConfiguration>(configuration.GetSection("Keycloak"));
 
-        KeycloakConfiguration keycloakConfig = configuration.GetSection("Keycloak").Get<KeycloakConfiguration>() ?? 
+        KeycloakConfiguration keycloakConfig = configuration.GetSection("Keycloak").Get<KeycloakConfiguration>() ??
             throw new Exception("Keycloak configuration is not configured");
 
         services.AddTransient<IClaimsTransformation, KeycloakRoleClaimsTransformer>();
@@ -75,6 +87,9 @@ internal static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IKeycloakService, KeycloakService>();
+        services.AddHttpContextAccessor();
+        services.AddScoped<KeycloakEndpointsFactory>();
+        services.AddScoped(sp => sp.GetRequiredService<KeycloakEndpointsFactory>().CreateEndpoints());
 
         return services;
     }
@@ -99,5 +114,4 @@ internal static class ServiceCollectionExtensions
 
         return services;
     }
-
 }
