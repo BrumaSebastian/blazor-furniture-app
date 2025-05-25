@@ -26,6 +26,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("ProductOwner", policy => policy.RequireRole("Product-Owner"));
 });
 
+builder.Services.AddCqrs();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -27,7 +27,7 @@ internal static class ServiceCollectionExtensions
                 var securitySchemeName = $"Keycloak-{realm}";
 
                 // Build the authorization URL with the specific realm
-                var auth = $"{keycloakConfig.LocalUrl}/realms/master/protocol/openid-connect/auth";
+                var auth = $"{keycloakConfig.LocalUrl ?? keycloakConfig.BaseUrl}/realms/master/protocol/openid-connect/auth";
                 var authUrl = auth.Replace("/realms/master", $"/realms/{realm}");
 
                 options.AddSecurityDefinition(securitySchemeName, new OpenApiSecurityScheme
@@ -87,6 +87,7 @@ internal static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IKeycloakService, KeycloakService>();
+        services.AddScoped<IKeycloakRealmService, KeycloakRealmService>();
         services.AddHttpContextAccessor();
         services.AddScoped<KeycloakEndpointsFactory>();
         services.AddScoped(sp => sp.GetRequiredService<KeycloakEndpointsFactory>().CreateEndpoints());

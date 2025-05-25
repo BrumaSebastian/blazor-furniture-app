@@ -1,4 +1,6 @@
-﻿using BlazorFurniture.Modules.Keycloak.Services;
+﻿using BlazorFurniture.Common.Dispatchers;
+using BlazorFurniture.Modules.Keycloak.Models;
+using BlazorFurniture.Modules.Keycloak.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,14 +8,9 @@ namespace BlazorFurniture.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UserController(IQueryDispatcher queryDispatcher) : ControllerBase
 {
-    private readonly IKeycloakService _keycloakService;
-
-    public UserController(IKeycloakService keycloakService)
-    {
-        _keycloakService = keycloakService;
-    }
+    private readonly IQueryDispatcher _queryDispatcher = queryDispatcher;
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -28,7 +25,7 @@ public class UserController : ControllerBase
     [Authorize(Roles = "RealmAdmin")]
     public async Task<IActionResult> Get()
     {
-        var users = await _keycloakService.GetUsersAsync();
+        var users = await _queryDispatcher.DispatchQueryAsync<GetUsersQuery, List<User>>(new GetUsersQuery());
 
         return Ok();
     }
