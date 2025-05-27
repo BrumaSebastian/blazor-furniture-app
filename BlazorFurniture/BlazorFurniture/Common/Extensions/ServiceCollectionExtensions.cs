@@ -43,6 +43,8 @@ internal static class ServiceCollectionExtensions
                             {
                                 { "openid", "openid" },
                                 { "profile", "profile" },
+                                { "organization", "organization" },
+
                             }
                         }
                     }
