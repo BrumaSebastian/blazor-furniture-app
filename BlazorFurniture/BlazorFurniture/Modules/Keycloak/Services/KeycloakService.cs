@@ -1,6 +1,8 @@
 ﻿using BlazorFurniture.Modules.Keycloak.Clients;
 using BlazorFurniture.Modules.Keycloak.Extensions;
 using BlazorFurniture.Modules.Keycloak.Models;
+using BlazorFurniture.Modules.Keycloak.Models.DTOs;
+using BlazorFurniture.Modules.Keycloak.Models.Representations;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
@@ -36,6 +38,27 @@ internal class KeycloakService(KeycloakHttpClient keycloakHttpClient, IMemoryCac
         var users = await _keycloakHttpClient.GetAsync<List<User>>(endpoint, token);
 
         return users;
+    }
+
+    public async Task<bool> UpdatePassword(string userId, UpdatePassword updatePasswordDto)
+    {
+        // verify if current password is correct
+        var result = await _keycloakHttpClient.VerifyUserCredentialsAsync(updatePasswordDto.Email, updatePasswordDto.CurrentPassword);
+
+        if (result is null) return false;
+
+        var token = await GetCachedServiceTokenAsync();
+        var endpoint = $"{_keycloakConfiguration.BaseUrl}/admin/realms/{_keycloakConfiguration.ServiceClient.Realm}/users/{userId}/reset-password";
+        CredentialRepresentation body = new()
+        {
+            Temporary = false,
+            Type = "password",
+            Value = updatePasswordDto.NewPassword
+        };
+
+        var res = await _keycloakHttpClient.SendAsync<object>(HttpMethod.Put, endpoint, token, body);
+
+        return true;
     }
 
     private async Task<string> GetCachedServiceTokenAsync()

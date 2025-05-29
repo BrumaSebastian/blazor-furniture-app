@@ -15,7 +15,7 @@ internal static class ServiceCollectionExtensions
         KeycloakConfiguration keycloakConfig = configuration.GetSection("Keycloak").Get<KeycloakConfiguration>() ??
             throw new Exception("Keycloak configuration is not configured");
 
-        var supportedRealms = new[] { "master", "test-realm" };
+        var supportedRealms = new[] { "master", "test-realm", "Development" };
 
         services.AddSwaggerGen(options =>
         {
@@ -27,8 +27,8 @@ internal static class ServiceCollectionExtensions
                 var securitySchemeName = $"Keycloak-{realm}";
 
                 // Build the authorization URL with the specific realm
-                var auth = $"{keycloakConfig.LocalUrl ?? keycloakConfig.BaseUrl}/realms/master/protocol/openid-connect/auth";
-                var authUrl = auth.Replace("/realms/master", $"/realms/{realm}");
+                var authUrl = $"{keycloakConfig.LocalUrl ?? keycloakConfig.BaseUrl}/realms/{realm}/protocol/openid-connect/auth";
+                var tokenUrl = $"{keycloakConfig.LocalUrl ?? keycloakConfig.BaseUrl}/realms/{realm}/protocol/openid-connect/token";
 
                 options.AddSecurityDefinition(securitySchemeName, new OpenApiSecurityScheme
                 {
@@ -46,7 +46,19 @@ internal static class ServiceCollectionExtensions
                                 { "organization", "organization" },
 
                             }
-                        }
+                        },
+                        AuthorizationCode = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri(authUrl),
+                            TokenUrl = new Uri(tokenUrl), // Added TokenUrl
+                            Scopes = new Dictionary<string, string>
+                            {
+                                { "openid", "openid" },
+                                { "profile", "profile" },
+                                { "email", "email" }, // Added email scope as it's commonly used
+                                { "organization", "organization" },
+                            }
+                        },
                     }
                 });
 
@@ -112,6 +124,35 @@ internal static class ServiceCollectionExtensions
                 {
                     ValidIssuer = keycloakConfig.Authentication.ValidIssuer,
                     RoleClaimType = ClaimTypes.Role
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        if (context.Principal?.Identity is ClaimsIdentity claimsIdentity)
+                        {
+                            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                            var email = claimsIdentity.FindFirst(ClaimTypes.Email)?.Value;
+
+                            if (!string.IsNullOrEmpty(userId))
+                            {
+                                context.HttpContext.Items["JwtUserId"] = userId;
+                            }
+
+                            if (!string.IsNullOrEmpty(email))
+                            {
+                                context.HttpContext.Items["JwtEmail"] = email;
+                            }
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        // Handle authentication failure
+                        return Task.CompletedTask;
+                    }
                 };
             });
 

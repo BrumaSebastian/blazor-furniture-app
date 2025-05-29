@@ -1,4 +1,5 @@
 ﻿using BlazorFurniture.Common.Dispatchers;
+using BlazorFurniture.Modules.Keycloak.Commands.Update;
 using BlazorFurniture.Modules.Keycloak.Models;
 using BlazorFurniture.Modules.Keycloak.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -8,9 +9,10 @@ namespace BlazorFurniture.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IQueryDispatcher queryDispatcher) : ControllerBase
+public class UserController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher) : ControllerBase
 {
     private readonly IQueryDispatcher _queryDispatcher = queryDispatcher;
+    private readonly ICommandDispatcher _commandDispatcher = commandDispatcher;
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -37,13 +39,13 @@ public class UserController(IQueryDispatcher queryDispatcher) : ControllerBase
         return Ok();
     }
 
-    [HttpPut]
-    [Authorize(Roles = "Admin,User")]
-    public async Task<IActionResult> Update()
-    {
+    //[HttpPut]
+    //[Authorize(Roles = "Admin,User")]
+    //public async Task<IActionResult> Update()
+    //{
 
-        return Ok();
-    }
+    //    return Ok();
+    //}
 
     [HttpPut("{realm}/{id}")]
     [Authorize(Roles = "Admin")]
@@ -61,13 +63,14 @@ public class UserController(IQueryDispatcher queryDispatcher) : ControllerBase
         return Ok();
     }
 
-    //[HttpGet]
-    //public async Task<IActionResult> ResetPasswordSms()
-    //{
-    //    var users = await _keycloakService.GetUsersAsync();
+    [HttpPut]
+    [Authorize]
+    public async Task<IActionResult> ResetPassword(UpdatePasswordRequest req)
+    {
+        await _commandDispatcher.DispatchAsync(new UpdatePasswordCommand(req, HttpContext.Items["JwtEmail"].ToString(), HttpContext.Items["JwtUserId"].ToString()));
 
-    //    return Ok();
-    //}
+        return Ok();
+    }
 }
 
 public record CreateUserRequest(string Username, string Email, string FirstName, string LastName);

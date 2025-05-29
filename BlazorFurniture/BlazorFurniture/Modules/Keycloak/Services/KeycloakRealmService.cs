@@ -19,7 +19,7 @@ internal class KeycloakRealmService(KeycloakHttpClient keycloakHttpClient, IMemo
     {
         var token = await GetCachedServiceTokenAsync();
         var endpoint = $"{_keycloakConfiguration.BaseUrl}/admin/realms";
-        var realmRes = await _keycloakHttpClient.PostAsync<RealmRepresentation>(endpoint, token, realm);
+        var realmRes = await _keycloakHttpClient.SendAsync<RealmRepresentation>(HttpMethod.Post, endpoint, token, realm);
 
         return realmRes;
     }
