@@ -22,9 +22,10 @@
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
     <Folder Include="Common\Models\" />
-    <Folder Include="Features\" />
+    <Folder Include="Common\Services\" />
     <Folder Include="Infrastructure\Data\" />
     <Folder Include="Infrastructure\Logging\" />
+    <Folder Include="Modules\Keycloak\SPIs\" />
   </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

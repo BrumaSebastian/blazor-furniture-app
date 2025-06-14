@@ -1,22 +1,32 @@
 services:
-  blazorfurniture:
-    image: ${DOCKER_REGISTRY-}blazorfurniture
-    container_name: BlazorFurniture
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - Keycloak__AuthorizationUrl=http://localhost:18080/realms/master/protocol/openid-connect/auth
-      - Keycloak__BaseUrl=http://keycloak:8080/auth
-      - Keycloak__Realm=master
-      # - Keycloak__ClientId=admin-service-client
-      # - Keycloak__ClientSecret=your-client-secret
-      - Authentication__Audience=account   
-      - Authentication__ValidIssuer=http://localhost:18080/realms/master   
-      - Authentication__MetadataAddress=http://keycloak:8080/realms/master/.well-known/openid-configuration   
-    build:
-      context: .
-      dockerfile: BlazorFurniture/Dockerfile
-    depends_on:
-      - keycloak
+  # blazorfurniture:
+  #   image: ${DOCKER_REGISTRY-}blazorfurniture
+  #   container_name: BlazorFurniture
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - Keycloak__BaseUrl=http://keycloak:8080
+  #     - Keycloak__Authentication__Audience=account
+  #     - Keycloak__Authentication__ValidIssuer=http://localhost:18080/realms/master
+  #     - Keycloak__Authentication__MetadataAddress=http://keycloak:8080/realms/master/.well-known/openid-configuration
+  #     - Keycloak__ServiceClient__Realm=master
+  #     - Keycloak__ServiceClient__ClientId=service-account
+  #     - Keycloak__ServiceClient__ClientSecret=am7DhCSMkogY04czwlMc4Y7Zj5phvngr
+  #   build:
+  #     context: .
+  #     dockerfile: BlazorFurniture/Dockerfile
+  #   depends_on:
+  #     - keycloak
+
+  # pgapi:
+  #   image: ${DOCKER_REGISTRY-}pgapi
+  #   container_name: PGAPI
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #   build:
+  #     context: C:\Users\Sebastian Bruma\Desktop\PG\paletten-gigant-be-repo\src\PalettenGigant # Path to the root of the external project
+  #     dockerfile: PalettenGigant.API\Dockerfile # Path to Dockerfile relative to the new context    
+  #   depends_on:
+  #     - keycloak
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -33,30 +43,56 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_DB: mssql
-      KC_DB_URL: jdbc:sqlserver://mssql:1433;databaseName=KeycloakDB;encrypt=true;trustServerCertificate=true
-      KC_DB_USERNAME: sa
+      # KC_DB: mssql
+      KC_DB: postgres   
+      # KC_DB_URL: jdbc:sqlserver://mssql:1433;databaseName=KeycloakDB;encrypt=true;trustServerCertificate=true
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      # KC_DB_USERNAME: sa
+      KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: Banana10
     depends_on:
-      - mssql
+      # - mssql
+      - postgres
     # ports:
-    #   - 18443:8443 
+    #   - 18443:8443
     volumes:
       - ./.containers/identity:/opt/keycloak/data
-      - ./BlazorFurniture/certs/keycloak.p12:/opt/keycloak/conf/truststores/keycloak.p12:ro
-      - ./BlazorFurniture/drivers/mssql-jdbc-12.10.0.jre11.jar:/opt/keycloak/providers/mssql-jdbc.jar:ro
- 
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: mssql
+      # - ./BlazorFurniture/certs/keycloak.p12:/opt/keycloak/conf/truststores/keycloak.p12:ro
+      # - ./BlazorFurniture/drivers/mssql-jdbc-12.10.0.jre11.jar:/opt/keycloak/providers/mssql-jdbc.jar:ro
+      # - ./BlazorFurniture/Modules/Keycloak/SPIs/authenticator-example.jar:/opt/keycloak/providers/authenticator-example.jar:ro
+      # - ./BlazorFurniture/Modules/Keycloak/SPIs/phone_authentication-1.0-SNAPSHOT.jar:/opt/keycloak/providers/phone_authentication.jar:ro
+
+  maildev:
+    image: maildev/maildev
+    container_name: maildev
     ports:
-      - "1400:1433"
+      - "1080:1080" # Web UI
+      - "1025:1025" # SMTP
+
+  # mssql:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: mssql
+  #   ports:
+  #     - "1400:1433"
+  #   environment:
+  #     ACCEPT_EULA: "Y"
+  #     SA_PASSWORD: "Banana10"
+  #     MSSQL_PID: "Developer"
+  #   volumes:
+  #     - mssql_data:/var/opt/mssql
+
+  postgres:                                              # New PostgreSQL service
+    image: postgres:16-alpine                            # Use Alpine for smaller image size
+    container_name: postgres
+    ports:
+      - "5454:5432"                                      # Standard PostgreSQL port
     environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Banana10"
-      MSSQL_PID: "Developer"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Banana10
+      POSTGRES_DB: keycloak                              # Default database name
     volumes:
-      - mssql_data:/var/opt/mssql
- 
+      - postgres_data:/var/lib/postgresql/data           # PostgreSQL data volume
+
 volumes:
-  mssql_data:
+  # mssql_data:
+  postgres_data:
