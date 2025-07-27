@@ -2,7 +2,7 @@
 
 namespace BlazorFurniture.AppHost.Configurations;
 
-internal sealed class KeycloakDatabaseOptions : IConfig
+internal sealed class KeycloakDatabaseOptions
 {
     public string ContainerName { get; set; }
     public string Image { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace BlazorFurniture.AppHost.Configurations;
 
-internal sealed class KeycloakOptions : IConfig
+internal sealed class KeycloakOptions
 {
     public string KEYCLOAK_ADMIN { get; set; }
     public string KEYCLOAK_ADMIN_PASSWORD { get; set; }
