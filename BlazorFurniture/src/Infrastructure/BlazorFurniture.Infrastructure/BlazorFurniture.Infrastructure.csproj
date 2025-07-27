@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Authentication\Keycloak\Models\" />
+    <Folder Include="Authentication\Services\" />
+    <Folder Include="External\" />
+    <Folder Include="Logging\" />
+  </ItemGroup>
+
+</Project>
