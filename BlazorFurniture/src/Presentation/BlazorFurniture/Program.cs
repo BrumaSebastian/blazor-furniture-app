@@ -1,4 +1,3 @@
-using BlazorFurniture.Common.Extensions;
 using BlazorFurniture.Components;
 using MudBlazor.Services;
 
@@ -16,19 +15,9 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
-
 builder.Services.AddMemoryCache();
-builder.Services.AddKeycloakServices(builder.Configuration);
-builder.Services.AddKeycloakAuthentication(builder.Configuration);
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ProductManager", policy => policy.RequireRole("product-manager"));
-    options.AddPolicy("ProductOwner", policy => policy.RequireRole("Product-Owner"));
-});
-
-builder.Services.AddCqrs();
+//builder.Services.AddCqrs();
 
 var app = builder.Build();
 

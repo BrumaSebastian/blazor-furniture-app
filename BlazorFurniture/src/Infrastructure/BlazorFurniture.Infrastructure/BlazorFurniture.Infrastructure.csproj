@@ -7,10 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Authentication\Keycloak\Models\" />
-    <Folder Include="Authentication\Services\" />
-    <Folder Include="External\" />
     <Folder Include="Logging\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
   </ItemGroup>
 
 </Project>

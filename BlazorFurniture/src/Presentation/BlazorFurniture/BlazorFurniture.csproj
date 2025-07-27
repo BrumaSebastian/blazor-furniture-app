@@ -17,18 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Exceptions\" />
-    <Folder Include="Common\Mappings\" />
-    <Folder Include="Common\Models\" />
-    <Folder Include="Common\Services\" />
     <Folder Include="Filters\" />
-    <Folder Include="Infrastructure\Data\" />
-    <Folder Include="Infrastructure\Logging\" />
-    <Folder Include="Modules\Keycloak\SPIs\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Aspire\BlazorFurniture.ServiceDefaults\BlazorFurniture.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Core\BlazorFurniture.Application\BlazorFurniture.Application.csproj" />
+    <ProjectReference Include="..\..\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
     <ProjectReference Include="..\BlazorFurniture.Client\BlazorFurniture.Client.csproj" />
     <ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Shared.csproj" />
   </ItemGroup>
