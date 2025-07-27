@@ -10,8 +10,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazorFurniture.Client\BlazorFurniture.Client.csproj" />
-    <ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Shared.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.*" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
@@ -23,9 +21,15 @@
     <Folder Include="Common\Mappings\" />
     <Folder Include="Common\Models\" />
     <Folder Include="Common\Services\" />
+    <Folder Include="Filters\" />
     <Folder Include="Infrastructure\Data\" />
     <Folder Include="Infrastructure\Logging\" />
     <Folder Include="Modules\Keycloak\SPIs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorFurniture.Client\BlazorFurniture.Client.csproj" />
+    <ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Shared.csproj" />
   </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
