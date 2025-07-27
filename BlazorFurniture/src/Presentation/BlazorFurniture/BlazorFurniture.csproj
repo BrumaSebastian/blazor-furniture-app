@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Aspire\BlazorFurniture.ServiceDefaults\BlazorFurniture.ServiceDefaults.csproj" />
     <ProjectReference Include="..\BlazorFurniture.Client\BlazorFurniture.Client.csproj" />
     <ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Shared.csproj" />
   </ItemGroup>
