@@ -1,5 +1,7 @@
 using BlazorFurniture.Components;
+using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMemoryCache();
+builder.Services.AddOpenApi();
 
 //builder.Services.AddCqrs();
 
@@ -27,8 +30,8 @@ app.MapDefaultEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 else
 {
