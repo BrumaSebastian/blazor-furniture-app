@@ -1,5 +1,6 @@
+using BlazorFurniture;
+using BlazorFurniture.Authentication;
 using BlazorFurniture.Components;
-using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
 
@@ -13,12 +14,17 @@ builder.Services.AddMudServices();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveWebAssemblyComponents()
+    .AddAuthenticationStateSerialization();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMemoryCache();
 builder.Services.AddOpenApi();
+
+builder.Services
+    .AddAppAuthentication(builder.Configuration)
+    .AddAppAuthorization();
 
 //builder.Services.AddCqrs();
 
@@ -45,7 +51,7 @@ else
 app.UseAntiforgery();
 
 app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 
@@ -54,5 +60,7 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(BlazorFurniture.Client._Imports).Assembly);
+
+app.MapGroup("/authentication").MapLoginAndLogout();
 
 app.Run();

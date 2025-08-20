@@ -19,6 +19,7 @@ internal static class ConfigureDistributedApplications
             .WithImage(databaseOptions.Image)
             .WithVolume("postgres_data", databaseOptions.VolumePath)
             .WithHostPort(databaseOptions.HostPort)
+            .WithLifetime(ContainerLifetime.Persistent)
             .AddDatabase(databaseOptions.DatabaseName);
 
         var options = applicationBuilder.Configuration.GetSection("Keycloak").Get<KeycloakOptions>()
@@ -33,6 +34,7 @@ internal static class ConfigureDistributedApplications
             .WithEnvironment(nameof(KeycloakOptions.KC_DB_PASSWORD), options.KC_DB_PASSWORD)
             .WithArgs(options.ARGS)
             .WithHttpEndpoint(options.HOST_PORT, options.CONTAINER_PORT)
+            .WithLifetime(ContainerLifetime.Persistent)
             .WithReference(postgresContainer);
 
         return applicationBuilder;
