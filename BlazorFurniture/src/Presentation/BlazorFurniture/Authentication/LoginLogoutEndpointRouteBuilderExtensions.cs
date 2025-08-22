@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorFurniture.Authentication;
@@ -11,27 +12,26 @@ internal static class LoginLogoutEndpointRouteBuilderExtensions
     {
         var group = endpoints.MapGroup("");
 
-        group.MapGet("/login", (string? returnUrl) => TypedResults.Challenge(GetAuthProperties(returnUrl)))
+        group.MapGet("/login", (HttpContext httpContext, [FromQuery]string? returnUrl) => TypedResults.Challenge(GetAuthProperties(returnUrl, httpContext)))
             .AllowAnonymous();
 
         // Sign out of the Cookie and OIDC handlers. If you do not sign out with the OIDC handler,
         // the user will automatically be signed back in the next time they visit a page that requires authentication
         // without being able to choose another account.
-        group.MapPost("/logout", ([FromForm] string? returnUrl) => TypedResults.SignOut(GetAuthProperties(returnUrl),
+        group.MapGet("/logout", (HttpContext httpContext, string? returnUrl) => TypedResults.SignOut(GetAuthProperties(returnUrl, httpContext),
             [CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme]));
 
         return group;
     }
 
-    private static AuthenticationProperties GetAuthProperties(string? returnUrl)
+    private static AuthenticationProperties GetAuthProperties(string? returnUrl, HttpContext httpContext)
     {
-        // TODO: Use HttpContext.Request.PathBase instead.
-        const string pathBase = "/";
+        string pathBase = httpContext.Request.PathBase.Value!;
 
         // Prevent open redirects.
         if (string.IsNullOrEmpty(returnUrl))
         {
-            returnUrl = pathBase;
+            returnUrl = "/";
         }
         else if (!Uri.IsWellFormedUriString(returnUrl, UriKind.Relative))
         {

@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Authorization\" />
+    <Folder Include="Components\Authentication\" />
     <Folder Include="Extensions\" />
     <Folder Include="Filters\" />
   </ItemGroup>

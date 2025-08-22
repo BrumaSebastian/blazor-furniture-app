@@ -9,9 +9,8 @@ using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace BlazorWebAppOidc;
+namespace BlazorFurniture.Authentication;
 
-// https://github.com/dotnet/aspnetcore/issues/8175
 internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> oidcOptionsMonitor)
 {
     private readonly OpenIdConnectProtocolValidator oidcTokenValidator = new()

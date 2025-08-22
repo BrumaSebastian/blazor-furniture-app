@@ -1,6 +1,14 @@
 ﻿<MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
 <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
 <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
-<LogInOrOut />
+<AuthorizeView>
+    <NotAuthorized>
+        <MudNavLink Href="authentication/login" Icon="@Icons.Material.Filled.Logout">Login</MudNavLink>
+    </NotAuthorized>
+
+    <Authorized>
+        <MudNavLink Href="authentication/logout" Icon="@Icons.Material.Filled.Login">Logout</MudNavLink>
+    </Authorized>
+</AuthorizeView>
 
 

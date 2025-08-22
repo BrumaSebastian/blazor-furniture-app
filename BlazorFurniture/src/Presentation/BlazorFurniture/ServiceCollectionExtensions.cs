@@ -21,13 +21,13 @@ public static class ServiceCollectionExtensions
             options.ClientId = configuration["OpenIDConnectSettings:ClientId"];
             options.ClientSecret = configuration["OpenIDConnectSettings:ClientSecret"];
             options.ResponseType = OpenIdConnectResponseType.Code;
+            options.UsePkce = true;
             options.SaveTokens = true;
-            //options.MetadataAddress = configuration["OpenIDConnectSettings:MetadataAddress"];
             options.RequireHttpsMetadata = false;
             // Configure the scopes you need
-            options.Scope.Add("openid");
-            options.Scope.Add("profile");
-            options.Scope.Add("email");
+            options.Scope.Add(OpenIdConnectScope.OpenIdProfile);
+            options.Scope.Add(OpenIdConnectScope.Email);
+            //options.Scope.Add(OpenIdConnectScope.OfflineAccess);
             // Configure the token validation parameters
             options.MapInboundClaims = false;
             options.TokenValidationParameters.NameClaimType = "name";
@@ -48,6 +48,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddAppAuthorization(this IServiceCollection services)
     {
+        services.AddAuthorization();
 
         return services;
     }

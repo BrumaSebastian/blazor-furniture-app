@@ -24,6 +24,7 @@ builder.Services.AddOpenApi();
 
 builder.Services
     .AddAppAuthentication(builder.Configuration)
+    .AddCascadingAuthenticationState()
     .AddAppAuthorization();
 
 //builder.Services.AddCqrs();
@@ -51,7 +52,7 @@ else
 app.UseAntiforgery();
 
 app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 
