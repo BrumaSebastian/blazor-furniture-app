@@ -1,5 +1,6 @@
 ﻿using BlazorFurniture.AppHost.Configurations;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace BlazorFurniture.AppHost;
 
@@ -25,7 +26,7 @@ internal static class ConfigureDistributedApplications
         var options = applicationBuilder.Configuration.GetSection("Keycloak").Get<KeycloakOptions>()
             ?? throw new InvalidOperationException("Missing keycloak configuration");
 
-        applicationBuilder.AddContainer(options.CONTAINER_NAME, options.IMAGE)
+        var keycloakContainer = applicationBuilder.AddContainer(options.CONTAINER_NAME, options.IMAGE)
             .WithEnvironment(nameof(KeycloakOptions.KEYCLOAK_ADMIN), options.KEYCLOAK_ADMIN)
             .WithEnvironment(nameof(KeycloakOptions.KEYCLOAK_ADMIN_PASSWORD), options.KEYCLOAK_ADMIN_PASSWORD)
             .WithEnvironment(nameof(KeycloakOptions.KC_DB), options.KC_DB)
@@ -36,6 +37,14 @@ internal static class ConfigureDistributedApplications
             .WithHttpEndpoint(options.HOST_PORT, options.CONTAINER_PORT)
             .WithLifetime(ContainerLifetime.Persistent)
             .WithReference(postgresContainer);
+
+        if (applicationBuilder.Environment.IsDevelopment())
+        {
+            foreach (var providerPath in options.Providers.Where(p => !string.IsNullOrWhiteSpace(p)))
+            {
+                keycloakContainer = keycloakContainer.WithBindMount(providerPath, $"/opt/keycloak/providers/{Path.GetFileName(providerPath)}");
+            }
+        }
 
         return applicationBuilder;
     }
