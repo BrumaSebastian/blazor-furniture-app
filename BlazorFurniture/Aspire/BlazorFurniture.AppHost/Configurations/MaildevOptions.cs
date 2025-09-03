@@ -2,6 +2,9 @@
 
 internal sealed class MaildevOptions
 {
+    public static readonly string SmtpEndpointName = "Smtp";
+    public static readonly string WebEndpointName = "Web";
+
     public required string ContainerName { get; set; }
     public required string Image { get; set; }
     public required MaildevPorts Ports { get; set; }

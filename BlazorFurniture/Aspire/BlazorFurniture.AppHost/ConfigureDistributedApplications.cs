@@ -55,8 +55,18 @@ internal static class ConfigureDistributedApplications
             ?? throw new InvalidOperationException("Missing maildev configuration");
 
         applicationBuilder.AddContainer(options.ContainerName, options.Image)
-            .WithEndpoint(options.Ports.HostSmtp, options.Ports.ContainerSmtp)
-            .WithHttpEndpoint(options.Ports.HostWeb, options.Ports.ContainerWeb)
+            .WithEnvironment("MAILDEV_SMTP_PORT", options.Ports.HostSmtp.ToString())
+            .WithEnvironment("MAILDEV_WEB_PORT", options.Ports.HostWeb.ToString())
+            .WithEndpoint(options.Ports.HostSmtp, options.Ports.ContainerSmtp, name: MaildevOptions.SmtpEndpointName)
+            .WithUrlForEndpoint(MaildevOptions.SmtpEndpointName, e =>
+            {
+                e.DisplayText = MaildevOptions.SmtpEndpointName;
+            })
+            .WithHttpEndpoint(options.Ports.HostWeb, options.Ports.ContainerWeb, name: MaildevOptions.WebEndpointName)
+            .WithUrlForEndpoint(MaildevOptions.WebEndpointName, e =>
+            {
+                e.DisplayText = MaildevOptions.WebEndpointName;
+            })
             .WithLifetime(ContainerLifetime.Persistent);
 
         return applicationBuilder;
