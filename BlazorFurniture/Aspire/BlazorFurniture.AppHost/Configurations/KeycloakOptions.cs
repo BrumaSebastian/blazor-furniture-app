@@ -11,7 +11,7 @@ internal sealed class KeycloakOptions
     public required string CONTAINER_NAME { get; set; }
     public required string IMAGE { get; set; }
     public string[] ARGS { get; set; } = [];
-    public int CONTAINER_PORT { get; set; }
-    public int HOST_PORT { get; set; }
+    public required int CONTAINER_PORT { get; set; }
+    public required int HOST_PORT { get; set; }
     public List<string> Providers { get; set; } = [];
 }

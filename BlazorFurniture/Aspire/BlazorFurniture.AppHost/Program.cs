@@ -15,5 +15,6 @@ builder.Resources.First(r => r.Name.Equals("blazorfurniture")).TryGetEndpoints(o
 endpoints!.First(e => e.Name.Equals("scalar")).Port = endpoints!.First(e => e.Name.Equals("https")).Port;
 
 builder.AddKeycloak();
+builder.AddMaildev();
 
 builder.Build().Run();

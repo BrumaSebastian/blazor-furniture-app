@@ -48,4 +48,17 @@ internal static class ConfigureDistributedApplications
 
         return applicationBuilder;
     }
+
+    public static IDistributedApplicationBuilder AddMaildev(this IDistributedApplicationBuilder applicationBuilder)
+    {
+        var options = applicationBuilder.Configuration.GetSection("Maildev").Get<MaildevOptions>()
+            ?? throw new InvalidOperationException("Missing maildev configuration");
+
+        applicationBuilder.AddContainer(options.ContainerName, options.Image)
+            .WithEndpoint(options.Ports.HostSmtp, options.Ports.ContainerSmtp)
+            .WithHttpEndpoint(options.Ports.HostWeb, options.Ports.ContainerWeb)
+            .WithLifetime(ContainerLifetime.Persistent);
+
+        return applicationBuilder;
+    }
 }
