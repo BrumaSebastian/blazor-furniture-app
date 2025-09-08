@@ -31,29 +31,30 @@ internal abstract class KeycloakBaseHttpClient(HttpClient httpClient,
         return content!;
     }
 
-    protected virtual async Task<AuthenticationRepresentation> VerifyUserCredentialsAsync(string email, string password)
+    protected virtual Task<AuthenticationRepresentation> VerifyUserCredentialsAsync(string email, string password)
     {
-        var requestBody = new FormUrlEncodedContent(
-            new Dictionary<string, string>
-            {
-                { "grant_type", "password" },
-                { "client_id", configuration.ServiceClient.ClientId },
-                { "client_secret", configuration.ServiceClient.ClientSecret },
-                { "username",  email },
-                { "password",  password },
+        throw new NotImplementedException();
+        //var requestBody = new FormUrlEncodedContent(
+        //    new Dictionary<string, string>
+        //    {
+        //        { "grant_type", "password" },
+        //        { "client_id", configuration.ServiceClient.ClientId },
+        //        { "client_secret", configuration.ServiceClient.ClientSecret },
+        //        { "username",  email },
+        //        { "password",  password },
 
-            });
+        //    });
 
-        var response = await httpClient.PostAsync(endpoint.Token, requestBody);
-        response.EnsureSuccessStatusCode();
+        //var response = await httpClient.PostAsync(endpoint.Token, requestBody);
+        //response.EnsureSuccessStatusCode();
 
-        if (response.IsSuccessStatusCode)
-        {
-            return await response.Content.ReadFromJsonAsync<AuthenticationRepresentation>();
-        }
+        //if (response.IsSuccessStatusCode)
+        //{
+        //    return await response.Content.ReadFromJsonAsync<AuthenticationRepresentation>();
+        //}
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorRepresentation>();
-        throw new Exception(error?.Description);
+        //var error = await response.Content.ReadFromJsonAsync<ErrorRepresentation>();
+        //throw new Exception(error?.Description);
     }
 
     public async Task<T?> GetAsync<T>(string endpoint, string token)
@@ -69,8 +70,10 @@ internal abstract class KeycloakBaseHttpClient(HttpClient httpClient,
 
     public async Task<T?> SendAsync<T>(HttpMethod httpMethod, string endpoint, string token, object body)
     {
-        var request = new HttpRequestMessage(httpMethod, endpoint);
-        request.Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json");
+        var request = new HttpRequestMessage(httpMethod, endpoint)
+        {
+            Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json")
+        };
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await httpClient.SendAsync(request);

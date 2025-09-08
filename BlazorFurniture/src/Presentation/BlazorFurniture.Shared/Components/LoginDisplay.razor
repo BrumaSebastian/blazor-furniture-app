@@ -30,12 +30,12 @@
 </div>
 
 @code {
-    private async Task Login()
+    private void Login()
     {
         Navigation.NavigateTo("/Account/Login", forceLoad: true);
     }
 
-    private async Task Logout()
+    private void Logout()
     {
         Navigation.NavigateTo("/Account/Logout", forceLoad: true);
     }

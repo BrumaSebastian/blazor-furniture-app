@@ -6,9 +6,7 @@
 <MudSnackbarProvider />
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudHidden Breakpoint="Breakpoint.MdAndUp">
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        </MudHidden>
+        <MudIconButton class="d-sm-flex d-md-none" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <AuthorizeView>
             <Authorized>
                 <MudText Typo="Typo.h5" Class="ml-3">Welcome @context.User.Identity?.Name </MudText>
@@ -19,29 +17,40 @@
             </NotAuthorized>
         </AuthorizeView>
 
-        <MudHidden Breakpoint="Breakpoint.MdAndUp">
+        <MudContainer Class="d-sm-flex d-md-none">
             <MudSpacer />
-        </MudHidden>
+        </MudContainer>
 
-        <MudHidden Breakpoint="Breakpoint.SmAndDown">
-            <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex justify-center">
-                <NavMenu />
-            </MudContainer>
-        </MudHidden>
+        <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-none d-md-flex justify-center">
+            <NavMenu />
+        </MudContainer>
 
+        <MudNavMenu>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <MudNavLink Href="authentication/login" Icon="@Icons.Material.Filled.Logout">
+                        <MudText class="d-none d-md-flex">Login</MudText>
+                    </MudNavLink>
+                </NotAuthorized>
+
+                <Authorized>
+                    <MudNavLink Href="authentication/logout" Icon="@Icons.Material.Filled.Login">
+                        <MudText class="d-none d-md-flex">Logout</MudText>
+                    </MudNavLink>
+                </Authorized>
+            </AuthorizeView>
+        </MudNavMenu>
         <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
         @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
     </MudAppBar>
 
-    <MudHidden Breakpoint="Breakpoint.MdAndUp">
-        <MudDrawer id="nav-drawer" @bind-Open="drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-            <MudNavMenu>
-                <NavMenu />
-            </MudNavMenu>
-        </MudDrawer>
-    </MudHidden>
+    <MudDrawer id="nav-drawer" Class="d-flex d-md-none" @bind-Open="drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <MudNavMenu>
+            <NavMenu />
+        </MudNavMenu>
+    </MudDrawer>
 
-    <MudMainContent Class="pt-20">
+    <MudMainContent Class="pt-20 px-4 mx-0">
         @Body
     </MudMainContent>
 </MudLayout>
