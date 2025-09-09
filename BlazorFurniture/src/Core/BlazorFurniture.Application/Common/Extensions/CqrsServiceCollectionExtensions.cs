@@ -1,3 +1,4 @@
+using BlazorFurniture.Application.Common.Decorators;
 using BlazorFurniture.Application.Common.Dispatchers;
 using BlazorFurniture.Application.Common.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
