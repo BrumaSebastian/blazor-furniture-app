@@ -20,8 +20,4 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Infrastructure\BlazorFurniture.Infrastructure\BlazorFurniture.Infrastructure.csproj" />
-  </ItemGroup>
-
 </Project>

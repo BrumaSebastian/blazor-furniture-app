@@ -13,4 +13,9 @@
 		<Folder Include="Repositories\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
+	  <ProjectReference Include="..\BlazorFurniture.Infrastructure\BlazorFurniture.Infrastructure.csproj" />
+	</ItemGroup>
+
 </Project>

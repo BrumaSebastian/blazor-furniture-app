@@ -8,6 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Folder Include="Implementations\" />
 		<Folder Include="Logging\" />
 	</ItemGroup>
 
@@ -17,6 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Core\BlazorFurniture.Application\BlazorFurniture.Application.csproj" />
 		<ProjectReference Include="..\..\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
 	</ItemGroup>
 
