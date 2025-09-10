@@ -1,6 +1,6 @@
 ﻿@using MudBlazor
 
-<MudBlazor.MudGrid Justify="MudBlazor.Justify.Center">
+<MudBlazor.MudGrid Justify="MudBlazor.Justify.Center" >
     <MudBlazor.MudItem xs="6">
         <div class="grid-masonry">
             <div style="block-size: calc(1em * @size);">
@@ -15,7 +15,7 @@
         </div>
     </MudBlazor.MudItem>
 
-    <MudBlazor.MudItem xs="6" Class="px-4">
+    <MudBlazor.MudItem xs="6">
         <div class="grid-masonry">
             @for (int i = Sources.Count / 2; i < Sources.Count - 1; i++)
             {

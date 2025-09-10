@@ -1,16 +1,14 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace BlazorFurniture.AppHost.Configurations;
 
-namespace BlazorFurniture.AppHost.Configurations;
-
-internal sealed class KeycloakDatabaseOptions : IConfig
+internal sealed class KeycloakDatabaseOptions
 {
-    public string ContainerName { get; set; }
-    public string Image { get; set; }
-    public string User { get; set; }
-    public string Password { get; set; }
-    public string DatabaseName { get; set; }
-    public string VolumePath { get; set; }
-    public int ContainerPath { get; set; }
-    public int HostPort { get; set; }
-    public string Url { get; set; }
+    public required string ContainerName { get; set; }
+    public required string Image { get; set; }
+    public required string User { get; set; }
+    public required string Password { get; set; }
+    public required string DatabaseName { get; set; }
+    public required string VolumePath { get; set; }
+    public required int ContainerPath { get; set; }
+    public required int HostPort { get; set; }
+    public required string Url { get; set; }
 }

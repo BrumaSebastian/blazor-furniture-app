@@ -1,40 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>340afe82-354d-46a5-a2af-67c2e8049742</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>340afe82-354d-46a5-a2af-67c2e8049742</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	</PropertyGroup>
 
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.*" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.*" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="Scalar.AspNetCore" Version="2.6.5" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Common\Exceptions\" />
-    <Folder Include="Common\Mappings\" />
-    <Folder Include="Common\Models\" />
-    <Folder Include="Common\Services\" />
-    <Folder Include="Filters\" />
-    <Folder Include="Infrastructure\Data\" />
-    <Folder Include="Infrastructure\Logging\" />
-    <Folder Include="Modules\Keycloak\SPIs\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Authorization\" />
+		<Folder Include="Components\Authentication\" />
+		<Folder Include="Extensions\" />
+		<Folder Include="Filters\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Aspire\BlazorFurniture.ServiceDefaults\BlazorFurniture.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\BlazorFurniture.Client\BlazorFurniture.Client.csproj" />
-    <ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Shared.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Aspire\BlazorFurniture.ServiceDefaults\BlazorFurniture.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\..\Core\BlazorFurniture.Application\BlazorFurniture.Application.csproj" />
+		<ProjectReference Include="..\..\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
+		<ProjectReference Include="..\BlazorFurniture.Client\BlazorFurniture.Client.csproj" />
+		<ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Shared.csproj" />
+	</ItemGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-	    <MudAllowedAttributePattern>LowerCase</MudAllowedAttributePattern>
-    </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<MudAllowedAttributePattern>LowerCase</MudAllowedAttributePattern>
+	</PropertyGroup>
 
 </Project>

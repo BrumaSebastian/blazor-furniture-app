@@ -1,6 +1,8 @@
-using BlazorFurniture.Common.Extensions;
+using BlazorFurniture;
+using BlazorFurniture.Authentication;
 using BlazorFurniture.Components;
 using MudBlazor.Services;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,23 +14,20 @@ builder.Services.AddMudServices();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveWebAssemblyComponents()
+    .AddAuthenticationStateSerialization();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
-
 builder.Services.AddMemoryCache();
-builder.Services.AddKeycloakServices(builder.Configuration);
-builder.Services.AddKeycloakAuthentication(builder.Configuration);
+builder.Services.AddOpenApi();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ProductManager", policy => policy.RequireRole("product-manager"));
-    options.AddPolicy("ProductOwner", policy => policy.RequireRole("Product-Owner"));
-});
+builder.Services
+    .AddAppAuthentication(builder.Configuration)
+    .AddCascadingAuthenticationState()
+    .AddAppAuthorization();
 
-builder.Services.AddCqrs();
+//builder.Services.AddCqrs();
 
 var app = builder.Build();
 
@@ -38,8 +37,8 @@ app.MapDefaultEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 else
 {
@@ -62,5 +61,7 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(BlazorFurniture.Client._Imports).Assembly);
+
+app.MapGroup("/authentication").MapLoginAndLogout();
 
 app.Run();
