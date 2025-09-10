@@ -1,6 +1,7 @@
 using BlazorFurniture;
 using BlazorFurniture.Authentication;
 using BlazorFurniture.Components;
+using BlazorFurniture.ServiceDefaults;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
 
