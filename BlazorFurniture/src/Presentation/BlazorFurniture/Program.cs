@@ -1,8 +1,10 @@
 using BlazorFurniture;
 using BlazorFurniture.Authentication;
 using BlazorFurniture.Components;
+using BlazorFurniture.ServiceDefaults;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMemoryCache();
 builder.Services.AddOpenApi();
+builder.Services.AddSerilog();
 
 builder.Services
     .AddAppAuthentication(builder.Configuration)

@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorFurniture.Infrastructure
+namespace BlazorFurniture.Infrastructure;
+
+internal class ConfigureServices
 {
-    internal class ConfigureServices
-    {
-    }
 }
