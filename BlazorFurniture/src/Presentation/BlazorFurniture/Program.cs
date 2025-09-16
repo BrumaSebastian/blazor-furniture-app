@@ -5,6 +5,7 @@ using BlazorFurniture.ServiceDefaults;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
 using Serilog;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,19 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.Use(async ( context, next ) =>
+{
+    var cultureCookie = context.Request.Cookies["BlazorCulture"];
+
+    if (!string.IsNullOrEmpty(cultureCookie))
+    {
+        var culture = new CultureInfo(cultureCookie);
+        CultureInfo.CurrentCulture = culture;
+        CultureInfo.CurrentUICulture = culture;
+    }
+    await next();
+});
 
 //app.UseHttpsRedirection();
 

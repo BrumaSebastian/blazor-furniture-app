@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using BlazorFurniture.Client.Components
+@inherits LayoutComponentBase
 
 <MudThemeProvider Theme="@theme" IsDarkMode="isDarkMode" />
 <MudPopoverProvider />
@@ -33,6 +34,7 @@
 						</MudNavLink>
 					</MudNavMenu>
 					<MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+					<CultureSelector />
 				</NotAuthorized>
 
 				<Authorized>
@@ -43,7 +45,7 @@
 							</MudAvatar>
 						</ActivatorContent>
 						<ChildContent>
-							<MudNavLink Href="authentication/logout" Icon="@Icons.Material.Filled.AccountBox">
+							<MudNavLink Match="NavLinkMatch.Prefix" Href="my-profile" Icon="@Icons.Material.Filled.AccountBox">
 								<MudText class="d-none d-md-flex">My account</MudText>
 							</MudNavLink>
 							<MudNavLink Href="authentication/logout" Icon="@Icons.Material.Filled.Login">
@@ -52,6 +54,7 @@
 						</ChildContent>
 					</MudMenu>
 					<MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+					<CultureSelector />
 				</Authorized>
 			</AuthorizeView>
 		</MudContainer>

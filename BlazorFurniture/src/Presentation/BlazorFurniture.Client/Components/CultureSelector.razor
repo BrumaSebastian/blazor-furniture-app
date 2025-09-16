@@ -1,0 +1,39 @@
+@using System.Globalization
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@using BlazorFurniture.Client.Resources.Common
+
+<MudSelect @bind-Value=selectedCulture Variant="Variant.Outlined" @bind-Value:after="OnCultureChanged">
+	@foreach ((var culture, var value) in cultureDict)
+	{
+		<MudSelectItem Value=culture>
+			<img src="@value.flag" height="14" class="mr-1" /> @value.name
+		</MudSelectItem>
+	}
+</MudSelect>
+
+@code
+{
+	private Dictionary<string, (string flag, string name)> cultureDict =
+		new()
+		{
+			{ Cultures.ENGLISH, ("https://upload.wikimedia.org/wikipedia/commons/b/be/Flag_of_England.svg", CulturesResource.en) },
+			{ Cultures.ROMANIAN, ("https://upload.wikimedia.org/wikipedia/commons/7/73/Flag_of_Romania.svg", CulturesResource.ro) }
+		};
+
+	private string? selectedCulture = CultureInfo.CurrentCulture.Name;
+
+	// protected override void OnInitialized()
+	// {
+	// 	selectedCulture = CultureInfo.CurrentCulture.Name;
+	// }
+
+	private async Task OnCultureChanged()
+	{
+		if (CultureInfo.CurrentCulture.Name != selectedCulture)
+		{
+			await JS.InvokeVoidAsync("blazorCulture.set", selectedCulture);
+			Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+		}
+	}
+}
