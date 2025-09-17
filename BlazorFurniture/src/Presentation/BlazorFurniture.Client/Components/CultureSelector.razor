@@ -3,14 +3,26 @@
 @inject NavigationManager Navigation
 @using BlazorFurniture.Client.Resources.Common
 
-<MudSelect @bind-Value=selectedCulture Variant="Variant.Outlined" @bind-Value:after="OnCultureChanged">
-	@foreach ((var culture, var value) in cultureDict)
-	{
-		<MudSelectItem Value=culture>
-			<img src="@value.flag" height="14" class="mr-1" /> @value.name
-		</MudSelectItem>
-	}
-</MudSelect>
+<MudMenu Color="Color.Primary" AriaLabel="Profile">
+	<ActivatorContent>
+		<MudIconButton Color="Color.Primary">
+			<MudImage Src="@cultureDict[selectedCulture!].flag" Width="32" />
+		</MudIconButton>
+	</ActivatorContent>
+	<ChildContent>
+		<MudMenuItem>
+			<MudText Align="Align.Center">@CommonResource.message_choose_language</MudText>
+		</MudMenuItem>
+		<MudSelect Dense=true @bind-Value=selectedCulture Variant="Variant.Filled" @bind-Value:after="OnCultureChanged">
+			@foreach ((var culture, var value) in cultureDict)
+			{
+				<MudSelectItem Value=culture>
+					<MudImage src="@value.flag" Width="32" /> @value.name
+				</MudSelectItem>
+			}
+		</MudSelect>
+	</ChildContent>
+</MudMenu>
 
 @code
 {
@@ -22,11 +34,6 @@
 		};
 
 	private string? selectedCulture = CultureInfo.CurrentCulture.Name;
-
-	// protected override void OnInitialized()
-	// {
-	// 	selectedCulture = CultureInfo.CurrentCulture.Name;
-	// }
 
 	private async Task OnCultureChanged()
 	{

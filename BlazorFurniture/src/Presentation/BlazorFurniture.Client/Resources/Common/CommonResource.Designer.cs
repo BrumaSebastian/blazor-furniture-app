@@ -63,6 +63,51 @@ namespace BlazorFurniture.Client.Resources.Common {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string button_login {
+            get {
+                return ResourceManager.GetString("button.login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string button_logout {
+            get {
+                return ResourceManager.GetString("button.logout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string button_profile {
+            get {
+                return ResourceManager.GetString("button.profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string button_register {
+            get {
+                return ResourceManager.GetString("button.register", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string message_choose_language {
+            get {
+                return ResourceManager.GetString("message.choose.language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string navigation_counter {
             get {
                 return ResourceManager.GetString("navigation.counter", resourceCulture);

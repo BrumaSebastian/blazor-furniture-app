@@ -117,6 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="button.login" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="button.logout" xml:space="preserve">
+    <value>Log out</value>
+  </data>
+  <data name="button.profile" xml:space="preserve">
+    <value>My Account</value>
+  </data>
+  <data name="button.register" xml:space="preserve">
+    <value>Sign up</value>
+  </data>
+  <data name="message.choose.language" xml:space="preserve">
+    <value>Choose Language</value>
+  </data>
   <data name="navigation.counter" xml:space="preserve">
     <value>Counter</value>
   </data>
