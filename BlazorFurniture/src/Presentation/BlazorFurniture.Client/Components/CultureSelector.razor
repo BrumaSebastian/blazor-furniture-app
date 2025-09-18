@@ -3,24 +3,24 @@
 @inject NavigationManager Navigation
 @using BlazorFurniture.Client.Resources.Common
 
-<MudMenu Color="Color.Primary" AriaLabel="Profile">
+<MudMenu AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" Dense=true MaxHeight="200" FullWidth=true>
 	<ActivatorContent>
-		<MudIconButton Color="Color.Primary">
-			<MudImage Src="@cultureDict[selectedCulture!].flag" Width="32" />
+		<MudIconButton>
+			<MudAvatar Size="Size.Small">
+				<MudImage ObjectFit="ObjectFit.Cover" Src="@cultureDict[selectedCulture!].flag" />
+			</MudAvatar>
 		</MudIconButton>
 	</ActivatorContent>
 	<ChildContent>
-		<MudMenuItem>
-			<MudText Align="Align.Center">@CommonResource.message_choose_language</MudText>
-		</MudMenuItem>
-		<MudSelect Dense=true @bind-Value=selectedCulture Variant="Variant.Filled" @bind-Value:after="OnCultureChanged">
-			@foreach ((var culture, var value) in cultureDict)
-			{
-				<MudSelectItem Value=culture>
-					<MudImage src="@value.flag" Width="32" /> @value.name
-				</MudSelectItem>
-			}
-		</MudSelect>
+		@foreach ((var culture, var value) in cultureDict)
+		{
+			<MudMenuItem OnClick="@(async () => await OnCultureChanged(culture))" Label="@value.name">
+				<MudAvatar Size="Size.Small" Class="mr-2">
+					<MudImage Src="@value.flag" ObjectFit="ObjectFit.Cover" Width="32" />
+				</MudAvatar>
+				<MudText Align="Align.Center" Inline=true Class="align-self-center">@value.name</MudText> 
+			</MudMenuItem>
+		}
 	</ChildContent>
 </MudMenu>
 
@@ -35,8 +35,11 @@
 
 	private string? selectedCulture = CultureInfo.CurrentCulture.Name;
 
-	private async Task OnCultureChanged()
+	private async Task OnCultureChanged(string culture)
 	{
+		Console.WriteLine("asdf " + culture);
+		selectedCulture = culture;
+
 		if (CultureInfo.CurrentCulture.Name != selectedCulture)
 		{
 			await JS.InvokeVoidAsync("blazorCulture.set", selectedCulture);

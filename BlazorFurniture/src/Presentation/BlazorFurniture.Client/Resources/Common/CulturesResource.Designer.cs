@@ -61,7 +61,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to en.
+        ///   Looks up a localized string similar to en-US.
         /// </summary>
         public static string en {
             get {
@@ -70,7 +70,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ro.
+        ///   Looks up a localized string similar to ro-RO.
         /// </summary>
         public static string ro {
             get {

@@ -61,6 +61,7 @@ app.Use(async ( context, next ) =>
         CultureInfo.CurrentCulture = culture;
         CultureInfo.CurrentUICulture = culture;
     }
+
     await next();
 });
 
