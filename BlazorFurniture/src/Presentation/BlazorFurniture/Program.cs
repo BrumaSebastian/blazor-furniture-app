@@ -1,7 +1,7 @@
 using BlazorFurniture;
-using BlazorFurniture.Authentication;
 using BlazorFurniture.Components;
 using BlazorFurniture.ServiceDefaults;
+using FastEndpoints;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
 using Serilog;
@@ -16,6 +16,7 @@ builder.Host.UseDefaultServiceProvider(options =>
     options.ValidateOnBuild = true;
 });
 
+
 // Add MudBlazor services
 builder.Services.AddMudServices();
 
@@ -25,7 +26,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
-builder.Services.AddControllers();
+builder.Services.AddFastEndpoints();
+//builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMemoryCache();
 builder.Services.AddOpenApi();
@@ -38,16 +40,37 @@ builder.Services
 
 //builder.Services.AddCqrs();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .WithOrigins("https://localhost:7128")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
+app.MapOpenApi();
+//app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+
+    //TODO: understand how to use this
+    app.MapScalarApiReference(options => options
+        .AddPreferredSecuritySchemes("OAuth2")
+        .AddAuthorizationCodeFlow("OAuth2", flow =>
+        {
+            flow.ClientId = "scalar-client";
+            flow.Pkce = Pkce.Sha256;
+            flow.SelectedScopes = ["read", "write", "admin"];
+        }));
 }
 else
 {
@@ -71,20 +94,19 @@ app.Use(async ( context, next ) =>
 });
 
 //app.UseHttpsRedirection();
-
+app.UseCors();
 app.UseAntiforgery();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication()
+    .UseAuthorization()
+    .UseFastEndpoints();
 
-app.MapControllers();
+//app.MapControllers();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(BlazorFurniture.Client._Imports).Assembly);
-
-app.MapGroup("/authentication").MapLoginAndLogout();
 
 app.Run();
