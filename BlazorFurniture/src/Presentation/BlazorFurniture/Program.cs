@@ -11,6 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
+builder.Host.UseDefaultServiceProvider(options =>
+{
+    options.ValidateOnBuild = true;
+});
+
 // Add MudBlazor services
 builder.Services.AddMudServices();
 
