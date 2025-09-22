@@ -1,5 +1,7 @@
-using BlazorFurniture;
 using BlazorFurniture.Components;
+using BlazorFurniture.Core.Shared.Configurations;
+using BlazorFurniture.Extensions.DocumentTransformers;
+using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
 using FastEndpoints;
 using MudBlazor.Services;
@@ -16,7 +18,6 @@ builder.Host.UseDefaultServiceProvider(options =>
     options.ValidateOnBuild = true;
 });
 
-
 // Add MudBlazor services
 builder.Services.AddMudServices();
 
@@ -30,27 +31,27 @@ builder.Services.AddFastEndpoints();
 //builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMemoryCache();
-builder.Services.AddOpenApi();
-builder.Services.AddSerilog();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<OAuthSecurityTransformer>();
+});
 
-builder.Services
-    .AddAppAuthentication(builder.Configuration)
-    .AddCascadingAuthenticationState()
-    .AddAppAuthorization();
+builder.Services.AddAppServices(builder.Configuration);
+builder.Services.AddSerilog();
+builder.Services.AddCascadingAuthenticationState();
 
 //builder.Services.AddCqrs();
 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy
-            .WithOrigins("https://localhost:7128")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(policy =>
+//    {
+//        policy
+//            .AllowAnyHeader()
+//            .AllowAnyMethod()
+//            .AllowCredentials();
+//    });
+//});
 
 var app = builder.Build();
 
@@ -61,16 +62,22 @@ app.MapOpenApi();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-
     //TODO: understand how to use this
-    app.MapScalarApiReference(options => options
-        .AddPreferredSecuritySchemes("OAuth2")
-        .AddAuthorizationCodeFlow("OAuth2", flow =>
-        {
-            flow.ClientId = "scalar-client";
-            flow.Pkce = Pkce.Sha256;
-            flow.SelectedScopes = ["read", "write", "admin"];
-        }));
+    var openIdConnectOptions = app.Services.GetRequiredService<OpenIdConectOptions>();
+
+    app.MapScalarApiReference(options =>
+    {
+        options.AddPreferredSecuritySchemes("OAuth2")
+            .AddAuthorizationCodeFlow("OAuth2", flow =>
+            {
+                flow.Pkce = Pkce.Sha256;
+                flow.ClientId = openIdConnectOptions.DevPublicClient?.ClientId;
+                flow.SelectedScopes = openIdConnectOptions.DevPublicClient?.Scopes;
+                flow.AuthorizationUrl = $"{openIdConnectOptions.Authority}/protocol/openid-connect/auth";
+                flow.TokenUrl = $"{openIdConnectOptions.Authority}/protocol/openid-connect/token";
+            });
+        options.PersistentAuthentication = true;
+    });
 }
 else
 {
@@ -94,7 +101,7 @@ app.Use(async ( context, next ) =>
 });
 
 //app.UseHttpsRedirection();
-app.UseCors();
+//app.UseCors();
 app.UseAntiforgery();
 
 app.UseAuthentication()

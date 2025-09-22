@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using BlazorFurniture.Authentication;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace BlazorFurniture.Authentication;
 
 internal static partial class CookieOidcServiceCollectionExtensions
 {
-    public static IServiceCollection ConfigureCookieOidc(this IServiceCollection services, string cookieScheme, string oidcScheme)
+    public static IServiceCollection ConfigureCookieOidc( this IServiceCollection services, string cookieScheme, string oidcScheme )
     {
         services.AddSingleton<CookieOidcRefresher>();
-        services.AddOptions<CookieAuthenticationOptions>(cookieScheme).Configure<CookieOidcRefresher>((cookieOptions, refresher) =>
+        services.AddOptions<CookieAuthenticationOptions>(cookieScheme).Configure<CookieOidcRefresher>(( cookieOptions, refresher ) =>
         {
             cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, oidcScheme);
         });
