@@ -1,6 +1,8 @@
-﻿<MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-<MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
-<MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
+﻿@using BlazorFurniture.Client.Resources.Common
+
+<MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@CommonResource.navigation_home</MudNavLink>
+<MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@CommonResource.navigation_counter</MudNavLink>
+<MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">@CommonResource.navigation_weather</MudNavLink>
 
 
 

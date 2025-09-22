@@ -9,8 +9,16 @@
 		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Components\Authentication\**" />
+	  <Content Remove="Components\Authentication\**" />
+	  <EmbeddedResource Remove="Components\Authentication\**" />
+	  <None Remove="Components\Authentication\**" />
+	</ItemGroup>
+
 
 	<ItemGroup>
+		<PackageReference Include="FastEndpoints" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" VersionOverride="9.0.4" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" VersionOverride="9.0.7" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
@@ -18,17 +26,16 @@
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" VersionOverride="9.0.7" />
 		<PackageReference Include="Microsoft.Kiota.Bundle" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" VersionOverride="1.21.0" />
-		<PackageReference Include="Scalar.AspNetCore" VersionOverride="2.6.5" />
+		<PackageReference Include="Scalar.AspNetCore" />
 		<PackageReference Include="Serilog.AspNetCore" />
 		<PackageReference Include="Serilog.Settings.Configuration" />
 		<PackageReference Include="Serilog.Sinks.Console" />
 		<PackageReference Include="Swashbuckle.AspNetCore" VersionOverride="8.1.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Authorization\" />
-		<Folder Include="Components\Authentication\" />
-		<Folder Include="Extensions\" />
 		<Folder Include="Filters\" />
 	</ItemGroup>
 
