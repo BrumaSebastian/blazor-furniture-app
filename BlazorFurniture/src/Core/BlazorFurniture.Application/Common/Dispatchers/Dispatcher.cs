@@ -9,7 +9,7 @@ public class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatcher> lo
     private readonly IServiceProvider _serviceProvider = serviceProvider;
     private readonly ILogger<Dispatcher> _logger = logger;
 
-    public async Task DispatchAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default)
+    public async Task Dispatch<TCommand>(TCommand command, CancellationToken cancellationToken = default)
         where TCommand : ICommand
     {
         using var scope = _serviceProvider.CreateScope();
@@ -17,7 +17,7 @@ public class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatcher> lo
         await handler.HandleAsync(command, cancellationToken);
     }
 
-    public async Task<TResult> DispatchAsync<TCommand, TResult>(TCommand command, CancellationToken cancellationToken = default)
+    public async Task<TResult> Dispatch<TCommand, TResult>(TCommand command, CancellationToken cancellationToken = default)
         where TCommand : ICommand<TResult>
     {
         using var scope = _serviceProvider.CreateScope();
@@ -25,7 +25,7 @@ public class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatcher> lo
         return await handler.HandleAsync(command, cancellationToken);
     }
 
-    public async Task<TResult> DispatchQueryAsync<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default) 
+    public async Task<TResult> DispatchQuery<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default) 
         where TQuery : IQuery<TResult>
     {
         try

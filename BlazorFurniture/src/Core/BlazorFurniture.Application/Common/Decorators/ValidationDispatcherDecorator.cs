@@ -8,23 +8,33 @@ public class ValidationDispatcherDecorator(
     ICommandDispatcher commandDispatcher,
     IQueryDispatcher queryDispatcher,
     IServiceProvider serviceProvider,
-    ILogger<ValidationDispatcherDecorator> logger ) : /*ICommandDispatcher,*/ IQueryDispatcher
+    ILogger<ValidationDispatcherDecorator> logger ) : ICommandDispatcher, IQueryDispatcher
 {
     private readonly ICommandDispatcher _commandDispatcher = commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher = queryDispatcher;
     private readonly IServiceProvider _serviceProvider = serviceProvider;
     private readonly ILogger<ValidationDispatcherDecorator> _logger = logger;
 
-    public async Task<TResult> DispatchQueryAsync<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
+    public Task Dispatch<TCommand>( TCommand command, CancellationToken cancellationToken = default ) where TCommand : ICommand
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<TResult> Dispatch<TCommand, TResult>( TCommand command, CancellationToken cancellationToken = default ) where TCommand : ICommand<TResult>
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<TResult> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
         where TQuery : IQuery<TResult>
     {
         await ValidateAsync( query, cancellationToken );
-        return await _queryDispatcher.DispatchQueryAsync<TQuery, TResult>( query, cancellationToken );
+        return await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, cancellationToken );
     }
 
     private Task ValidateAsync<T>( T request, CancellationToken cancellationToken )
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
         // Assumes FluentValidation is used
         //var validatorType = typeof(IValidator<>).MakeGenericType(request.GetType());
 

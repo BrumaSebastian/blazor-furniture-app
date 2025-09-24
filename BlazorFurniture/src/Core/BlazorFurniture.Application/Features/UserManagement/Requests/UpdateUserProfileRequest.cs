@@ -1,4 +1,4 @@
-﻿namespace BlazorFurniture.Application.DTOs.Users.Requests;
+﻿namespace BlazorFurniture.Application.Features.UserManagement.Requests;
 
 public class UpdateUserProfileRequest
 {

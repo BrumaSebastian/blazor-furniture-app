@@ -43,6 +43,7 @@
 		<ProjectReference Include="..\..\..\Aspire\BlazorFurniture.ServiceDefaults\BlazorFurniture.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\..\Core\BlazorFurniture.Application\BlazorFurniture.Application.csproj" />
 		<ProjectReference Include="..\..\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\BlazorFurniture.Infrastructure\BlazorFurniture.Infrastructure.csproj" />
 		<ProjectReference Include="..\BlazorFurniture.Client\BlazorFurniture.Client.csproj" />
 		<ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Shared.csproj" />
 	</ItemGroup>

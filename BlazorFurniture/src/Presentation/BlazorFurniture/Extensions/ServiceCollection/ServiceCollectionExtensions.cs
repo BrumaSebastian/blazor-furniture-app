@@ -1,4 +1,7 @@
-﻿namespace BlazorFurniture.Extensions.ServiceCollection;
+﻿using BlazorFurniture.Application.Common.Extensions;
+using BlazorFurniture.Infrastructure.Extensions;
+
+namespace BlazorFurniture.Extensions.ServiceCollection;
 
 public static class ServiceCollectionExtensions
 {
@@ -9,6 +12,8 @@ public static class ServiceCollectionExtensions
             services
                 .AddAppConfigurations(configuration)
                 .AddAppOptions()
+                .AddApplicationServices()
+                .AddInfrastructureServices()
                 .AddAppAuthentication(configuration)
                 .AddAppAuthorization();
 

@@ -15,7 +15,7 @@ public class CachingDispatcherDecorator(
     private readonly IMemoryCache _cache = cache;
     private readonly ILogger<CachingDispatcherDecorator> _logger = logger;
 
-    public async Task<TResult> DispatchQueryAsync<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
+    public async Task<TResult> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
         where TQuery : IQuery<TResult>
     {
         // Check if query is cacheable
@@ -23,7 +23,7 @@ public class CachingDispatcherDecorator(
 
         if (queryCacheAttribute is null)
         {
-            return await _queryDispatcher.DispatchQueryAsync<TQuery, TResult>( query, cancellationToken );
+            return await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, cancellationToken );
         }
 
         // Generate cache key
@@ -38,7 +38,7 @@ public class CachingDispatcherDecorator(
 
         // Get from dispatcher
         _logger.LogDebug( "Cache miss for query {QueryType}", typeof( TQuery ).Name );
-        var result = await _queryDispatcher.DispatchQueryAsync<TQuery, TResult>( query, cancellationToken );
+        var result = await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, cancellationToken );
 
         // Cache the result
         _cache.Set( cacheKey, result,

@@ -1,18 +1,19 @@
-﻿using BlazorFurniture.Application.DTOs.Users.Responses;
+﻿using BlazorFurniture.Application.Common.Dispatchers;
+using BlazorFurniture.Application.Features.UserManagement.Queries;
+using BlazorFurniture.Application.Features.UserManagement.Responses;
 using BlazorFurniture.Constants;
 using FastEndpoints;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace BlazorFurniture.Controllers.User;
 
-public class GetProfileEndpoint : EndpointWithoutRequest<UserProfileResponse>
+public class GetProfileEndpoint(IQueryDispatcher QueryDispatcher) : EndpointWithoutRequest<UserProfileResponse>
 {
     public override void Configure()
     {
         Get("/api/user/profile");
-        AuthSchemes(OpenIdConnectDefaults.AuthenticationScheme);
-        //AllowAnonymous();
+        //AuthSchemes(OpenIdConnectDefaults.AuthenticationScheme);
+        AllowAnonymous();
         Summary(options =>
         {
             options.Summary = "Get user profile";
@@ -31,10 +32,7 @@ public class GetProfileEndpoint : EndpointWithoutRequest<UserProfileResponse>
 
     public override async Task HandleAsync(CancellationToken ct )
     {
-        await Send.OkAsync(new()
-        {
-            Id = Guid.NewGuid().ToString(),
-            Username = "john_doe",
-        }, ct);
+        var userProfile = await QueryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(Guid.NewGuid()), ct);
+        await Send.OkAsync(userProfile, ct);
     }
 }

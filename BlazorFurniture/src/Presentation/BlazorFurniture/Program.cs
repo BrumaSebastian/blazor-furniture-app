@@ -40,8 +40,6 @@ builder.Services.AddAppServices(builder.Configuration);
 builder.Services.AddSerilog();
 builder.Services.AddCascadingAuthenticationState();
 
-//builder.Services.AddCqrs();
-
 //builder.Services.AddCors(options =>
 //{
 //    options.AddDefaultPolicy(policy =>

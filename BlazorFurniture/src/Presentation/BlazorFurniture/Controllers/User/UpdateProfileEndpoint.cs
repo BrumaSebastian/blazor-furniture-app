@@ -1,4 +1,4 @@
-﻿using BlazorFurniture.Application.DTOs.Users.Requests;
+﻿using BlazorFurniture.Application.Features.UserManagement.Requests;
 using BlazorFurniture.Constants;
 using FastEndpoints;
 

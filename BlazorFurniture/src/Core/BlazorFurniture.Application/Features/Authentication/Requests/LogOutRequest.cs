@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 
-namespace BlazorFurniture.Application.DTOs.Authentication.Requests;
+namespace BlazorFurniture.Application.Features.Authentication.Requests;
 
 public class LogOutRequest
 {
