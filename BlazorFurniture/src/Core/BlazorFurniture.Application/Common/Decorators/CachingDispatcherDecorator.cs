@@ -1,5 +1,6 @@
 using BlazorFurniture.Application.Common.Dispatchers;
 using BlazorFurniture.Application.Common.Interfaces;
+using BlazorFurniture.Application.Common.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
@@ -15,8 +16,9 @@ public class CachingDispatcherDecorator(
     private readonly IMemoryCache _cache = cache;
     private readonly ILogger<CachingDispatcherDecorator> _logger = logger;
 
-    public async Task<TResult> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
+    public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
         where TQuery : IQuery<TResult>
+        where TResult : class
     {
         // Check if query is cacheable
         var queryCacheAttribute = typeof( TQuery ).GetCustomAttribute<CacheableQueryAttribute>();

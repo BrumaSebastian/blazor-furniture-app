@@ -1,4 +1,5 @@
 using BlazorFurniture.Application.Common.Interfaces;
+using BlazorFurniture.Application.Common.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -22,8 +23,9 @@ public class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatcher> lo
         return await handler.HandleAsync(command, cancellationToken);
     }
 
-    public async Task<TResult> DispatchQuery<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default) 
+    public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default) 
         where TQuery : IQuery<TResult>
+        where TResult : class
     {
         try
         {

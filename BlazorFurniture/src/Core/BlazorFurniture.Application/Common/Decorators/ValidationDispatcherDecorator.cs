@@ -1,5 +1,6 @@
 using BlazorFurniture.Application.Common.Dispatchers;
 using BlazorFurniture.Application.Common.Interfaces;
+using BlazorFurniture.Application.Common.Models;
 using Microsoft.Extensions.Logging;
 
 namespace BlazorFurniture.Application.Common.Decorators;
@@ -25,8 +26,9 @@ public class ValidationDispatcherDecorator(
         throw new NotImplementedException();
     }
 
-    public async Task<TResult> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
+    public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
         where TQuery : IQuery<TResult>
+        where TResult : class
     {
         await ValidateAsync( query, cancellationToken );
         return await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, cancellationToken );
