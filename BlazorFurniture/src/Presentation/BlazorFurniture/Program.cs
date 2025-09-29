@@ -104,7 +104,10 @@ app.UseAntiforgery();
 
 app.UseAuthentication()
     .UseAuthorization()
-    .UseFastEndpoints();
+    .UseFastEndpoints(options =>
+    {
+        options.Endpoints.RoutePrefix = "api";
+    });
 
 //app.MapControllers();
 

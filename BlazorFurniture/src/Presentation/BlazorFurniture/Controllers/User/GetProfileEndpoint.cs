@@ -13,7 +13,8 @@ public class GetProfileEndpoint( IQueryDispatcher QueryDispatcher ) : EndpointWi
 {
     public override void Configure()
     {
-        Get("/api/user/profile");
+        Get("profile");
+        Group<UserEndpointGroup>();
         AuthSchemes(OpenIdConnectDefaults.AuthenticationScheme);
         AllowAnonymous();
         Summary(options =>

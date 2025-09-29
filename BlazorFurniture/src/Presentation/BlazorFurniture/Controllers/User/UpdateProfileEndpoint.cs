@@ -8,7 +8,8 @@ public class UpdateProfileEndpoint : Endpoint<UpdateUserProfileRequest>
 {
     public override void Configure()
     {
-        Put("/api/user/profile");
+        Put("profile");
+        Group<UserEndpointGroup>();
         AllowAnonymous();
 
         Summary(options =>
