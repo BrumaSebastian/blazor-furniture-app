@@ -2,25 +2,23 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
-using BlazorFurniture.Core.Shared.Models.Errors;
+using BlazorFurniture.Infrastructure.External.Interfaces;
 
 namespace BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
 
-internal class GetUserProfileQueryHandler : IQueryHandler<GetUserProfileQuery, UserProfileResponse> 
+internal class GetUserProfileQueryHandler(IUserManagementClient userManagementClient) : IQueryHandler<GetUserProfileQuery, UserProfileResponse> 
 {
     public async Task<Result<UserProfileResponse>> HandleAsync( GetUserProfileQuery query, CancellationToken cancellationToken = default )
     {
-        var userProfile = new UserProfileResponse
+        var result = await userManagementClient.Get(query.Id, cancellationToken);
+
+        return result ? Result<UserProfileResponse>.Succeeded(new UserProfileResponse
         {
-            Id = query.Id,
-            Username = "JohnDoe",
-            Email = ""
-        };
-
-        await Task.Delay(100, cancellationToken); // Simulate async operation
-
-        //return userProfile;
-        //return new NotFoundError( "id12", userProfile );
-        return new ConflictError( nameof(userProfile.Id), userProfile.Id.ToString(), userProfile);
+            Id = result.Value.Id,
+            Username = result.Value.Username!,
+            Email = result.Value.Email,
+            FirstName = result.Value.FirstName,
+            LastName = result.Value.LastName,
+        }) : Result<UserProfileResponse>.Failed(result.Error!);
     }
 }

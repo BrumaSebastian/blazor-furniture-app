@@ -1,0 +1,112 @@
+﻿using BlazorFurniture.Application.Common.Models;
+using BlazorFurniture.Core.Shared.Models.Errors;
+using BlazorFurniture.Domain.Entities.Keycloak;
+using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
+using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.Net.Http.Json;
+
+namespace BlazorFurniture.Infrastructure.External.Keycloak.Clients;
+
+internal abstract class KeycloakBaseHttpClient(
+    Endpoints endpoints,
+    HttpClient httpClient,
+    KeycloakConfiguration configuration,
+    IMemoryCache Cache )
+{
+    private const string SERVICE_TOKEN_CACHE_KEY = "ServiceTokenCache";
+    private const int TOKEN_EXPIRATION_BUFFER = 60;
+
+    protected Endpoints Endpoints { get; } = endpoints;
+
+    protected async Task<Result<T>> SendRequest<T>( HttpRequestMessage requestMessage, CancellationToken ct ) where T : class
+    {
+        var tokenResult = await GetServiceAccessToken(ct);
+
+        if (!tokenResult)
+        {
+            return Result<T>.Failed(tokenResult.Error!);
+        }
+
+        requestMessage.Headers.Authorization = 
+            new System.Net.Http.Headers.AuthenticationHeaderValue(BearerTokenDefaults.AuthenticationScheme, tokenResult.Value.AccessToken);
+
+        using var response = await httpClient.SendAsync(requestMessage, ct);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadFromJsonAsync<KeycloakError>(ct);
+
+            return response.StatusCode switch
+            {
+                System.Net.HttpStatusCode.NotFound => new NotFoundError("", ""),
+                System.Net.HttpStatusCode.BadRequest => new ValidationError(new Dictionary<string, string[]>()),
+                _ => new GenericError(error?.Title ?? error?.Description ?? "unexpected error")
+            };
+        }
+
+        return new GenericError("Unexpected error occurred.");
+    }
+
+    protected async Task<Result<AccessTokenResponse>> GetServiceAccessToken( CancellationToken ct )
+    {
+        return await Cache.GetOrCreateAsync(SERVICE_TOKEN_CACHE_KEY, async entry =>
+        {
+            var requestMessage = HttpRequestMessageBuilder.Create(HttpMethod.Post, Endpoints.AccessToken())
+                .WithFormParams(new Dictionary<string, string>
+                {
+                    { OpenIdConnectParameterNames.GrantType, OpenIdConnectGrantTypes.ClientCredentials },
+                    { OpenIdConnectParameterNames.ClientId, configuration.ServiceClient.ClientId },
+                    { OpenIdConnectParameterNames.ClientSecret, configuration.ServiceClient.ClientSecret }
+                })
+                .Build();
+
+            using var response = await httpClient.SendAsync(requestMessage, ct);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadFromJsonAsync<KeycloakError>(ct);
+
+                return response.StatusCode switch
+                {
+                    System.Net.HttpStatusCode.BadRequest => new ValidationError(new Dictionary<string, string[]>()),
+                    _ => new GenericError(error?.Title ?? error?.Description ?? "unexpected error")
+                };
+            }
+
+            var token = await response.Content.ReadFromJsonAsync<AccessTokenResponse>(ct)
+                ?? throw new Exception("Failed read service token.");
+
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(token.ExpiresIn - TOKEN_EXPIRATION_BUFFER);
+
+            return Result<AccessTokenResponse>.Succeeded(token);
+        }) ?? throw new Exception("Failed to retrieve service token");
+    }
+
+    //public async Task<Result<KeycloakToken>> GetUserTokenAsync( string username, string password, CancellationToken cancellationToken )
+    //{
+    //    var requestBody = new FormUrlEncodedContent(
+    //            new Dictionary<string, string>
+    //            {
+    //                { OpenIdConnectParameterNames.GrantType, OpenIdConnectGrantTypes.Password },
+    //                { OpenIdConnectParameterNames.ClientId, configuration.ServiceClient.ClientId },
+    //                { OpenIdConnectParameterNames.ClientSecret, configuration.ServiceClient.ClientSecret },
+    //                { OpenIdConnectParameterNames.Username,  username },
+    //                { OpenIdConnectParameterNames.Password,  password }
+    //            });
+
+    //    using var response = await httpClient.PostAsync(endpoints.GetAccessToken(), requestBody, cancellationToken);
+
+    //    if (!response.IsSuccessStatusCode)
+    //    {
+    //        var error = await response.Content.ReadFromJsonAsync<KeycloakError>(cancellationToken);
+    //        return Result<KeycloakToken>.Failure(error, response.StatusCode);
+    //    }
+
+    //    var token = await response.Content.ReadFromJsonAsync<KeycloakToken>(cancellationToken)
+    //        ?? throw new Exception("Failed to read service token.");
+
+    //    return Result<KeycloakToken>.Success(token, response.StatusCode);
+    //}
+}

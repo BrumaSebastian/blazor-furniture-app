@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
                 .AddAppConfigurations(configuration)
                 .AddAppOptions()
                 .AddApplicationServices()
-                .AddInfrastructureServices()
+                .AddInfrastructureServices(configuration)
                 .AddAppAuthentication(configuration)
                 .AddAppAuthorization();
 
