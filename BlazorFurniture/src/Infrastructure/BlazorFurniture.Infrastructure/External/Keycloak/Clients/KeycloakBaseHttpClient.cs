@@ -3,6 +3,7 @@ using BlazorFurniture.Core.Shared.Models.Errors;
 using BlazorFurniture.Domain.Entities.Keycloak;
 using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
 using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Net.Http.Json;
@@ -19,20 +20,21 @@ internal abstract class KeycloakBaseHttpClient(
     private const int TOKEN_EXPIRATION_BUFFER = 60;
 
     protected Endpoints Endpoints { get; } = endpoints;
+    protected HttpClient HttpClient { get; } = httpClient;
 
     protected async Task<Result<T>> SendRequest<T>( HttpRequestMessage requestMessage, CancellationToken ct ) where T : class
     {
         var tokenResult = await GetServiceAccessToken(ct);
 
-        if (!tokenResult)
+        if (!tokenResult.TryGetValue(out var token))
         {
             return Result<T>.Failed(tokenResult.Error!);
         }
 
-        requestMessage.Headers.Authorization = 
-            new System.Net.Http.Headers.AuthenticationHeaderValue(BearerTokenDefaults.AuthenticationScheme, tokenResult.Value.AccessToken);
+        requestMessage.Headers.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token.AccessToken);
 
-        using var response = await httpClient.SendAsync(requestMessage, ct);
+        using var response = await HttpClient.SendAsync(requestMessage, ct);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -46,14 +48,16 @@ internal abstract class KeycloakBaseHttpClient(
             };
         }
 
+        // TODO: deserialize to the value T
         return new GenericError("Unexpected error occurred.");
     }
 
-    protected async Task<Result<AccessTokenResponse>> GetServiceAccessToken( CancellationToken ct )
+    protected async Task<Result<KeycloakAccessToken>> GetServiceAccessToken( CancellationToken ct )
     {
         return await Cache.GetOrCreateAsync(SERVICE_TOKEN_CACHE_KEY, async entry =>
         {
-            var requestMessage = HttpRequestMessageBuilder.Create(HttpMethod.Post, Endpoints.AccessToken())
+            var requestMessage = HttpRequestMessageBuilder.Create(HttpClient, HttpMethod.Post)
+                .WithPath(Endpoints.AccessToken())
                 .WithFormParams(new Dictionary<string, string>
                 {
                     { OpenIdConnectParameterNames.GrantType, OpenIdConnectGrantTypes.ClientCredentials },
@@ -62,7 +66,7 @@ internal abstract class KeycloakBaseHttpClient(
                 })
                 .Build();
 
-            using var response = await httpClient.SendAsync(requestMessage, ct);
+            using var response = await HttpClient.SendAsync(requestMessage, ct);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -75,12 +79,12 @@ internal abstract class KeycloakBaseHttpClient(
                 };
             }
 
-            var token = await response.Content.ReadFromJsonAsync<AccessTokenResponse>(ct)
+            var token = await response.Content.ReadFromJsonAsync<KeycloakAccessToken>(ct)
                 ?? throw new Exception("Failed read service token.");
 
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(token.ExpiresIn - TOKEN_EXPIRATION_BUFFER);
 
-            return Result<AccessTokenResponse>.Succeeded(token);
+            return Result<KeycloakAccessToken>.Succeeded(token);
         }) ?? throw new Exception("Failed to retrieve service token");
     }
 

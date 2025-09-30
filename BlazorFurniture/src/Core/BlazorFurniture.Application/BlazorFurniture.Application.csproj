@@ -10,8 +10,6 @@
     <Folder Include="Common\Behaviours\" />
     <Folder Include="Common\Mappings\" />
     <Folder Include="Features\UserManagement\Commands\" />
-    <Folder Include="Keycloak\Interfaces\" />
-    <Folder Include="Keycloak\Services\" />
   </ItemGroup>
 
   <ItemGroup>

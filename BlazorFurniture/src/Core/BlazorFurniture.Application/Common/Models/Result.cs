@@ -92,4 +92,10 @@ public class Result<TValue> where TValue : class
             ? Result<TNew>.Succeeded(mapper(Value!))
             : Result<TNew>.Failed(Error!);
     }
+
+    public bool TryGetValue(out TValue value )
+    {
+        value = IsSuccess ? Value : null!;
+        return IsSuccess;
+    }
 }

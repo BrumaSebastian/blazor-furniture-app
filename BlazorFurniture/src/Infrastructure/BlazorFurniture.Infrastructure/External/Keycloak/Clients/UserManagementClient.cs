@@ -12,7 +12,8 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
     public async Task<Result<UserRepresentation>> Get( Guid userId, CancellationToken ct )
     {
         var requestMessage = HttpRequestMessageBuilder
-            .Create(HttpMethod.Get, Endpoints.UserById(userId))
+            .Create( HttpClient, HttpMethod.Get)
+            .WithPath( Endpoints.UserById(userId))
             .Build();
 
         return await SendRequest<UserRepresentation>(requestMessage, ct);

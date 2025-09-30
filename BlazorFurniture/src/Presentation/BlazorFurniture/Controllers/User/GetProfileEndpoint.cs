@@ -3,6 +3,7 @@ using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
 using BlazorFurniture.Constants;
 using BlazorFurniture.Core.Shared.Models.Errors;
+using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -35,7 +36,8 @@ public class GetProfileEndpoint( IQueryDispatcher QueryDispatcher ) : EndpointWi
 
     public override async Task HandleAsync( CancellationToken ct )
     {
-        var result = await QueryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(Guid.NewGuid()), ct);
+        //new GetUserProfileQuery(HttpContext.GetUserIdFromClaims()
+        var result = await QueryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(Guid.Parse("73dd88d4-f059-4677-9d74-29fba1309ba8")), ct);
 
         await result.Match(
             response => Send.OkAsync(result.Value),
