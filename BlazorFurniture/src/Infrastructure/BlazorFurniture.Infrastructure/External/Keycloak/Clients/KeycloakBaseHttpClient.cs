@@ -49,7 +49,14 @@ internal abstract class KeycloakBaseHttpClient(
         }
 
         // TODO: deserialize to the value T
-        return new GenericError("Unexpected error occurred.");
+        var result = await response.Content.ReadFromJsonAsync<T>(ct);
+
+        if (result == null)
+        {
+            throw new Exception("Failed to deserialize response.");
+        }
+
+        return Result<T>.Succeeded(result);
     }
 
     protected async Task<Result<KeycloakAccessToken>> GetServiceAccessToken( CancellationToken ct )

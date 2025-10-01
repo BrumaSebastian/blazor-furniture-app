@@ -1,7 +1,9 @@
 ﻿using BlazorFurniture.Core.Shared.Configurations;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BlazorFurniture.Extensions.ServiceCollection;
 
@@ -16,15 +18,16 @@ public static class AuthenticationExtensions
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
             {
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.Authority = openIdConnectOptions.Authority;
                 options.ClientId = openIdConnectOptions.PublicClient.ClientId;
-                //options.ClientSecret = configuration["OpenIDConnectSettings:ClientSecret"];
                 options.ResponseType = OpenIdConnectResponseType.Code;
                 options.UsePkce = true;
                 options.SaveTokens = true;
@@ -43,6 +46,44 @@ public static class AuthenticationExtensions
                     context.HandleResponse();
                     //context.Response.Redirect("/Error?message=" + context.Failure.Message);
                     return Task.CompletedTask;
+                };
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.Authority = openIdConnectOptions.Authority;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = openIdConnectOptions.Authority,
+                    ValidateAudience = false,
+                    ValidAudiences =
+                    [
+                        openIdConnectOptions.DevPublicClient?.ClientId,
+                        openIdConnectOptions.PublicClient?.ClientId
+                    ],
+                };
+
+                options.MapInboundClaims = false;
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = ctx =>
+                    {
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = ctx =>
+                    {
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = ctx =>
+                    {
+                        return Task.CompletedTask;
+                    },
+                    OnForbidden = ctx =>
+                    {
+                        return Task.CompletedTask;
+                    }
                 };
             });
 

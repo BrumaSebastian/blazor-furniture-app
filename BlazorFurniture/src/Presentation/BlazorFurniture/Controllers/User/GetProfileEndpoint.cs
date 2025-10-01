@@ -16,8 +16,6 @@ public class GetProfileEndpoint( IQueryDispatcher QueryDispatcher ) : EndpointWi
     {
         Get("profile");
         Group<UserEndpointGroup>();
-        AuthSchemes(OpenIdConnectDefaults.AuthenticationScheme);
-        AllowAnonymous();
         Summary(options =>
         {
             options.Summary = "Get user profile";
@@ -31,13 +29,12 @@ public class GetProfileEndpoint( IQueryDispatcher QueryDispatcher ) : EndpointWi
             options.WithDisplayName("Retrieve Profile");
             options.WithTags(ControllerTags.User);
             options.Produces<UserProfileResponse>(200);
-        });
+        }); 
     }
 
     public override async Task HandleAsync( CancellationToken ct )
     {
-        //new GetUserProfileQuery(HttpContext.GetUserIdFromClaims()
-        var result = await QueryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(Guid.Parse("73dd88d4-f059-4677-9d74-29fba1309ba8")), ct);
+        var result = await QueryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(HttpContext.GetUserIdFromClaims()), ct);
 
         await result.Match(
             response => Send.OkAsync(result.Value),
