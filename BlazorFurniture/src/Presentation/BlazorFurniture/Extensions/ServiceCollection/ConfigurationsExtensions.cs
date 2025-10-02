@@ -10,14 +10,14 @@ public static class ConfigurationsExtensions
     {
         public IServiceCollection AddAppConfigurations( IConfiguration configuration )
         {
-            services.Configure<OpenIdConectOptions>(configuration.GetSection(OpenIdConectOptions.NAME));
+            services.Configure<OpenIdConnectConfigOptions>(configuration.GetSection(OpenIdConnectConfigOptions.NAME));
 
             return services;
         }
 
         public IServiceCollection AddAppOptions()
         {
-            services.AddSingleton(registeredServices => registeredServices.GetRequiredService<IOptions<OpenIdConectOptions>>().Value);
+            services.AddSingleton(registeredServices => registeredServices.GetRequiredService<IOptions<OpenIdConnectConfigOptions>>().Value);
 
             return services;
         }

@@ -1,6 +1,6 @@
 ﻿namespace BlazorFurniture.Core.Shared.Configurations;
 
-public class OpenIdConectOptions
+public class OpenIdConnectConfigOptions
 {
     public static readonly string NAME = "OpenIdConnect";
     public required string Authority { get; set; }

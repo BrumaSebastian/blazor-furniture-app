@@ -4,6 +4,11 @@ using BlazorFurniture.Extensions.DocumentTransformers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
 using FastEndpoints;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
 using Serilog;
@@ -60,21 +65,33 @@ app.MapOpenApi();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    //TODO: understand how to use this
-    var openIdConnectOptions = app.Services.GetRequiredService<OpenIdConectOptions>();
 
-    app.MapScalarApiReference(options =>
+    var openIdConnectOptions = app.Services.GetRequiredService<OpenIdConnectConfigOptions>();
+    var configManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+        $"{openIdConnectOptions.Authority}/.well-known/openid-configuration",
+        new OpenIdConnectConfigurationRetriever(),
+        new HttpDocumentRetriever { RequireHttps = false });
+    var config = await configManager.GetConfigurationAsync();
+
+    var scalarBuilder = app.MapScalarApiReference(options =>
     {
-        options.AddPreferredSecuritySchemes("OAuth2")
-            .AddAuthorizationCodeFlow("OAuth2", flow =>
+        var securityScheme = "OAuth2";
+
+        options.AddPreferredSecuritySchemes(securityScheme)
+            .AddAuthorizationCodeFlow(securityScheme, flow =>
             {
                 flow.Pkce = Pkce.Sha256;
                 flow.ClientId = openIdConnectOptions.DevPublicClient?.ClientId;
                 flow.SelectedScopes = openIdConnectOptions.DevPublicClient?.Scopes;
-                flow.AuthorizationUrl = $"{openIdConnectOptions.Authority}/protocol/openid-connect/auth";
-                flow.TokenUrl = $"{openIdConnectOptions.Authority}/protocol/openid-connect/token";
+                flow.AuthorizationUrl = config.AuthorizationEndpoint;
+                flow.TokenUrl = config.TokenEndpoint;
             });
         options.PersistentAuthentication = true;
+    });
+
+    scalarBuilder.RequireAuthorization(new AuthorizeAttribute
+    {
+        AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{OpenIdConnectDefaults.AuthenticationScheme}"
     });
 }
 else

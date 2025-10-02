@@ -13,13 +13,13 @@ public static class AuthenticationExtensions
     {
         public IServiceCollection AddAppAuthentication( IConfiguration configuration )
         {
-            var openIdConnectOptions = configuration.GetSection(OpenIdConectOptions.NAME).Get<OpenIdConectOptions>()
-                ?? throw new Exception($"Missing {nameof(OpenIdConectOptions)} settings");
+            var openIdConnectOptions = configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()
+                ?? throw new Exception($"Missing {nameof(OpenIdConnectConfigOptions)} settings");
 
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -68,6 +68,10 @@ public static class AuthenticationExtensions
 
                 options.Events = new JwtBearerEvents
                 {
+                    OnMessageReceived = ctx =>
+                    {
+                        return Task.CompletedTask;
+                    },
                     OnChallenge = ctx =>
                     {
                         return Task.CompletedTask;
