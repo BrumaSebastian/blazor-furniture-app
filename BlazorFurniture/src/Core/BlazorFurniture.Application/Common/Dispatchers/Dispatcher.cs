@@ -7,23 +7,23 @@ namespace BlazorFurniture.Application.Common.Dispatchers;
 
 public class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatcher> logger) : ICommandDispatcher, IQueryDispatcher
 {
-    public async Task Dispatch<TCommand>(TCommand command, CancellationToken cancellationToken = default)
+    public async Task Dispatch<TCommand>(TCommand command, CancellationToken ct = default)
         where TCommand : ICommand
     {
         using var scope = serviceProvider.CreateScope();
         var handler = serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
-        await handler.HandleAsync(command, cancellationToken);
+        await handler.HandleAsync(command, ct);
     }
 
-    public async Task<TResult> Dispatch<TCommand, TResult>(TCommand command, CancellationToken cancellationToken = default)
+    public async Task<TResult> Dispatch<TCommand, TResult>(TCommand command, CancellationToken ct = default)
         where TCommand : ICommand<TResult>
     {
         using var scope = serviceProvider.CreateScope();
         var handler = serviceProvider.GetRequiredService<ICommandHandler<TCommand, TResult>>();
-        return await handler.HandleAsync(command, cancellationToken);
+        return await handler.HandleAsync(command, ct);
     }
 
-    public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>(TQuery query, CancellationToken cancellationToken = default) 
+    public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>(TQuery query, CancellationToken ct = default) 
         where TQuery : IQuery<TResult>
         where TResult : class
     {
@@ -33,7 +33,7 @@ public class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatcher> lo
 
             using var scope = serviceProvider.CreateScope();
             var handler = scope.ServiceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
-            var result = await handler.HandleAsync(query, cancellationToken);
+            var result = await handler.HandleAsync(query, ct);
 
             logger.LogDebug("Query {QueryType} handled successfully", typeof(TQuery).Name);
             return result;

@@ -6,7 +6,6 @@ using BlazorFurniture.Core.Shared.Models.Errors;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace BlazorFurniture.Controllers.User;
 

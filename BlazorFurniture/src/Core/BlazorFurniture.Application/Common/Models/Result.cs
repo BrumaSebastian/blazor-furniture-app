@@ -34,6 +34,8 @@ public class Result<TValue> where TValue : class
 
             return field;
         }
+
+        init;
     }
 
     private Result( bool isSuccess, TValue? value, BasicError? error )
@@ -57,12 +59,16 @@ public class Result<TValue> where TValue : class
         return new(false, null, error);
     }
 
-    public static implicit operator bool( Result<TValue> result ) => result.IsSuccess;
-
     public static implicit operator Result<TValue>( TValue value ) => Succeeded(value);
-
-    // Implicit conversion from BasicError to Result<TValue>
     public static implicit operator Result<TValue>( BasicError error ) => Failed(error);
+
+    public Result<TNew> PropagateFailure<TNew>() where TNew : class
+    {
+        if (IsFailure)
+            return Result<TNew>.Failed(Error!);
+
+        throw new InvalidOperationException("Cannot propagate success to a different result type.");
+    }
 
     public TResult Match<TResult>(
         Func<TValue, TResult> success,
@@ -93,7 +99,7 @@ public class Result<TValue> where TValue : class
             : Result<TNew>.Failed(Error!);
     }
 
-    public bool TryGetValue(out TValue value )
+    public bool TryGetValue( out TValue value )
     {
         value = IsSuccess ? Value : null!;
         return IsSuccess;

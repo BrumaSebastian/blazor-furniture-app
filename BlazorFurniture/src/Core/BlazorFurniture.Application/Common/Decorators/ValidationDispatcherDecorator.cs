@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BlazorFurniture.Application.Common.Decorators;
 
+[Obsolete("Not used. Will be removed or implemented later.", error: false)]
 public class ValidationDispatcherDecorator(
     ICommandDispatcher commandDispatcher,
     IQueryDispatcher queryDispatcher,
@@ -16,25 +17,25 @@ public class ValidationDispatcherDecorator(
     private readonly IServiceProvider _serviceProvider = serviceProvider;
     private readonly ILogger<ValidationDispatcherDecorator> _logger = logger;
 
-    public Task Dispatch<TCommand>( TCommand command, CancellationToken cancellationToken = default ) where TCommand : ICommand
+    public Task Dispatch<TCommand>( TCommand command, CancellationToken ct = default ) where TCommand : ICommand
     {
         throw new NotImplementedException();
     }
 
-    public Task<TResult> Dispatch<TCommand, TResult>( TCommand command, CancellationToken cancellationToken = default ) where TCommand : ICommand<TResult>
+    public Task<TResult> Dispatch<TCommand, TResult>( TCommand command, CancellationToken ct = default ) where TCommand : ICommand<TResult>
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
+    public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken ct = default )
         where TQuery : IQuery<TResult>
         where TResult : class
     {
-        await ValidateAsync( query, cancellationToken );
-        return await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, cancellationToken );
+        await ValidateAsync( query, ct );
+        return await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, ct );
     }
 
-    private Task ValidateAsync<T>( T request, CancellationToken cancellationToken )
+    private Task ValidateAsync<T>( T request, CancellationToken ct )
     {
         return Task.CompletedTask;
         // Assumes FluentValidation is used

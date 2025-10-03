@@ -73,7 +73,7 @@ if (app.Environment.IsDevelopment())
         new HttpDocumentRetriever { RequireHttps = false });
     var config = await configManager.GetConfigurationAsync();
 
-    var scalarBuilder = app.MapScalarApiReference(options =>
+    app.MapScalarApiReference(options =>
     {
         var securityScheme = "OAuth2";
 
@@ -87,11 +87,10 @@ if (app.Environment.IsDevelopment())
                 flow.TokenUrl = config.TokenEndpoint;
             });
         options.PersistentAuthentication = true;
-    });
-
-    scalarBuilder.RequireAuthorization(new AuthorizeAttribute
+    })
+    .RequireAuthorization(new AuthorizeAttribute
     {
-        AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{OpenIdConnectDefaults.AuthenticationScheme}"
+        AuthenticationSchemes = string.Join(',', JwtBearerDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme),
     });
 }
 else

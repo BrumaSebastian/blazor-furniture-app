@@ -9,7 +9,6 @@ public class OpenIdConnectConfigOptions
     public required ConfidentialClient ConfidentialClient { get; set; }
 }
 
-
 public class PublicClient
 {
     public required string ClientId { get; set; }

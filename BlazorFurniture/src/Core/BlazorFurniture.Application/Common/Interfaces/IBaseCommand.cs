@@ -1,6 +1,5 @@
-﻿namespace BlazorFurniture.Application.Common.Interfaces
+﻿namespace BlazorFurniture.Application.Common.Interfaces;
+
+public interface IBaseCommand
 {
-    public interface IBaseCommand
-    {
-    }
 }

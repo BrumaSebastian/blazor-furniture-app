@@ -7,6 +7,7 @@ public class OAuthSecurityTransformer : IOpenApiDocumentTransformer
 {
     public Task TransformAsync( OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken )
     {
+        // TODO: Move URL to configuration
         var securityScheme = new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.OAuth2,
@@ -16,7 +17,7 @@ public class OAuthSecurityTransformer : IOpenApiDocumentTransformer
                 {
                     TokenUrl = new Uri("http://localhost:8080/realms/main/protocol/openid-connect/token")
                 }
-            }
+            },
         };
         document.Components ??= new OpenApiComponents();
         document.Components.SecuritySchemes.Add("OAuth2", securityScheme);
