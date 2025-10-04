@@ -81,6 +81,7 @@ if (app.Environment.IsDevelopment())
                 flow.SelectedScopes = openIdConnectOptions.DevPublicClient?.Scopes;
                 flow.AuthorizationUrl = config.AuthorizationEndpoint;
                 flow.TokenUrl = config.TokenEndpoint;
+                flow.RefreshUrl = config.TokenEndpoint;
             });
         options.PersistentAuthentication = true;
     });

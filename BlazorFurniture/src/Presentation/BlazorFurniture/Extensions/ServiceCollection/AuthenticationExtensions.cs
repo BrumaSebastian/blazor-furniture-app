@@ -24,9 +24,9 @@ public static class AuthenticationExtensions
             .AddAuthenticationCookie(validFor: TimeSpan.FromMinutes(10))
             .AddAuthentication(options =>
             {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = CookieOrBearer;
                 options.DefaultAuthenticateScheme = CookieOrBearer;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieOrBearer;
             })
             .AddPolicyScheme(CookieOrBearer, nameof(CookieOrBearer), options =>
             {
@@ -47,22 +47,12 @@ public static class AuthenticationExtensions
                 options.UsePkce = true;
                 options.SaveTokens = true;
                 options.RequireHttpsMetadata = false;
-                // Configure the scopes you need
                 options.Scope.Add(OpenIdConnectScope.OpenIdProfile);
                 options.Scope.Add(OpenIdConnectScope.Email);
                 //options.Scope.Add(OpenIdConnectScope.OfflineAccess);
-                // Configure the token validation parameters
                 options.MapInboundClaims = false;
                 options.TokenValidationParameters.NameClaimType = "name";
                 options.TokenValidationParameters.RoleClaimType = "role";
-                // Configure the OpenID Connect events if needed
-
-                options.Events.OnRemoteFailure = ctx =>
-                {
-                    ctx.HandleResponse();
-                    //context.Response.Redirect("/Error?message=" + context.Failure.Message);
-                    return Task.CompletedTask;
-                };
             })
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
@@ -81,30 +71,6 @@ public static class AuthenticationExtensions
                 };
 
                 options.MapInboundClaims = false;
-
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = ctx =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnChallenge = ctx =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = ctx =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnAuthenticationFailed = ctx =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnForbidden = ctx =>
-                    {
-                        return Task.CompletedTask;
-                    }
-                };
             });
 
             //services.ConfigureCookieOidc(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
