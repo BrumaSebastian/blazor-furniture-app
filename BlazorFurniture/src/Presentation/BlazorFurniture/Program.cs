@@ -1,14 +1,13 @@
 using BlazorFurniture.Components;
 using BlazorFurniture.Core.Shared.Configurations;
+using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.DocumentTransformers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
 using FastEndpoints;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
 using Serilog;
@@ -33,7 +32,6 @@ builder.Services.AddRazorComponents()
     .AddAuthenticationStateSerialization();
 
 builder.Services.AddFastEndpoints();
-//builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMemoryCache();
 builder.Services.AddOpenApi(options =>
@@ -45,21 +43,19 @@ builder.Services.AddAppServices(builder.Configuration);
 builder.Services.AddSerilog();
 builder.Services.AddCascadingAuthenticationState();
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddDefaultPolicy(policy =>
-//    {
-//        policy
-//            .AllowAnyHeader()
-//            .AllowAnyMethod()
-//            .AllowCredentials();
-//    });
-//});
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
-app.MapOpenApi();
-//app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -73,12 +69,11 @@ if (app.Environment.IsDevelopment())
         new HttpDocumentRetriever { RequireHttps = false });
     var config = await configManager.GetConfigurationAsync();
 
+    app.MapOpenApi();
     app.MapScalarApiReference(options =>
     {
-        var securityScheme = "OAuth2";
-
-        options.AddPreferredSecuritySchemes(securityScheme)
-            .AddAuthorizationCodeFlow(securityScheme, flow =>
+        options.AddPreferredSecuritySchemes(nameof(SecuritySchemeType.OAuth2))
+            .AddAuthorizationCodeFlow(nameof(SecuritySchemeType.OAuth2), flow =>
             {
                 flow.Pkce = Pkce.Sha256;
                 flow.ClientId = openIdConnectOptions.DevPublicClient?.ClientId;
@@ -87,10 +82,6 @@ if (app.Environment.IsDevelopment())
                 flow.TokenUrl = config.TokenEndpoint;
             });
         options.PersistentAuthentication = true;
-    })
-    .RequireAuthorization(new AuthorizeAttribute
-    {
-        AuthenticationSchemes = string.Join(',', JwtBearerDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme),
     });
 }
 else
@@ -115,7 +106,8 @@ app.Use(async ( context, next ) =>
 });
 
 //app.UseHttpsRedirection();
-//app.UseCors();
+app.UseCors();
+app.UseGlobalExceptionHandler();
 app.UseAntiforgery();
 
 app.UseAuthentication()
@@ -123,9 +115,8 @@ app.UseAuthentication()
     .UseFastEndpoints(options =>
     {
         options.Endpoints.RoutePrefix = "api";
+        options.Errors.UseProblemDetails();
     });
-
-//app.MapControllers();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

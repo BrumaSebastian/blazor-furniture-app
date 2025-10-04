@@ -17,6 +17,14 @@ public static class ServiceCollectionExtensions
                 .AddAppAuthentication(configuration)
                 .AddAppAuthorization();
 
+            services.AddProblemDetails(options =>
+            {
+                options.CustomizeProblemDetails = ctx =>
+                {
+                    // TODO customization
+                };
+            });
+
             return services;
         }
     }

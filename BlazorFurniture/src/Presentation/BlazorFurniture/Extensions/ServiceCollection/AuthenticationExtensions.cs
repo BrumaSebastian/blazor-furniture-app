@@ -1,14 +1,18 @@
 ﻿using BlazorFurniture.Core.Shared.Configurations;
+using FastEndpoints.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using System.Net.Http.Headers;
 
 namespace BlazorFurniture.Extensions.ServiceCollection;
 
 public static class AuthenticationExtensions
 {
+    private static readonly string CookieOrBearer = "CookieOrBearer";
+
     extension( IServiceCollection services )
     {
         public IServiceCollection AddAppAuthentication( IConfiguration configuration )
@@ -16,13 +20,26 @@ public static class AuthenticationExtensions
             var openIdConnectOptions = configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()
                 ?? throw new Exception($"Missing {nameof(OpenIdConnectConfigOptions)} settings");
 
-            services.AddAuthentication(options =>
+            services
+            .AddAuthenticationCookie(validFor: TimeSpan.FromMinutes(10), options =>
             {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieOrBearer;
+                options.DefaultAuthenticateScheme = CookieOrBearer;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddPolicyScheme(CookieOrBearer, nameof(CookieOrBearer), options =>
+            {
+                options.ForwardDefaultSelector = ctx =>
+                {
+                    var isBearerAuth = ctx.Request.Headers.Authorization
+                    .Any(v => AuthenticationHeaderValue.TryParse(v, out var header)
+                        && header.Scheme.Equals(JwtBearerDefaults.AuthenticationScheme, StringComparison.OrdinalIgnoreCase));
+                    return isBearerAuth ? JwtBearerDefaults.AuthenticationScheme : CookieAuthenticationDefaults.AuthenticationScheme;
+                };
+            })
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
             {
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -41,9 +58,10 @@ public static class AuthenticationExtensions
                 options.TokenValidationParameters.NameClaimType = "name";
                 options.TokenValidationParameters.RoleClaimType = "role";
                 // Configure the OpenID Connect events if needed
-                options.Events.OnRemoteFailure = context =>
+
+                options.Events.OnRemoteFailure = ctx =>
                 {
-                    context.HandleResponse();
+                    ctx.HandleResponse();
                     //context.Response.Redirect("/Error?message=" + context.Failure.Message);
                     return Task.CompletedTask;
                 };
