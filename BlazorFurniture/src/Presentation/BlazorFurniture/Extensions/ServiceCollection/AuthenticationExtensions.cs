@@ -21,12 +21,10 @@ public static class AuthenticationExtensions
                 ?? throw new Exception($"Missing {nameof(OpenIdConnectConfigOptions)} settings");
 
             services
-            .AddAuthenticationCookie(validFor: TimeSpan.FromMinutes(10), options =>
-            {
-            })
+            .AddAuthenticationCookie(validFor: TimeSpan.FromMinutes(10))
             .AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieOrBearer;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = CookieOrBearer;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })

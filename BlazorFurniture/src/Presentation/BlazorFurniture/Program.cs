@@ -7,7 +7,7 @@ using BlazorFurniture.ServiceDefaults;
 using FastEndpoints;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
 using Serilog;
@@ -37,6 +37,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer<OAuthSecurityTransformer>();
+    options.AddScalarTransformers();
 });
 
 builder.Services.AddAppServices(builder.Configuration);

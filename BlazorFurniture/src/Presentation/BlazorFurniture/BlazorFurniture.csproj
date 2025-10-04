@@ -21,16 +21,16 @@
 		<PackageReference Include="FastEndpoints" />
 		<PackageReference Include="FastEndpoints.Security" />
 		<PackageReference Include="FastEndpoints.Swagger" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" VersionOverride="9.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" VersionOverride="9.0.9" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" VersionOverride="1.21.0" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
 		<PackageReference Include="Scalar.AspNetCore" />
+		<PackageReference Include="Scalar.AspNetCore.Microsoft" />
 		<PackageReference Include="Serilog.AspNetCore" />
 		<PackageReference Include="Serilog.Settings.Configuration" />
 		<PackageReference Include="Serilog.Sinks.Console" />
-		<PackageReference Include="Swashbuckle.AspNetCore" VersionOverride="8.1.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
 	</ItemGroup>
 
