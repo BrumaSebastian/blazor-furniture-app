@@ -49,6 +49,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exports", "Exports", "{8563
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorFurniture.Core.Shared", "src\Core\BlazorFurniture.Shared\BlazorFurniture.Core.Shared.csproj", "{E029FECE-B820-F14D-AFE7-53EDC63A2EFA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7F08C0CD-B874-473F-8B9E-AF452CC36542}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{B1D2C289-EBCC-479C-81D5-7E2069891CD4}"
+	ProjectSection(SolutionItems) = preProject
+		docs\plans\authorizationPlanning.md = docs\plans\authorizationPlanning.md
+		docs\plans\roleMapping.md = docs\plans\roleMapping.md
+		docs\plans\userManagement.md = docs\plans\userManagement.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -224,6 +233,8 @@ Global
 		{EF3BDF98-B638-3C11-25FE-B870F6C9A3C5} = {D7B5A9CF-2591-4016-92ED-6772335D3106}
 		{8563B042-E282-45E9-921E-D48BBAE182A9} = {8E797605-950B-4B7D-9225-2ADE6F8F4904}
 		{E029FECE-B820-F14D-AFE7-53EDC63A2EFA} = {6DB7FAF5-DBDC-4ABF-B9D5-EE3082E045E4}
+		{7F08C0CD-B874-473F-8B9E-AF452CC36542} = {8E797605-950B-4B7D-9225-2ADE6F8F4904}
+		{B1D2C289-EBCC-479C-81D5-7E2069891CD4} = {7F08C0CD-B874-473F-8B9E-AF452CC36542}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E2E717D-D280-4801-AB25-80B6398CDD1F}
