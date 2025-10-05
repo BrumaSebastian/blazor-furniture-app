@@ -38,13 +38,13 @@ internal abstract class KeycloakBaseHttpClient(
 
         if (!response.IsSuccessStatusCode)
         {
-            var error = await response.Content.ReadFromJsonAsync<KeycloakError>(ct);
+            var error = await response.Content.ReadFromJsonAsync<ErrorRepresentation>(ct);
 
             return response.StatusCode switch
             {
                 System.Net.HttpStatusCode.NotFound => new NotFoundError("", ""),
                 System.Net.HttpStatusCode.BadRequest => new ValidationError(new Dictionary<string, string[]>()),
-                _ => new GenericError(error?.Title ?? error?.Description ?? "unexpected error")
+                _ => new GenericError(error?.Error ?? error?.Description ?? "unexpected error")
             };
         }
 
@@ -77,12 +77,12 @@ internal abstract class KeycloakBaseHttpClient(
 
             if (!response.IsSuccessStatusCode)
             {
-                var error = await response.Content.ReadFromJsonAsync<KeycloakError>(ct);
+                var error = await response.Content.ReadFromJsonAsync<ErrorRepresentation>(ct);
 
                 return response.StatusCode switch
                 {
                     System.Net.HttpStatusCode.BadRequest => new ValidationError(new Dictionary<string, string[]>()),
-                    _ => new GenericError(error?.Title ?? error?.Description ?? "unexpected error")
+                    _ => new GenericError(error?.Error ?? error?.Description ?? "unexpected error")
                 };
             }
 

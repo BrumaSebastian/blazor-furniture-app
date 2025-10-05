@@ -18,4 +18,9 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
 
         return await SendRequest<UserRepresentation>(requestMessage, ct);
     }
+
+    public Task<Result<UserPermissionsRepresentation>> GetPermissions( Guid userId, CancellationToken ct )
+    {
+        throw new NotImplementedException();
+    }
 }

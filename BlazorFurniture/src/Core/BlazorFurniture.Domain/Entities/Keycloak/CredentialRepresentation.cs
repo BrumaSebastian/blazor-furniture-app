@@ -1,6 +1,6 @@
 ﻿namespace BlazorFurniture.Domain.Entities.Keycloak;
 
-public class CredentialRepresentation
+public sealed record CredentialRepresentation
 {
     public string? Type { get; set; }
     public bool Temporary { get; set; }

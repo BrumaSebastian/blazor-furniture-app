@@ -2,7 +2,7 @@
 
 namespace BlazorFurniture.Domain.Entities.Keycloak;
 
-public sealed class AuthenticationRepresentation
+public sealed record AuthenticationRepresentation
 {
     [JsonPropertyName("access_token")]
     public required string AccessToken { get; init; }
