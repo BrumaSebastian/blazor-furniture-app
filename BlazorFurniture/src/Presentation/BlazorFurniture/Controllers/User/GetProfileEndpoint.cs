@@ -1,18 +1,20 @@
-﻿using BlazorFurniture.Application.DTOs.Users.Responses;
+﻿using BlazorFurniture.Application.Common.Dispatchers;
+using BlazorFurniture.Application.Features.UserManagement.Queries;
+using BlazorFurniture.Application.Features.UserManagement.Responses;
 using BlazorFurniture.Constants;
+using BlazorFurniture.Core.Shared.Models.Errors;
+using BlazorFurniture.Extensions;
+using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace BlazorFurniture.Controllers.User;
 
-public class GetProfileEndpoint : EndpointWithoutRequest<UserProfileResponse>
+public class GetProfileEndpoint( IQueryDispatcher QueryDispatcher ) : EndpointWithoutRequest<UserProfileResponse>
 {
     public override void Configure()
     {
-        Get("/api/user/profile");
-        AuthSchemes(OpenIdConnectDefaults.AuthenticationScheme);
-        //AllowAnonymous();
+        Get("profile");
+        Group<UserEndpointGroup>();
         Summary(options =>
         {
             options.Summary = "Get user profile";
@@ -26,15 +28,19 @@ public class GetProfileEndpoint : EndpointWithoutRequest<UserProfileResponse>
             options.WithDisplayName("Retrieve Profile");
             options.WithTags(ControllerTags.User);
             options.Produces<UserProfileResponse>(200);
-        });
+        }); 
     }
 
-    public override async Task HandleAsync(CancellationToken ct )
+    public override async Task HandleAsync( CancellationToken ct )
     {
-        await Send.OkAsync(new()
-        {
-            Id = Guid.NewGuid().ToString(),
-            Username = "john_doe",
-        }, ct);
+        var result = await QueryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(HttpContext.GetUserIdFromClaims()), ct);
+
+        await result.Match(
+            response => Send.OkAsync(result.Value),
+            errors => result.Error switch
+            {
+                NotFoundError e => Send.NotFoundAsync(e),
+                _ => Send.ErrorsAsync()
+            });
     }
 }

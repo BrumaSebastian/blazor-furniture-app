@@ -4,9 +4,9 @@ namespace BlazorFurniture.Application.Common.Dispatchers;
 
 public interface ICommandDispatcher
 {
-    Task DispatchAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default) 
+    Task Dispatch<TCommand>(TCommand command, CancellationToken ct = default) 
         where TCommand : ICommand;
         
-    Task<TResult> DispatchAsync<TCommand, TResult>(TCommand command, CancellationToken cancellationToken = default) 
+    Task<TResult> Dispatch<TCommand, TResult>(TCommand command, CancellationToken ct = default) 
         where TCommand : ICommand<TResult>;
 }

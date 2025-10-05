@@ -1,4 +1,4 @@
-﻿using BlazorFurniture.Application.DTOs.Authentication.Requests;
+﻿using BlazorFurniture.Application.Features.Authentication.Requests;
 using BlazorFurniture.Constants;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication;

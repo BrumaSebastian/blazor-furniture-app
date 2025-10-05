@@ -29,7 +29,7 @@
 			<AuthorizeView>
 				<NotAuthorized>
 					<MudNavMenu class="d-none d-md-flex align-center">
-						<MudNavLink  Href="authentication/login" Icon="@Icons.Material.Filled.Logout" >
+						<MudNavLink  Href="api/authentication/login" Icon="@Icons.Material.Filled.Logout" >
 							<MudText>@CommonResource.button_login</MudText>
 						</MudNavLink>
 					</MudNavMenu>
@@ -48,7 +48,7 @@
 							<MudNavLink Match="NavLinkMatch.Prefix" Href="my-profile" Icon="@Icons.Material.Filled.AccountBox">
 								<MudText class="d-none d-md-flex">@CommonResource.button_profile</MudText>
 							</MudNavLink>
-							<MudNavLink Href="authentication/logout" Icon="@Icons.Material.Filled.Login">
+							<MudNavLink Href="api/authentication/logout" Icon="@Icons.Material.Filled.Login">
 								<MudText class="d-none d-md-flex">@CommonResource.button_logout</MudText>
 							</MudNavLink>
 						</ChildContent>

@@ -8,9 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Behaviours\" />
-    <Folder Include="Common\Mappings\" />
-    <Folder Include="Keycloak\Interfaces\" />
-    <Folder Include="Keycloak\Services\" />
+    <Folder Include="Features\UserManagement\Commands\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +17,10 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Core.Shared.csproj" />
   </ItemGroup>
 
 </Project>

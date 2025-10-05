@@ -1,4 +1,4 @@
-﻿using BlazorFurniture.Application.DTOs.Users.Requests;
+﻿using BlazorFurniture.Application.Features.UserManagement.Requests;
 using BlazorFurniture.Constants;
 using FastEndpoints;
 
@@ -8,7 +8,8 @@ public class UpdateProfileEndpoint : Endpoint<UpdateUserProfileRequest>
 {
     public override void Configure()
     {
-        Put("/api/user/profile");
+        Put("profile");
+        Group<UserEndpointGroup>();
         AllowAnonymous();
 
         Summary(options =>

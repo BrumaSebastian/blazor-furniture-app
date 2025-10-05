@@ -8,14 +8,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Implementations\" />
+		<Folder Include="External\Keycloak\Interfaces\" />
+		<Folder Include="Implementations\Features\UserManagement\Handlers\Commands\" />
 		<Folder Include="Logging\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 		<PackageReference Include="Microsoft.Extensions.Options" />
-		<PackageReference Include="Microsoft.Kiota.Bundle" />
 	</ItemGroup>
 
 	<ItemGroup>

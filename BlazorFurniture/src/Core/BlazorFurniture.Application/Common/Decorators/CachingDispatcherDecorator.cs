@@ -1,11 +1,13 @@
 using BlazorFurniture.Application.Common.Dispatchers;
 using BlazorFurniture.Application.Common.Interfaces;
+using BlazorFurniture.Application.Common.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace BlazorFurniture.Application.Common.Decorators;
 
+[Obsolete("Not used. Will be removed or implemented later.", error: false)]
 public class CachingDispatcherDecorator(
     IQueryDispatcher queryDispatcher,
     IMemoryCache cache,
@@ -15,15 +17,16 @@ public class CachingDispatcherDecorator(
     private readonly IMemoryCache _cache = cache;
     private readonly ILogger<CachingDispatcherDecorator> _logger = logger;
 
-    public async Task<TResult> DispatchQueryAsync<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
+    public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken ct = default )
         where TQuery : IQuery<TResult>
+        where TResult : class
     {
         // Check if query is cacheable
         var queryCacheAttribute = typeof( TQuery ).GetCustomAttribute<CacheableQueryAttribute>();
 
         if (queryCacheAttribute is null)
         {
-            return await _queryDispatcher.DispatchQueryAsync<TQuery, TResult>( query, cancellationToken );
+            return await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, ct );
         }
 
         // Generate cache key
@@ -38,7 +41,7 @@ public class CachingDispatcherDecorator(
 
         // Get from dispatcher
         _logger.LogDebug( "Cache miss for query {QueryType}", typeof( TQuery ).Name );
-        var result = await _queryDispatcher.DispatchQueryAsync<TQuery, TResult>( query, cancellationToken );
+        var result = await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, ct );
 
         // Cache the result
         _cache.Set( cacheKey, result,

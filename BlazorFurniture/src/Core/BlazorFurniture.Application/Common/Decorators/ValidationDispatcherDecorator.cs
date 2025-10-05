@@ -1,30 +1,43 @@
 using BlazorFurniture.Application.Common.Dispatchers;
 using BlazorFurniture.Application.Common.Interfaces;
+using BlazorFurniture.Application.Common.Models;
 using Microsoft.Extensions.Logging;
 
 namespace BlazorFurniture.Application.Common.Decorators;
 
+[Obsolete("Not used. Will be removed or implemented later.", error: false)]
 public class ValidationDispatcherDecorator(
     ICommandDispatcher commandDispatcher,
     IQueryDispatcher queryDispatcher,
     IServiceProvider serviceProvider,
-    ILogger<ValidationDispatcherDecorator> logger ) : /*ICommandDispatcher,*/ IQueryDispatcher
+    ILogger<ValidationDispatcherDecorator> logger ) : ICommandDispatcher, IQueryDispatcher
 {
     private readonly ICommandDispatcher _commandDispatcher = commandDispatcher;
     private readonly IQueryDispatcher _queryDispatcher = queryDispatcher;
     private readonly IServiceProvider _serviceProvider = serviceProvider;
     private readonly ILogger<ValidationDispatcherDecorator> _logger = logger;
 
-    public async Task<TResult> DispatchQueryAsync<TQuery, TResult>( TQuery query, CancellationToken cancellationToken = default )
-        where TQuery : IQuery<TResult>
-    {
-        await ValidateAsync( query, cancellationToken );
-        return await _queryDispatcher.DispatchQueryAsync<TQuery, TResult>( query, cancellationToken );
-    }
-
-    private Task ValidateAsync<T>( T request, CancellationToken cancellationToken )
+    public Task Dispatch<TCommand>( TCommand command, CancellationToken ct = default ) where TCommand : ICommand
     {
         throw new NotImplementedException();
+    }
+
+    public Task<TResult> Dispatch<TCommand, TResult>( TCommand command, CancellationToken ct = default ) where TCommand : ICommand<TResult>
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken ct = default )
+        where TQuery : IQuery<TResult>
+        where TResult : class
+    {
+        await ValidateAsync( query, ct );
+        return await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, ct );
+    }
+
+    private Task ValidateAsync<T>( T request, CancellationToken ct )
+    {
+        return Task.CompletedTask;
         // Assumes FluentValidation is used
         //var validatorType = typeof(IValidator<>).MakeGenericType(request.GetType());
 

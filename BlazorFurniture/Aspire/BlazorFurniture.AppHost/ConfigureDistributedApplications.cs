@@ -9,7 +9,7 @@ internal static class ConfigureDistributedApplications
 {
     extension(IDistributedApplicationBuilder applicationBuilder)
     {
-        public void AddKeycloak()
+        public IResourceBuilder<IResource> AddKeycloak()
         {
             var databaseOptions = applicationBuilder.Configuration.GetSection("KeycloakDatabase").Get<KeycloakDatabaseOptions>()
                 ?? throw new InvalidOperationException("Missing keycloak database configuration");
@@ -46,6 +46,8 @@ internal static class ConfigureDistributedApplications
                     keycloakContainer = keycloakContainer.WithBindMount(providerPath, $"/opt/keycloak/providers/{Path.GetFileName(providerPath)}");
                 }
             }
+
+            return keycloakContainer;
         }
 
         public void AddMaildev()

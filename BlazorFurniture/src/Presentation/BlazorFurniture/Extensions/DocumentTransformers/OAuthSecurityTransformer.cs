@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi;
 
 namespace BlazorFurniture.Extensions.DocumentTransformers;
 
@@ -7,19 +8,15 @@ public class OAuthSecurityTransformer : IOpenApiDocumentTransformer
 {
     public Task TransformAsync( OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken )
     {
-        var securityScheme = new OpenApiSecurityScheme
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+        document.Components.SecuritySchemes.Add(nameof(SecuritySchemeType.OAuth2), new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.OAuth2,
-            Flows = new OpenApiOAuthFlows
-            {
-                ClientCredentials = new OpenApiOAuthFlow
-                {
-                    TokenUrl = new Uri("http://localhost:8080/realms/main/protocol/openid-connect/token")
-                }
-            }
-        };
-        document.Components ??= new OpenApiComponents();
-        document.Components.SecuritySchemes.Add("OAuth2", securityScheme);
+            Scheme = JwtBearerDefaults.AuthenticationScheme,
+            In = ParameterLocation.Header
+        });
+
         return Task.CompletedTask;
     }
 }

@@ -1,9 +1,13 @@
 using BlazorFurniture.Components;
 using BlazorFurniture.Core.Shared.Configurations;
+using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.DocumentTransformers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
 using FastEndpoints;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.OpenApi;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
 using Serilog;
@@ -28,53 +32,56 @@ builder.Services.AddRazorComponents()
     .AddAuthenticationStateSerialization();
 
 builder.Services.AddFastEndpoints();
-//builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMemoryCache();
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer<OAuthSecurityTransformer>();
+    options.AddScalarTransformers();
 });
 
 builder.Services.AddAppServices(builder.Configuration);
 builder.Services.AddSerilog();
 builder.Services.AddCascadingAuthenticationState();
 
-//builder.Services.AddCqrs();
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddDefaultPolicy(policy =>
-//    {
-//        policy
-//            .AllowAnyHeader()
-//            .AllowAnyMethod()
-//            .AllowCredentials();
-//    });
-//});
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
-app.MapOpenApi();
-//app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    //TODO: understand how to use this
-    var openIdConnectOptions = app.Services.GetRequiredService<OpenIdConectOptions>();
 
+    var openIdConnectOptions = app.Services.GetRequiredService<OpenIdConnectConfigOptions>();
+    var configManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+        $"{openIdConnectOptions.Authority}/.well-known/openid-configuration",
+        new OpenIdConnectConfigurationRetriever(),
+        new HttpDocumentRetriever { RequireHttps = false });
+    var config = await configManager.GetConfigurationAsync();
+
+    app.MapOpenApi();
     app.MapScalarApiReference(options =>
     {
-        options.AddPreferredSecuritySchemes("OAuth2")
-            .AddAuthorizationCodeFlow("OAuth2", flow =>
+        options.AddPreferredSecuritySchemes(nameof(SecuritySchemeType.OAuth2))
+            .AddAuthorizationCodeFlow(nameof(SecuritySchemeType.OAuth2), flow =>
             {
                 flow.Pkce = Pkce.Sha256;
                 flow.ClientId = openIdConnectOptions.DevPublicClient?.ClientId;
                 flow.SelectedScopes = openIdConnectOptions.DevPublicClient?.Scopes;
-                flow.AuthorizationUrl = $"{openIdConnectOptions.Authority}/protocol/openid-connect/auth";
-                flow.TokenUrl = $"{openIdConnectOptions.Authority}/protocol/openid-connect/token";
+                flow.AuthorizationUrl = config.AuthorizationEndpoint;
+                flow.TokenUrl = config.TokenEndpoint;
+                flow.RefreshUrl = config.TokenEndpoint;
             });
         options.PersistentAuthentication = true;
     });
@@ -101,14 +108,17 @@ app.Use(async ( context, next ) =>
 });
 
 //app.UseHttpsRedirection();
-//app.UseCors();
+app.UseCors();
+app.UseGlobalExceptionHandler();
 app.UseAntiforgery();
 
 app.UseAuthentication()
     .UseAuthorization()
-    .UseFastEndpoints();
-
-//app.MapControllers();
+    .UseFastEndpoints(options =>
+    {
+        options.Endpoints.RoutePrefix = "api";
+        options.Errors.UseProblemDetails();
+    });
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
