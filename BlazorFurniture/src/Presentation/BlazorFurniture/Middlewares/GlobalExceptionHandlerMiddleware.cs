@@ -27,6 +27,10 @@ public class GlobalExceptionHandlerMiddleware(
 
         switch (ex)
         {
+            case TaskCanceledException:
+                logger.LogWarning(ex, "Task was cannceled for {Method} {Path}. TraceId: {TraceId}",
+                    context.Request.Method, context.Request.Path, traceId);
+                break;
             default:
                 logger.LogError(ex, "Unhandled exception for {Method} {Path}. TraceId: {TraceId}",
                     context.Request.Method, context.Request.Path, traceId);
@@ -73,6 +77,7 @@ public class GlobalExceptionHandlerMiddleware(
     {
         return ex switch
         {
+            TaskCanceledException => StatusCodes.Status499ClientClosedRequest,
             _ => StatusCodes.Status500InternalServerError
         };
     }

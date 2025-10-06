@@ -1,10 +1,15 @@
-﻿using BlazorFurniture.Application.Features.UserManagement.Requests;
+﻿using BlazorFurniture.Application.Common.Dispatchers;
+using BlazorFurniture.Application.Common.Models;
+using BlazorFurniture.Application.Features.UserManagement.Commands;
+using BlazorFurniture.Application.Features.UserManagement.Requests;
 using BlazorFurniture.Constants;
+using BlazorFurniture.Core.Shared.Models.Errors;
+using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.User;
 
-public class UpdateProfileEndpoint : Endpoint<UpdateUserProfileRequest>
+public class UpdateProfileEndpoint( ICommandDispatcher commandDispatcher ) : Endpoint<UpdateUserProfileRequest>
 {
     public override void Configure()
     {
@@ -16,7 +21,7 @@ public class UpdateProfileEndpoint : Endpoint<UpdateUserProfileRequest>
         {
             options.Summary = "Update user profile";
             options.Description = "Endpoint to update the profile of the currently authenticated user.";
-            options.Response(204, "Profile updated");
+            options.Response(StatusCodes.Status204NoContent, "Profile updated");
         });
 
         Description(options =>
@@ -24,12 +29,25 @@ public class UpdateProfileEndpoint : Endpoint<UpdateUserProfileRequest>
             options.WithDescription("This endpoint updates the profile information of the currently authenticated user.");
             options.WithDisplayName("Profile Update");
             options.WithTags(ControllerTags.User);
-            options.Produces(204);
+            options.Produces(StatusCodes.Status204NoContent);
+            options.Produces(StatusCodes.Status400BadRequest);
+            options.Produces(StatusCodes.Status404NotFound);
+            options.Produces(StatusCodes.Status409Conflict);
+            options.Produces(StatusCodes.Status502BadGateway);
         });
     }
 
     public override async Task HandleAsync( UpdateUserProfileRequest req, CancellationToken ct )
     {
-        await Send.NoContentAsync(ct);
+        var result = await commandDispatcher.Dispatch<UpdateUserProfileCommand, Result<EmptyResult>>(new UpdateUserProfileCommand(req), ct);
+
+        await result.Match(
+            response => Send.NoContentAsync(),
+            errors => result.Error switch
+            {
+                ConflictError e => Send.ConflictAsync(e),
+                NotFoundError e => Send.NotFoundAsync(e),
+                _ => Send.ErrorsAsync()
+            });
     }
 }

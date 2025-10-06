@@ -61,7 +61,7 @@ namespace BlazorFurniture.Client.Resources.Pages.Account {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Profile.
         /// </summary>
         internal static string profile {
             get {

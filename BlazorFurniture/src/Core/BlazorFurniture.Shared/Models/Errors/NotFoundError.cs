@@ -1,6 +1,6 @@
 ﻿namespace BlazorFurniture.Core.Shared.Models.Errors;
 
-public class NotFoundError( string resourceId, object resource ) 
-    : BasicError("resource-not-found", $"Resource of type {resource.GetType} with id {resourceId} was not found")
+public class NotFoundError( Guid resourceId, Type type ) 
+    : BasicError("resource-not-found", $"Resource of type {type.Name} with id {resourceId} was not found")
 {
 }

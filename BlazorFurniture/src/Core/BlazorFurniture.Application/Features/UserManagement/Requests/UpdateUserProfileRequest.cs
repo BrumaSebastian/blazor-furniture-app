@@ -1,8 +1,11 @@
-﻿namespace BlazorFurniture.Application.Features.UserManagement.Requests;
+﻿using BlazorFurniture.Application.Common.Requests.RouteParams;
 
-public class UpdateUserProfileRequest
+namespace BlazorFurniture.Application.Features.UserManagement.Requests;
+
+public sealed class UpdateUserProfileRequest : IGuidParam
 {
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public string? Email { get; set; }
+    public Guid Id { get; set; }
+    public string? FirstName { get; init; }
+    public string? LastName { get; init; }
+    public string? Email { get; init; }
 }
