@@ -14,7 +14,7 @@ internal class GetUserProfileQueryHandler( IUserManagementClient userManagementC
     public async Task<Result<UserProfileResponse>> HandleAsync( GetUserProfileQuery query, CancellationToken ct = default )
     {
         var result = await userManagementClient.Get(query.Id, ct)
-            .ToResult((status, error) => KeycloakErrorMapper.MapFor<UserRepresentation>(status, error, query.Id));
+            .ToDomainResult(( status, error ) => KeycloakErrorMapper.MapFor<UserRepresentation>(status, error, query.Id));
 
         return result.Map(u => u.ToUserProfile());
     }

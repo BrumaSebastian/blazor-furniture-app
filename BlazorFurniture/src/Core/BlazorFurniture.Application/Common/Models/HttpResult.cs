@@ -3,7 +3,7 @@ using System.Net;
 
 namespace BlazorFurniture.Application.Common.Models;
 
-public class HttpResult<TValue, TError> 
+public class HttpResult<TValue, TError>
     where TValue : class
     where TError : class
 {
@@ -65,7 +65,7 @@ public class HttpResult<TValue, TError>
         return IsSuccess;
     }
 
-    public Result<TValue> Match(Func<HttpStatusCode, TError, BasicError> onFailure )
+    public Result<TValue> ToDomainResult( Func<HttpStatusCode, TError, BasicError> onFailure )
     {
         ArgumentNullException.ThrowIfNull(onFailure);
 

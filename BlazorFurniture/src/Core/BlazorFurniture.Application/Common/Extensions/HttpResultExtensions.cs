@@ -6,17 +6,17 @@ namespace BlazorFurniture.Application.Common.Extensions;
 
 public static class HttpResultExtensions
 {
-    public static Result<TValue> ToResult<TValue, TError>(
+    public static Result<TValue> ToDomainResult<TValue, TError>(
         this HttpResult<TValue, TError> http,
         Func<HttpStatusCode, TError, BasicError> onFailure )
         where TValue : class
         where TError : class
-        => http.Match(onFailure);
+        => http.ToDomainResult(onFailure);
 
-    public static async Task<Result<TValue>> ToResult<TValue, TError>(
+    public static async Task<Result<TValue>> ToDomainResult<TValue, TError>(
         this Task<HttpResult<TValue, TError>> httpTask,
         Func<HttpStatusCode, TError, BasicError> onFailure )
         where TValue : class
         where TError : class
-        => (await httpTask).ToResult(onFailure);
+        => ToDomainResult((await httpTask), onFailure);
 }

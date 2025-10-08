@@ -4,11 +4,10 @@ using System.Diagnostics;
 namespace BlazorFurniture.Middlewares;
 
 public class GlobalExceptionHandlerMiddleware(
-    RequestDelegate next,
     ILogger<GlobalExceptionHandlerMiddleware> logger,
-    IWebHostEnvironment webHostEnvironment )
+    IWebHostEnvironment webHostEnvironment ) : IMiddleware
 {
-    public async Task Invoke( HttpContext context )
+    public async Task InvokeAsync( HttpContext context, RequestDelegate next )
     {
         try
         {

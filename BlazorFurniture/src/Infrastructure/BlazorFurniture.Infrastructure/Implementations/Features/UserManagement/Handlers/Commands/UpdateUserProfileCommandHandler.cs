@@ -14,7 +14,7 @@ internal class UpdateUserProfileCommandHandler( IUserManagementClient userManage
     public async Task<Result<EmptyResult>> HandleAsync( UpdateUserProfileCommand command, CancellationToken ct = default )
     {
         var getUser = await userManagementClient.Get(command.Request.Id, ct)
-            .ToResult((status, error) => KeycloakErrorMapper.MapFor<UserRepresentation>(status, error, command.Request.Id));
+            .ToDomainResult((status, error) => KeycloakErrorMapper.MapFor<UserRepresentation>(status, error, command.Request.Id));
 
         if (!getUser.TryGetValue(out var userRepresentation))
             return getUser.PropagateFailure<EmptyResult>();
@@ -24,7 +24,7 @@ internal class UpdateUserProfileCommandHandler( IUserManagementClient userManage
         userRepresentation.Email = command.Request.Email;
 
         var updateUser = await userManagementClient.UpdateProfile(userRepresentation, ct)
-            .ToResult(( status, error ) => KeycloakErrorMapper.MapFor<UserRepresentation>(status, error, command.Request.Id));
+            .ToDomainResult(( status, error ) => KeycloakErrorMapper.MapFor<UserRepresentation>(status, error, command.Request.Id));
 
         return updateUser;
     }
