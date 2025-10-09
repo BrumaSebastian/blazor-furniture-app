@@ -1,10 +1,10 @@
-﻿using BlazorFurniture.Core.Shared.Models.Errors;
+﻿using BlazorFurniture.Core.Shared.Errors;
 using System.Net;
 
 namespace BlazorFurniture.Application.Common.Models;
 
 public class HttpResult<TValue, TError>
-    where TValue : class
+    where TValue : class, new()
     where TError : class
 {
     public bool IsSuccess { get; }
@@ -59,18 +59,26 @@ public class HttpResult<TValue, TError>
         return new(false, null, error, statusCode);
     }
 
+    public static HttpResult<TValue, TError> NoContent( HttpStatusCode statusCode = HttpStatusCode.NoContent )
+    {
+        if (typeof(TValue) != typeof(EmptyResult))
+            throw new InvalidOperationException("NoContent can only be used with TValue = EmptyResult.");
+
+        return new(true, (TValue)((object)new EmptyResult()), null, statusCode);
+    }
+
     public bool TryGetValue( out TValue value )
     {
         value = IsSuccess ? Value : null!;
         return IsSuccess;
     }
 
-    public Result<TValue> ToDomainResult( Func<HttpStatusCode, TError, BasicError> onFailure )
+    public Result<TValue> ToDomainResult( IHttpErrorMapper errorMapper, Guid resourceId, Type? resourceType = null )
     {
-        ArgumentNullException.ThrowIfNull(onFailure);
+        ArgumentNullException.ThrowIfNull(errorMapper);
 
         return IsSuccess
             ? Result<TValue>.Succeeded(Value)
-            : Result<TValue>.Failed(onFailure(StatusCode, Error));
+            : Result<TValue>.Failed(errorMapper.MapFor(Error, StatusCode, resourceId, resourceType));
     }
 }

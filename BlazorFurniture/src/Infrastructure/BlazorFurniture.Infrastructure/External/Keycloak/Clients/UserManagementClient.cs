@@ -39,6 +39,7 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
         var requestMessage = HttpRequestMessageBuilder
             .Create(HttpClient, HttpMethod.Put)
             .WithPath(Endpoints.UserById(userRepresentation.Id))
+            .WithContent(userRepresentation)
             .Build();
 
         return await SendRequest<EmptyResult, ErrorRepresentation>(requestMessage, ct);

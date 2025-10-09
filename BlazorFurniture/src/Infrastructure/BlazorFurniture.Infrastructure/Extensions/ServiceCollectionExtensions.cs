@@ -1,8 +1,11 @@
 ﻿using BlazorFurniture.Application.Common.Interfaces;
+using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Core.Shared.Utils.Extensions;
+using BlazorFurniture.Infrastructure.Constants;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Clients;
 using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
+using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -18,6 +21,7 @@ public static class ServiceCollectionExtensions
         {
             services.RegisterHandlers(Assembly.GetExecutingAssembly());
             services.AddKeycloak(configuration);
+            services.AddErrorMappers();
 
             return services;
         }
@@ -66,6 +70,13 @@ public static class ServiceCollectionExtensions
                     }
                 }
             }
+
+            return services;
+        }
+
+        private IServiceCollection AddErrorMappers()
+        {
+            services.AddKeyedScoped<IHttpErrorMapper, KeycloakHttpErrorMapper>(KeyedServices.KEYCLOAK);
 
             return services;
         }

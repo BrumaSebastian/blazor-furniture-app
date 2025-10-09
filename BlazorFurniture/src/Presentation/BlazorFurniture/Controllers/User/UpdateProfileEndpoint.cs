@@ -3,9 +3,11 @@ using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.UserManagement.Commands;
 using BlazorFurniture.Application.Features.UserManagement.Requests;
 using BlazorFurniture.Constants;
-using BlazorFurniture.Core.Shared.Models.Errors;
+using BlazorFurniture.Core.Shared.Errors;
+using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
+
 
 namespace BlazorFurniture.Controllers.User;
 
@@ -15,7 +17,6 @@ public class UpdateProfileEndpoint( ICommandDispatcher commandDispatcher ) : End
     {
         Put("profile");
         Group<UserEndpointGroup>();
-        AllowAnonymous();
 
         Summary(options =>
         {
@@ -39,7 +40,8 @@ public class UpdateProfileEndpoint( ICommandDispatcher commandDispatcher ) : End
 
     public override async Task HandleAsync( UpdateUserProfileRequest req, CancellationToken ct )
     {
-        var result = await commandDispatcher.Dispatch<UpdateUserProfileCommand, Result<EmptyResult>>(new UpdateUserProfileCommand(req), ct);
+        var userId = HttpContext.GetUserIdFromClaims();
+        var result = await commandDispatcher.Dispatch<UpdateUserProfileCommand, Result<EmptyResult>>(new UpdateUserProfileCommand(userId, req), ct);
 
         await result.Match(
             response => Send.NoContentAsync(),

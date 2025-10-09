@@ -2,7 +2,7 @@
 using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
 using BlazorFurniture.Constants;
-using BlazorFurniture.Core.Shared.Models.Errors;
+using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
@@ -30,12 +30,13 @@ public class GetProfileEndpoint( IQueryDispatcher queryDispatcher ) : EndpointWi
             options.Produces<UserProfileResponse>(StatusCodes.Status200OK);
             options.Produces<UserProfileResponse>(StatusCodes.Status404NotFound);
             options.Produces<UserProfileResponse>(StatusCodes.Status502BadGateway);
-        }); 
+        });
     }
 
     public override async Task HandleAsync( CancellationToken ct )
     {
-        var result = await queryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(HttpContext.GetUserIdFromClaims()), ct);
+        var userId = HttpContext.GetUserIdFromClaims();
+        var result = await queryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(userId), ct);
 
         await result.Match(
             response => Send.OkAsync(result.Value),

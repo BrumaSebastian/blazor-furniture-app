@@ -6,7 +6,7 @@ namespace BlazorFurniture.Infrastructure.Implementations.Features.UserManagement
 
 internal static class UserMapping
 {
-    extension(UserRepresentation source )
+    extension( UserRepresentation source )
     {
         public UserProfileResponse ToUserProfile() => new()
         {

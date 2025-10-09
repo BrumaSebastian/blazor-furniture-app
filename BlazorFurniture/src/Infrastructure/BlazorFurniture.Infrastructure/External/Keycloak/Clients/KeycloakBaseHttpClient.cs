@@ -4,6 +4,7 @@ using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
@@ -21,8 +22,8 @@ internal abstract class KeycloakBaseHttpClient(
     protected Endpoints Endpoints { get; } = endpoints;
     protected HttpClient HttpClient { get; } = httpClient;
 
-    protected async Task<HttpResult<TValue, ErrorRepresentation>> SendRequest<TValue, TError>( HttpRequestMessage requestMessage, CancellationToken ct ) 
-        where TValue : class
+    protected async Task<HttpResult<TValue, ErrorRepresentation>> SendRequest<TValue, TError>( HttpRequestMessage requestMessage, CancellationToken ct )
+        where TValue : class, new()
     {
         var tokenResult = await GetServiceAccessToken(ct);
 
@@ -42,9 +43,14 @@ internal abstract class KeycloakBaseHttpClient(
             return HttpResult<TValue, ErrorRepresentation>.Failed(error!, response.StatusCode);
         }
 
+        if (response.StatusCode is HttpStatusCode.NoContent)
+        {
+            return HttpResult<TValue, ErrorRepresentation>.NoContent();
+        }
+
         var result = await response.Content.ReadFromJsonAsync<TValue>(ct);
 
-        return result == null
+        return result is null
             ? throw new Exception("Failed to deserialize response.")
             : HttpResult<TValue, ErrorRepresentation>.Succeeded(result);
     }

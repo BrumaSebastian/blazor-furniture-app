@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BlazorFurniture.Infrastructure.External;
 
@@ -9,6 +10,11 @@ internal sealed class HttpRequestMessageBuilder
 {
     private readonly HttpRequestMessage requestMessage;
     private readonly UriBuilder uriBuilder;
+    private readonly JsonSerializerOptions jsonSerializerOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
     private HttpRequestMessageBuilder( HttpClient httpClient, HttpMethod httpMethod )
     {
@@ -20,7 +26,7 @@ internal sealed class HttpRequestMessageBuilder
         uriBuilder = new UriBuilder(httpClient.BaseAddress!);
     }
 
-    public static HttpRequestMessageBuilder Create( HttpClient httpClient, HttpMethod httpMethod ) => new( httpClient, httpMethod);
+    public static HttpRequestMessageBuilder Create( HttpClient httpClient, HttpMethod httpMethod ) => new(httpClient, httpMethod);
 
     public HttpRequestMessage Build()
     {
@@ -35,10 +41,10 @@ internal sealed class HttpRequestMessageBuilder
         return this;
     }
 
-    public HttpRequestMessageBuilder WithContent( object content )
+    public HttpRequestMessageBuilder WithContent( object content, JsonSerializerOptions? serializerOptions = null )
     {
         requestMessage.Content = new StringContent(
-                JsonSerializer.Serialize(content),
+                JsonSerializer.Serialize(content, serializerOptions ?? jsonSerializerOptions),
                 System.Text.Encoding.UTF8,
                 "application/json");
 
