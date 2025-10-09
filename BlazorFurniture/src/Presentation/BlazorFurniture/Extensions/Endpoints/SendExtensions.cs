@@ -1,4 +1,4 @@
-﻿using BlazorFurniture.Core.Shared.Models.Errors;
+﻿using BlazorFurniture.Core.Shared.Errors;
 using FastEndpoints;
 
 namespace BlazorFurniture.Extensions.Endpoints;

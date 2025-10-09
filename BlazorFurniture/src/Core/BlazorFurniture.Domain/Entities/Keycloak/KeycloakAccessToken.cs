@@ -2,10 +2,10 @@
 
 namespace BlazorFurniture.Domain.Entities.Keycloak;
 
-public class KeycloakAccessToken
+public sealed record KeycloakAccessToken
 {
     [JsonPropertyName("access_token")]
-    public required string AccessToken { get; set; }
+    public string? AccessToken { get; set; }
 
     [JsonPropertyName("expires_in")]
     public int ExpiresIn { get; set; }

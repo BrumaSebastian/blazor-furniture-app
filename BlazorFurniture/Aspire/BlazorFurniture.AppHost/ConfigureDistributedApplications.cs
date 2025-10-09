@@ -17,12 +17,13 @@ internal static class ConfigureDistributedApplications
             var userName = applicationBuilder.AddParameter(nameof(databaseOptions.User), databaseOptions.User, true);
             var password = applicationBuilder.AddParameter(nameof(databaseOptions.Password), databaseOptions.Password, true);
             var postgresContainer = applicationBuilder.AddPostgres(databaseOptions.ContainerName)
+                .WithImage(databaseOptions.Image)
+                .WithEndpoint(name: "keycloak-postgres-db", scheme: "tcp", port: databaseOptions.HostPort, targetPort: databaseOptions.HostPort, isProxied: false)
                 .WithUserName(userName)
                 .WithPassword(password)
-                .WithImage(databaseOptions.Image)
                 .WithVolume("postgres_data", databaseOptions.VolumePath)
-                .WithHostPort(databaseOptions.HostPort)
                 .WithLifetime(ContainerLifetime.Persistent)
+                .PublishAsConnectionString()
                 .AddDatabase(databaseOptions.DatabaseName);
 
             var options = applicationBuilder.Configuration.GetSection("Keycloak").Get<KeycloakOptions>()
@@ -35,7 +36,7 @@ internal static class ConfigureDistributedApplications
                     .WithKeycloakAdminAccount(options.AdminUsername, options.AdminPassword)
                     .WithKeycloakDatabase(options.DatabaseType, dbUrl, options.DatabaseUsername, options.DatabasePassword)
                     .WithArgs(options.Args)
-                    .WithHttpEndpoint(options.HostPort, options.ContainerPort)
+                    .WithHttpEndpoint(name: "keycloak", port:options.HostPort, targetPort: options.ContainerPort, isProxied: false)
                     .WithLifetime(ContainerLifetime.Persistent)
                     .WithReference(postgresContainer);
 

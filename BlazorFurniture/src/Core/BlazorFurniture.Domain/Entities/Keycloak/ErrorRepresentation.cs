@@ -2,7 +2,7 @@
 
 namespace BlazorFurniture.Domain.Entities.Keycloak;
 
-public sealed class ErrorRepresentation
+public sealed record ErrorRepresentation
 {
     public string? Error { get; set; }
     [JsonPropertyName("error_description")]

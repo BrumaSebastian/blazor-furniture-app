@@ -8,8 +8,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="External\Keycloak\Interfaces\" />
-		<Folder Include="Implementations\Features\UserManagement\Handlers\Commands\" />
 		<Folder Include="Logging\" />
 	</ItemGroup>
 

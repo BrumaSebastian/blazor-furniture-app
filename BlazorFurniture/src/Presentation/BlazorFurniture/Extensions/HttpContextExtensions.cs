@@ -5,7 +5,7 @@ namespace BlazorFurniture.Extensions;
 
 public static class HttpContextExtensions
 {
-    extension(HttpContext httpContext )
+    extension( HttpContext httpContext )
     {
         public Guid GetUserIdFromClaims()
         {

@@ -12,27 +12,29 @@ public class ValidationDispatcherDecorator(
     IServiceProvider serviceProvider,
     ILogger<ValidationDispatcherDecorator> logger ) : ICommandDispatcher, IQueryDispatcher
 {
-    private readonly ICommandDispatcher _commandDispatcher = commandDispatcher;
-    private readonly IQueryDispatcher _queryDispatcher = queryDispatcher;
+    private readonly ICommandDispatcher commandDispatcher = commandDispatcher;
+    private readonly IQueryDispatcher queryDispatcher = queryDispatcher;
     private readonly IServiceProvider _serviceProvider = serviceProvider;
     private readonly ILogger<ValidationDispatcherDecorator> _logger = logger;
 
-    public Task Dispatch<TCommand>( TCommand command, CancellationToken ct = default ) where TCommand : ICommand
+    public async Task Dispatch<TCommand>( TCommand command, CancellationToken ct = default )
+        where TCommand : ICommand
     {
-        throw new NotImplementedException();
+        await commandDispatcher.Dispatch<TCommand>(command, ct);
     }
 
-    public Task<TResult> Dispatch<TCommand, TResult>( TCommand command, CancellationToken ct = default ) where TCommand : ICommand<TResult>
+    public async Task<TResult> Dispatch<TCommand, TResult>( TCommand command, CancellationToken ct = default )
+        where TCommand : ICommand<TResult>
     {
-        throw new NotImplementedException();
+        return await commandDispatcher.Dispatch<TCommand, TResult>(command, ct);
     }
 
     public async Task<Result<TResult>> DispatchQuery<TQuery, TResult>( TQuery query, CancellationToken ct = default )
         where TQuery : IQuery<TResult>
         where TResult : class
     {
-        await ValidateAsync( query, ct );
-        return await _queryDispatcher.DispatchQuery<TQuery, TResult>( query, ct );
+        await ValidateAsync(query, ct);
+        return await queryDispatcher.DispatchQuery<TQuery, TResult>(query, ct);
     }
 
     private Task ValidateAsync<T>( T request, CancellationToken ct )

@@ -2,14 +2,14 @@
 using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
 using BlazorFurniture.Constants;
-using BlazorFurniture.Core.Shared.Models.Errors;
+using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.User;
 
-public class GetProfileEndpoint( IQueryDispatcher QueryDispatcher ) : EndpointWithoutRequest<UserProfileResponse>
+public class GetProfileEndpoint( IQueryDispatcher queryDispatcher ) : EndpointWithoutRequest<UserProfileResponse>
 {
     public override void Configure()
     {
@@ -19,7 +19,7 @@ public class GetProfileEndpoint( IQueryDispatcher QueryDispatcher ) : EndpointWi
         {
             options.Summary = "Get user profile";
             options.Description = "Endpoint to get the profile of the currently authenticated user.";
-            options.Response<UserProfileResponse>(200);
+            options.Response<UserProfileResponse>(StatusCodes.Status200OK);
         });
 
         Description(options =>
@@ -27,13 +27,16 @@ public class GetProfileEndpoint( IQueryDispatcher QueryDispatcher ) : EndpointWi
             options.WithDescription("This endpoint retrieves the profile information of the currently authenticated user.");
             options.WithDisplayName("Retrieve Profile");
             options.WithTags(ControllerTags.User);
-            options.Produces<UserProfileResponse>(200);
-        }); 
+            options.Produces<UserProfileResponse>(StatusCodes.Status200OK);
+            options.Produces<UserProfileResponse>(StatusCodes.Status404NotFound);
+            options.Produces<UserProfileResponse>(StatusCodes.Status502BadGateway);
+        });
     }
 
     public override async Task HandleAsync( CancellationToken ct )
     {
-        var result = await QueryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(HttpContext.GetUserIdFromClaims()), ct);
+        var userId = HttpContext.GetUserIdFromClaims();
+        var result = await queryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(userId), ct);
 
         await result.Match(
             response => Send.OkAsync(result.Value),

@@ -1,4 +1,4 @@
-﻿namespace BlazorFurniture.Core.Shared.Models.Errors;
+﻿namespace BlazorFurniture.Core.Shared.Errors;
 
 public abstract class BasicError( string title, string description )
 {

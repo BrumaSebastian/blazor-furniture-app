@@ -61,7 +61,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Sign in.
         /// </summary>
         public static string button_login {
             get {
@@ -70,7 +70,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Log out.
         /// </summary>
         public static string button_logout {
             get {
@@ -79,7 +79,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to My Account.
         /// </summary>
         public static string button_profile {
             get {
@@ -88,7 +88,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Sign up.
         /// </summary>
         public static string button_register {
             get {
@@ -97,7 +97,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Choose Language.
         /// </summary>
         public static string message_choose_language {
             get {
@@ -106,7 +106,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Counter.
         /// </summary>
         public static string navigation_counter {
             get {
@@ -115,7 +115,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Home.
         /// </summary>
         public static string navigation_home {
             get {
@@ -124,7 +124,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Weather.
         /// </summary>
         public static string navigation_weather {
             get {

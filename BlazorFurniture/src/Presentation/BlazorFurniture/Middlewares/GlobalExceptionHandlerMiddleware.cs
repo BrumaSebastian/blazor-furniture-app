@@ -4,11 +4,10 @@ using System.Diagnostics;
 namespace BlazorFurniture.Middlewares;
 
 public class GlobalExceptionHandlerMiddleware(
-    RequestDelegate next,
     ILogger<GlobalExceptionHandlerMiddleware> logger,
-    IWebHostEnvironment webHostEnvironment )
+    IWebHostEnvironment webHostEnvironment ) : IMiddleware
 {
-    public async Task Invoke( HttpContext context )
+    public async Task InvokeAsync( HttpContext context, RequestDelegate next )
     {
         try
         {
@@ -27,6 +26,10 @@ public class GlobalExceptionHandlerMiddleware(
 
         switch (ex)
         {
+            case TaskCanceledException:
+                logger.LogWarning(ex, "Task was cannceled for {Method} {Path}. TraceId: {TraceId}",
+                    context.Request.Method, context.Request.Path, traceId);
+                break;
             default:
                 logger.LogError(ex, "Unhandled exception for {Method} {Path}. TraceId: {TraceId}",
                     context.Request.Method, context.Request.Path, traceId);
@@ -73,6 +76,7 @@ public class GlobalExceptionHandlerMiddleware(
     {
         return ex switch
         {
+            TaskCanceledException => StatusCodes.Status499ClientClosedRequest,
             _ => StatusCodes.Status500InternalServerError
         };
     }

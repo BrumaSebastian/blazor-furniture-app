@@ -1,5 +1,6 @@
 ﻿using BlazorFurniture.Application.Common.Extensions;
 using BlazorFurniture.Infrastructure.Extensions;
+using BlazorFurniture.Middlewares;
 
 namespace BlazorFurniture.Extensions.ServiceCollection;
 
@@ -12,6 +13,7 @@ public static class ServiceCollectionExtensions
             services
                 .AddAppConfigurations(configuration)
                 .AddAppOptions()
+                .AddTransient<GlobalExceptionHandlerMiddleware>()
                 .AddApplicationServices()
                 .AddInfrastructureServices(configuration)
                 .AddAppAuthentication(configuration)

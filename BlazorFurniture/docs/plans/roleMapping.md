@@ -3,6 +3,7 @@
 This document defines the roles, their scopes, and how they map to Keycloak, claims, and authorization policies used by the Blazor Furniture application.
 
 Roles and scopes
+
 | Level        | Role               | Description                                                                                             | Scope            |
 | ------------ | ------------------ | ------------------------------------------------------------------------------------------------------- | ---------------- |
 | Platform     | Platform Admin     | Superuser — full access across the system. Manage users, groups, settings, audit logs.                  | Global           |
