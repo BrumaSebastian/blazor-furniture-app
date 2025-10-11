@@ -4,7 +4,9 @@
 @attribute [Authorize]
 @* @inject IStringLocalizer<Pages_Account> Localizer *@
 
-
+<MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">
+	<MudText class="d-none d-md-flex">Reset password</MudText>
+</MudNavLink>
 <MudPaper Height="200px" Style="overflow:hidden; position:relative;">
 	<MudDrawerContainer Class="mud-height-full">
 		<MudDrawer @bind-Open="@_open" Fixed="false" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None">
