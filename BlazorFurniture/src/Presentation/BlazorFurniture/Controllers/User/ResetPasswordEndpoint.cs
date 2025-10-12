@@ -20,7 +20,7 @@ public class ResetPasswordEndpoint() : EndpointWithoutRequest<UserProfileRespons
         {
             options.Summary = "Reset password";
             options.Description = "Redirecting to oidc provider and process the action of resetting the password.";
-            options.Response<UserProfileResponse>(StatusCodes.Status302Found);
+            options.Response(StatusCodes.Status302Found);
         });
 
         Description(options =>
@@ -28,7 +28,8 @@ public class ResetPasswordEndpoint() : EndpointWithoutRequest<UserProfileRespons
             options.WithDescription("Redirecting to oidc provider and process the action of resetting the password.");
             options.WithDisplayName("Reset password");
             options.WithTags(ControllerTags.User);
-            options.Produces<UserProfileResponse>(StatusCodes.Status302Found);
+            options.ClearDefaultProduces(StatusCodes.Status200OK);
+            options.Produces(StatusCodes.Status302Found);
         });
     }
 

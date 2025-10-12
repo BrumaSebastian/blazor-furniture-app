@@ -23,6 +23,7 @@ public class UpdateProfileEndpoint( ICommandDispatcher commandDispatcher ) : End
             options.Summary = "Update user profile";
             options.Description = "Endpoint to update the profile of the currently authenticated user.";
             options.Response(StatusCodes.Status204NoContent, "Profile updated");
+            options.Response(StatusCodes.Status403Forbidden);
         });
 
         Description(options =>
@@ -32,6 +33,7 @@ public class UpdateProfileEndpoint( ICommandDispatcher commandDispatcher ) : End
             options.WithTags(ControllerTags.User);
             options.Produces(StatusCodes.Status204NoContent);
             options.Produces(StatusCodes.Status400BadRequest);
+            options.Produces(StatusCodes.Status403Forbidden);
             options.Produces(StatusCodes.Status404NotFound);
             options.Produces(StatusCodes.Status409Conflict);
             options.Produces(StatusCodes.Status502BadGateway);
