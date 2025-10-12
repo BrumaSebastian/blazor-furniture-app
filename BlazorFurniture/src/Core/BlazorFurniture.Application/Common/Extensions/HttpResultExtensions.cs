@@ -8,7 +8,7 @@ public static class HttpResultExtensions
     public static async Task<Result<TValue>> ToDomainResult<TValue, TError>(
         this Task<HttpResult<TValue, TError>> httpTask,
         IHttpErrorMapper errorMapper,
-        Guid resourceId )
+        Guid? resourceId = null )
         where TValue : class, new()
         where TError : class
         => (await httpTask).ToDomainResult(errorMapper, resourceId, typeof(TValue));

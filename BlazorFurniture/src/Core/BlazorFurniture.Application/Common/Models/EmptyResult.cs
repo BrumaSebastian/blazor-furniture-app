@@ -1,5 +1,3 @@
 ﻿namespace BlazorFurniture.Application.Common.Models;
 
-public class EmptyResult
-{
-}
+public sealed class EmptyResult;

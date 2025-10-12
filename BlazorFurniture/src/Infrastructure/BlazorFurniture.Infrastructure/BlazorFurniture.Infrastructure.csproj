@@ -8,6 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Folder Include="Implementations\Features\GroupManagement\Queries\" />
 		<Folder Include="Logging\" />
 	</ItemGroup>
 

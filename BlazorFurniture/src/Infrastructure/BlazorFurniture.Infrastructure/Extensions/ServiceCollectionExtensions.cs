@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
             services.AddScoped<EndpointsFactory>();
             services.AddScoped(sp => sp.GetRequiredService<EndpointsFactory>().Create());
             services.AddHttpClientWithBaseUrl<IUserManagementClient, UserManagementClient>(keycloakConfig.Url);
+            services.AddHttpClientWithBaseUrl<IGroupManagementClient, GroupManagementClient>(keycloakConfig.Url);
 
             return services;
         }

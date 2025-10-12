@@ -8,7 +8,7 @@ internal class KeycloakHttpErrorMapper : IHttpErrorMapper
 {
     public BasicError MapFor<TError>(
         TError error, HttpStatusCode status,
-        Guid resourceId, Type? resourceType = null )
+        Guid? resourceId, Type? resourceType = null )
         where TError : class
     {
         if (error is not ErrorRepresentation errorRepresentation)
