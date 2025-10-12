@@ -5,5 +5,15 @@
 /// </summary>
 public sealed class HttpHeaderLocationResult
 {
-    public string Location { get; set; } = string.Empty;
+    public Uri? Location { get; set; }
+
+    public HttpHeaderLocationResult()
+    {
+
+    }
+
+    public HttpHeaderLocationResult( Uri? location )
+    {
+        Location = location;
+    }
 }

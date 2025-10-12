@@ -67,6 +67,14 @@ public class HttpResult<TValue, TError>
         return new(true, (TValue)((object)new EmptyResult()), null, statusCode);
     }
 
+    public static HttpResult<TValue, TError> Created( Uri? location, HttpStatusCode statusCode = HttpStatusCode.Created )
+    {
+        if (typeof(TValue) != typeof(HttpHeaderLocationResult))
+            throw new InvalidOperationException("Created can only be used with TValue = HttpHeaderLocationResult.");
+
+        return new(true, (TValue)((object)new HttpHeaderLocationResult(location)), null, statusCode);
+    }
+
     public bool TryGetValue( out TValue value )
     {
         value = IsSuccess ? Value : null!;

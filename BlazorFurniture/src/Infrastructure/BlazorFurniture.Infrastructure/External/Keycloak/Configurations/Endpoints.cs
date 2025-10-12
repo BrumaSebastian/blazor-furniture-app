@@ -10,4 +10,9 @@ internal sealed class Endpoints( string Realm )
     // Users
     public string Users() => $"{AdminRestApiBaseUrl}/users";
     public string UserById( Guid userId ) => $"{AdminRestApiBaseUrl}/users/{userId}";
+
+    // Groups
+    public string Groups() => $"{AdminRestApiBaseUrl}/groups";
+    public string GroupsExtension() => $"{Groups()}-extension";
+
 }

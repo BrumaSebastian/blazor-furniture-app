@@ -45,7 +45,7 @@ internal sealed class CreateGoupEndpoint( ICommandDispatcher commandDispatcher )
         var result = await commandDispatcher.Dispatch<CreateGroupCommand, Result<HttpHeaderLocationResult>>(new CreateGroupCommand(req), ct);
 
         await result.Match(
-            response => Send.CreatedAtAsync(result.Value.Location),
+            response => Send.CreatedAtAsync(result.Value.Location?.ToString() ?? string.Empty),
             errors => result.Error switch
             {
                 ConflictError e => Send.ConflictAsync(e),
