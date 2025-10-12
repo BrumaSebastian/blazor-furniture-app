@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Extensions;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,6 +11,7 @@ internal sealed class HttpRequestMessageBuilder
 {
     private readonly HttpRequestMessage requestMessage;
     private readonly UriBuilder uriBuilder;
+    private readonly QueryBuilder queryBuilder;
     private readonly JsonSerializerOptions jsonSerializerOptions = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -24,12 +26,18 @@ internal sealed class HttpRequestMessageBuilder
         };
 
         uriBuilder = new UriBuilder(httpClient.BaseAddress!);
+        queryBuilder = [];
     }
 
     public static HttpRequestMessageBuilder Create( HttpClient httpClient, HttpMethod httpMethod ) => new(httpClient, httpMethod);
 
     public HttpRequestMessage Build()
     {
+        if (queryBuilder.Any())
+        {
+            uriBuilder.Query = queryBuilder.ToQueryString().Value;
+        }
+
         requestMessage.RequestUri = uriBuilder.Uri;
 
         return requestMessage;
@@ -58,18 +66,9 @@ internal sealed class HttpRequestMessageBuilder
         return this;
     }
 
-    public HttpRequestMessageBuilder WithQueryParams( IDictionary<string, string[]> queryParams )
+    public HttpRequestMessageBuilder AddQueryParam( string key, string value )
     {
-        var query = string.Join("&", queryParams.SelectMany(kvp => kvp.Value.Select(v => $"{kvp.Key}={Uri.EscapeDataString(v)}")));
-        uriBuilder.Query = query;
-
-        return this;
-    }
-
-    public HttpRequestMessageBuilder WithQueryParams( IDictionary<string, string> queryParams )
-    {
-        var query = string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
-        uriBuilder.Query = query;
+        queryBuilder.Add(key, value);
 
         return this;
     }

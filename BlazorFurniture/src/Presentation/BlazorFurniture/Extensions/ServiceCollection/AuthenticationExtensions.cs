@@ -1,4 +1,5 @@
-﻿using BlazorFurniture.Core.Shared.Configurations;
+﻿using BlazorFurniture.Constants;
+using BlazorFurniture.Core.Shared.Configurations;
 using FastEndpoints.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,6 +54,17 @@ public static class AuthenticationExtensions
                 options.MapInboundClaims = false;
                 options.TokenValidationParameters.NameClaimType = "name";
                 options.TokenValidationParameters.RoleClaimType = "role";
+                options.Events ??= new OpenIdConnectEvents();
+                options.Events.OnRedirectToIdentityProvider = context =>
+                {
+                    if (context.Properties?.Items != null &&
+                        context.Properties.Items.TryGetValue(Oidc.Actions.KEYCLOAK_ACTIONS, out var action) &&
+                        !string.IsNullOrWhiteSpace(action))
+                    {
+                        context.ProtocolMessage.SetParameter(Oidc.Actions.KEYCLOAK_ACTIONS, action);
+                    }
+                    return Task.CompletedTask;
+                };
             })
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {

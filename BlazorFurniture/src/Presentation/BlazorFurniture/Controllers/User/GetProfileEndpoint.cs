@@ -20,6 +20,7 @@ public class GetProfileEndpoint( IQueryDispatcher queryDispatcher ) : EndpointWi
             options.Summary = "Get user profile";
             options.Description = "Endpoint to get the profile of the currently authenticated user.";
             options.Response<UserProfileResponse>(StatusCodes.Status200OK);
+            options.Response(StatusCodes.Status403Forbidden);
         });
 
         Description(options =>
@@ -28,8 +29,9 @@ public class GetProfileEndpoint( IQueryDispatcher queryDispatcher ) : EndpointWi
             options.WithDisplayName("Retrieve Profile");
             options.WithTags(ControllerTags.User);
             options.Produces<UserProfileResponse>(StatusCodes.Status200OK);
-            options.Produces<UserProfileResponse>(StatusCodes.Status404NotFound);
-            options.Produces<UserProfileResponse>(StatusCodes.Status502BadGateway);
+            options.Produces(StatusCodes.Status403Forbidden);
+            options.Produces(StatusCodes.Status404NotFound);
+            options.Produces(StatusCodes.Status502BadGateway);
         });
     }
 

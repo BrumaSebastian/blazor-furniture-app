@@ -18,6 +18,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Moq" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,8 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Infrastructure\" />
+    <ProjectReference Include="..\..\src\Core\BlazorFurniture.Application\BlazorFurniture.Application.csproj" />
+    <ProjectReference Include="..\..\src\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Core\BlazorFurniture.Shared\BlazorFurniture.Core.Shared.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure\BlazorFurniture.Infrastructure\BlazorFurniture.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
