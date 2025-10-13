@@ -21,8 +21,8 @@ internal class KeycloakHttpErrorMapper : IHttpErrorMapper
             HttpStatusCode.NotFound
                 => new NotFoundError(resourceId, resourceType ?? typeof(object)),
 
-            //HttpStatusCode.Conflict
-            //    => new ConflictError(conflictField, resourceId, resourceType ?? typeof(object)),
+            HttpStatusCode.Conflict
+                => new ConflictError(errorRepresentation.Error ?? "undefined error"),
 
             HttpStatusCode.BadRequest
                 => new ValidationError(new Dictionary<string, string[]>()),
