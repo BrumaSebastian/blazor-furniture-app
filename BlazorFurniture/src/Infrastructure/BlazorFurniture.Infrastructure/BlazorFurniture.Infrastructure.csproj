@@ -13,13 +13,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MailKit" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 		<PackageReference Include="Microsoft.Extensions.Options" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\BlazorFurniture.Application\BlazorFurniture.Application.csproj" />
 		<ProjectReference Include="..\..\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
+		<ProjectReference Include="..\..\Core\BlazorFurniture.Templates\BlazorFurniture.Templates.csproj" />
 	</ItemGroup>
 
 </Project>

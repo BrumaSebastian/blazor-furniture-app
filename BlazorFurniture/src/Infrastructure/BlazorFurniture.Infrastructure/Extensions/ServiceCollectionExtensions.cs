@@ -5,6 +5,7 @@ using BlazorFurniture.Infrastructure.Constants;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Clients;
 using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
+using BlazorFurniture.Infrastructure.Implementations.Features.Notifications;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,9 @@ public static class ServiceCollectionExtensions
             services.RegisterHandlers(Assembly.GetExecutingAssembly());
             services.AddKeycloak(configuration);
             services.AddErrorMappers();
+
+            services.AddScoped<IRazorHtmlRenderer, RazorHtmlRenderer>();
+            services.AddScoped<IEmailService, EmailService>();
 
             return services;
         }

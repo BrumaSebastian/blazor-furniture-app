@@ -1,0 +1,22 @@
+@using BlazorFurniture.Templates.Resources
+
+<div style="font-family:Arial, sans-serif; color:#222;">
+	<h2 style="margin:0 0 12px 0;">@string.Format(EmailResource.welcome_title, UserName)</h2>
+	<p style="margin:0 0 12px 0;">
+		@EmailResource.welcome_message
+	</p>
+	@if (!string.IsNullOrWhiteSpace(ActionUrl))
+	{
+		<p style="margin:0 0 12px 0;">
+			<a href="@ActionUrl" style="background:#7e6fff;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;">
+				@EmailResource.welcome_button
+			</a>
+		</p>
+	}
+	<p style="font-size:12px;color:#666;margin-top:24px;">@EmailResource.welcome_footer</p>
+</div>
+
+@code {
+	[Parameter] public string UserName { get; set; } = "there";
+	[Parameter] public string? ActionUrl { get; set; }
+}

@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
                 .AddAppConfigurations(configuration)
                 .AddAppOptions()
                 .AddTransient<GlobalExceptionHandlerMiddleware>()
-                .AddApplicationServices()
+                .AddApplicationServices(configuration)
                 .AddInfrastructureServices(configuration)
                 .AddAppAuthentication(configuration)
                 .AddAppAuthorization();
