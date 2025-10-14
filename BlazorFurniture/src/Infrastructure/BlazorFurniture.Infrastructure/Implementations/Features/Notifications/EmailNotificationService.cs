@@ -1,5 +1,6 @@
 ﻿using BlazorFurniture.Application.Common.Interfaces;
 using BlazorFurniture.Application.Common.Models.Email;
+using BlazorFurniture.Templates.Email;
 using System.Globalization;
 
 namespace BlazorFurniture.Infrastructure.Implementations.Features.Notifications;

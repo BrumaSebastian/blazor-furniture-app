@@ -68,7 +68,7 @@ internal class RazorHtmlRenderer(
         if (template is not Type type || !typeof(IComponent).IsAssignableFrom(type))
             throw new ArgumentException($"Type parameter {template.GetType().Name} must implement IComponent.");
 
-        var key = $"{type.Name}.subject";
+        var key = $"{type.Name}_subject";
 
         return FormatTextWithParameters(GetTranslatedText(key, culture), parameters);
     }
@@ -80,7 +80,7 @@ internal class RazorHtmlRenderer(
         if (template is not Type type || !typeof(IComponent).IsAssignableFrom(type))
             throw new ArgumentException($"Type parameter {template.GetType().Name} must implement IComponent.");
 
-        var key = $"{type.Name}.text";
+        var key = $"{type.Name}_text";
 
         return FormatTextWithParameters(GetTranslatedText(key, culture), parameters);
     }

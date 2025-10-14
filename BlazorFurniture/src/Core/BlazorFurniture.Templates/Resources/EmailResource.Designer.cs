@@ -65,7 +65,7 @@ namespace BlazorFurniture.Templates.Resources {
         /// </summary>
         public static string welcome_button {
             get {
-                return ResourceManager.GetString("welcome.button", resourceCulture);
+                return ResourceManager.GetString("welcome_button", resourceCulture);
             }
         }
         
@@ -74,7 +74,7 @@ namespace BlazorFurniture.Templates.Resources {
         /// </summary>
         public static string welcome_footer {
             get {
-                return ResourceManager.GetString("welcome.footer", resourceCulture);
+                return ResourceManager.GetString("welcome_footer", resourceCulture);
             }
         }
         
@@ -83,7 +83,7 @@ namespace BlazorFurniture.Templates.Resources {
         /// </summary>
         public static string welcome_message {
             get {
-                return ResourceManager.GetString("welcome.message", resourceCulture);
+                return ResourceManager.GetString("welcome_message", resourceCulture);
             }
         }
         
@@ -92,7 +92,25 @@ namespace BlazorFurniture.Templates.Resources {
         /// </summary>
         public static string welcome_title {
             get {
-                return ResourceManager.GetString("welcome.title", resourceCulture);
+                return ResourceManager.GetString("welcome_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome {0}.
+        /// </summary>
+        public static string WelcomeEmail_subject {
+            get {
+                return ResourceManager.GetString("WelcomeEmail_subject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome {0}.
+        /// </summary>
+        public static string WelcomeEmail_Text {
+            get {
+                return ResourceManager.GetString("WelcomeEmail_Text", resourceCulture);
             }
         }
     }

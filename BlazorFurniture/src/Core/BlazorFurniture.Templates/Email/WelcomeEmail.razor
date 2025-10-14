@@ -1,7 +1,7 @@
 @layout DefaultEmailLayout
 
 <div style="font-family:Arial, sans-serif; color:#222;">
-	<h2 style="margin:0 0 12px 0;">@string.Format(EmailResource.welcome_title, UserName)</h2>
+	<h2 style="margin:0 0 12px 0;">@string.Format(EmailResource.welcome_title, Name)</h2>
 	<p style="margin:0 0 12px 0;">
 		@EmailResource.welcome_message
 	</p>
@@ -17,6 +17,6 @@
 </div>
 
 @code {
-	[Parameter] public string? UserName { get; set; }
+	[Parameter] public string? Name { get; set; }
 	[Parameter] public string? ActionUrl { get; set; }
 }
