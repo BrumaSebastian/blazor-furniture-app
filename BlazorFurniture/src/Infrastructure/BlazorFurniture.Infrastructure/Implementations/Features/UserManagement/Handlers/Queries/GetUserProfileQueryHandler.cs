@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
 
-internal class GetUserProfileQueryHandler(
+internal sealed class GetUserProfileQueryHandler(
     IUserManagementClient userManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
     : IQueryHandler<GetUserProfileQuery, UserProfileResponse>

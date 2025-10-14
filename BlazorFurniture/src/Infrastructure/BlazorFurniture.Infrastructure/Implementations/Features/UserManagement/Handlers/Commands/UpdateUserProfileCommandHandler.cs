@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Commands;
 
-internal class UpdateUserProfileCommandHandler(
+internal sealed class UpdateUserProfileCommandHandler(
     IUserManagementClient userManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
     : ICommandHandler<UpdateUserProfileCommand, Result<EmptyResult>>

@@ -5,6 +5,7 @@ using BlazorFurniture.Infrastructure.Constants;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Clients;
 using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
+using BlazorFurniture.Infrastructure.Implementations.Features.Notifications;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,11 @@ public static class ServiceCollectionExtensions
             services.AddKeycloak(configuration);
             services.AddErrorMappers();
 
+            services.AddScoped<IRazorHtmlRenderer, RazorHtmlRenderer>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IEmailNotificationService, EmailNotificationService>();
+            services.AddKeyedSingleton<IResourceManager, EmailResourceManager>(KeyedServices.EMAIL_RESOURCE_MANAGER);
+
             return services;
         }
 
@@ -36,6 +42,7 @@ public static class ServiceCollectionExtensions
             services.AddScoped<EndpointsFactory>();
             services.AddScoped(sp => sp.GetRequiredService<EndpointsFactory>().Create());
             services.AddHttpClientWithBaseUrl<IUserManagementClient, UserManagementClient>(keycloakConfig.Url);
+            services.AddHttpClientWithBaseUrl<IGroupManagementClient, GroupManagementClient>(keycloakConfig.Url);
 
             return services;
         }

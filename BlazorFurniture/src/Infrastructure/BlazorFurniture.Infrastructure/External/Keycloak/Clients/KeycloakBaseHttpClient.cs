@@ -48,6 +48,11 @@ internal abstract class KeycloakBaseHttpClient(
             return HttpResult<TValue, ErrorRepresentation>.NoContent();
         }
 
+        if (response.StatusCode is HttpStatusCode.Created)
+        {
+            return HttpResult<TValue, ErrorRepresentation>.Created(response.Headers.Location);
+        }
+
         var result = await response.Content.ReadFromJsonAsync<TValue>(ct);
 
         return result is null
