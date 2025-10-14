@@ -26,6 +26,8 @@ public static class ServiceCollectionExtensions
 
             services.AddScoped<IRazorHtmlRenderer, RazorHtmlRenderer>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IEmailNotificationService, EmailNotificationService>();
+            services.AddKeyedSingleton<IResourceManager, EmailResourceManager>(KeyedServices.EMAIL_RESOURCE_MANAGER);
 
             return services;
         }

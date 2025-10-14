@@ -1,4 +1,4 @@
-@using BlazorFurniture.Templates.Resources
+@layout DefaultEmailLayout
 
 <div style="font-family:Arial, sans-serif; color:#222;">
 	<h2 style="margin:0 0 12px 0;">@string.Format(EmailResource.welcome_title, UserName)</h2>
@@ -17,6 +17,6 @@
 </div>
 
 @code {
-	[Parameter] public string UserName { get; set; } = "there";
+	[Parameter] public string? UserName { get; set; }
 	[Parameter] public string? ActionUrl { get; set; }
 }

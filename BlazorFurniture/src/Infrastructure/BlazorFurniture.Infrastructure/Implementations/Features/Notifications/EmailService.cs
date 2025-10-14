@@ -1,6 +1,6 @@
 ﻿using BlazorFurniture.Application.Common.Interfaces;
+using BlazorFurniture.Application.Common.Models.Email;
 using BlazorFurniture.Application.Common.Options;
-using BlazorFurniture.Templates.Email;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
@@ -9,9 +9,8 @@ namespace BlazorFurniture.Infrastructure.Implementations.Features.Notifications;
 
 internal class EmailService( IRazorHtmlRenderer renderer, EmailOptions emailOptions, ILogger<EmailService> logger ) : IEmailService
 {
-    public async Task SendEmailAsync( IEnumerable<string> receivers, string subject, string htmlContent, CancellationToken ct )
+    public async Task SendEmailAsync( EmailDetailsModel model, CancellationToken ct )
     {
-        var s = renderer;
         var credentials = emailOptions.Accounts.FirstOrDefault();
 
         if (emailOptions.Authentication && credentials is null)
@@ -34,22 +33,21 @@ internal class EmailService( IRazorHtmlRenderer renderer, EmailOptions emailOpti
                 await client.AuthenticateAsync(credentials.Username, credentials.Password, ct);
             }
 
-            foreach (var addresses in receivers)
+            foreach ((var culture, var addresses) in model.CultureToAddresses)
             {
-                message.Subject = subject;
+                message.Subject = renderer.RenderSubject(model.Template, model.Parameters, culture);
                 message.Body = new BodyBuilder()
                 {
-                    HtmlBody = string.IsNullOrWhiteSpace(htmlContent)
-                       ? await RenderWelcomeEmailAsync(renderer, userName: addresses.Split('@')[0], actionUrl: null, ct)
-                       : htmlContent
+                    HtmlBody = await renderer.RenderHtml(model.Template, model.Parameters, culture, ct),
+                    TextBody = renderer.RenderText(model.Template, model.Parameters, culture)
                 }.ToMessageBody();
 
-                await SendMessage(message, client, [addresses], ct);
+                await SendMessage(message, client, addresses, ct);
             }
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"An exception occured while sending notification {subject}");
+            logger.LogError(e, $"An exception occured while sending notification {model.Template.GetType()}");
         }
 
         if (client.IsConnected)
@@ -58,7 +56,7 @@ internal class EmailService( IRazorHtmlRenderer renderer, EmailOptions emailOpti
         }
     }
 
-    private async Task SendMessage( MimeMessage message, SmtpClient client, List<string> addresses, CancellationToken cancellationToken )
+    private async Task SendMessage( MimeMessage message, SmtpClient client, IEnumerable<string> addresses, CancellationToken cancellationToken )
     {
         foreach (var address in addresses)
         {
@@ -77,18 +75,5 @@ internal class EmailService( IRazorHtmlRenderer renderer, EmailOptions emailOpti
                 logger.LogError(e, $"Could not send email to {address}");
             }
         }
-    }
-
-    private static Task<string> RenderWelcomeEmailAsync(
-        IRazorHtmlRenderer renderer,
-        string userName,
-        string? actionUrl,
-        CancellationToken ct )
-    {
-        return renderer.RenderAsync<WelcomeEmail>(new
-        {
-            UserName = userName,
-            ActionUrl = actionUrl
-        }, ct);
     }
 }

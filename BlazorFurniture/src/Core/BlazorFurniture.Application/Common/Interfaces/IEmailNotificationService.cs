@@ -2,7 +2,7 @@
 
 namespace BlazorFurniture.Application.Common.Interfaces;
 
-public interface IEmailService
+public interface IEmailNotificationService
 {
-    Task SendEmailAsync( EmailDetailsModel model, CancellationToken ct );
+    Task SendWelcomeEmail( WelcomeEmailModel model, CancellationToken ct );
 }

@@ -22,7 +22,7 @@ namespace BlazorFurniture.Templates.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class EmailResource {
+    public class EmailResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace BlazorFurniture.Templates.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Templates.Resources.EmailResource", typeof(EmailResource).Assembly);
@@ -51,7 +51,7 @@ namespace BlazorFurniture.Templates.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace BlazorFurniture.Templates.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Get started.
         /// </summary>
-        internal static string welcome_button {
+        public static string welcome_button {
             get {
                 return ResourceManager.GetString("welcome.button", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace BlazorFurniture.Templates.Resources {
         /// <summary>
         ///   Looks up a localized string similar to If you didn&apos;t create an account, you can ignore this email..
         /// </summary>
-        internal static string welcome_footer {
+        public static string welcome_footer {
             get {
                 return ResourceManager.GetString("welcome.footer", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace BlazorFurniture.Templates.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Thanks for joining BlazorFurniture. We&apos;re excited to have you on board..
         /// </summary>
-        internal static string welcome_message {
+        public static string welcome_message {
             get {
                 return ResourceManager.GetString("welcome.message", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace BlazorFurniture.Templates.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome, {0}!.
         /// </summary>
-        internal static string welcome_title {
+        public static string welcome_title {
             get {
                 return ResourceManager.GetString("welcome.title", resourceCulture);
             }

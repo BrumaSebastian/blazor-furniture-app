@@ -1,4 +1,4 @@
-﻿using BlazorFurniture.Application.Common.Models;
+﻿using BlazorFurniture.Application.Common.Models.Email;
 
 namespace BlazorFurniture.Application.Common.Options;
 
