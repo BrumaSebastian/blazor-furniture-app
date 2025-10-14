@@ -18,7 +18,7 @@ internal class RazorHtmlRenderer(
     {
         ArgumentNullException.ThrowIfNull(template);
 
-        if (template is not IComponent)
+        if (template is not Type type || !typeof(IComponent).IsAssignableFrom(type))
             throw new ArgumentException($"Type parameter {template.GetType().Name} must implement IComponent.");
 
         ct.ThrowIfCancellationRequested();
@@ -41,12 +41,12 @@ internal class RazorHtmlRenderer(
                 CultureInfo.CurrentCulture = culture;
                 CultureInfo.CurrentUICulture = culture;
                 ct.ThrowIfCancellationRequested();
-                var componentType = template.GetType();
+                var componentType = type;
                 var layoutFragment = CreateLayoutFragment(componentType, parmetersObj);
                 var fragment = await htmlRenderer.RenderComponentAsync<LayoutView>(
                     ParameterView.FromDictionary(new Dictionary<string, object?>
                     {
-                        ["Layout"] = componentType.GetCustomAttribute<LayoutAttribute>(),
+                        ["Layout"] = componentType.GetCustomAttribute<LayoutAttribute>()?.LayoutType,
                         ["ChildContent"] = layoutFragment
                     }));
                 return fragment.ToHtmlString();
@@ -63,14 +63,24 @@ internal class RazorHtmlRenderer(
 
     public string RenderSubject( object template, IReadOnlyDictionary<string, string> parameters, CultureInfo culture )
     {
-        var key = $"{template.GetType().Name}.subject";
+        ArgumentNullException.ThrowIfNull(template);
+
+        if (template is not Type type || !typeof(IComponent).IsAssignableFrom(type))
+            throw new ArgumentException($"Type parameter {template.GetType().Name} must implement IComponent.");
+
+        var key = $"{type.Name}.subject";
 
         return FormatTextWithParameters(GetTranslatedText(key, culture), parameters);
     }
 
     public string RenderText( object template, IReadOnlyDictionary<string, string> parameters, CultureInfo culture )
     {
-        var key = $"{template.GetType().Name}.text";
+        ArgumentNullException.ThrowIfNull(template);
+
+        if (template is not Type type || !typeof(IComponent).IsAssignableFrom(type))
+            throw new ArgumentException($"Type parameter {template.GetType().Name} must implement IComponent.");
+
+        var key = $"{type.Name}.text";
 
         return FormatTextWithParameters(GetTranslatedText(key, culture), parameters);
     }

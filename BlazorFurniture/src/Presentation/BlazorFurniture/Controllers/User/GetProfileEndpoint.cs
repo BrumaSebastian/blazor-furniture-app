@@ -1,15 +1,21 @@
 ﻿using BlazorFurniture.Application.Common.Dispatchers;
+using BlazorFurniture.Application.Common.Interfaces;
 using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
 using BlazorFurniture.Constants;
 using BlazorFurniture.Core.Shared.Errors;
+using BlazorFurniture.Core.Shared.Utils.Extensions;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.User;
 
-public class GetProfileEndpoint( IQueryDispatcher queryDispatcher ) : EndpointWithoutRequest<UserProfileResponse>
+public class GetProfileEndpoint(
+    IQueryDispatcher queryDispatcher,
+    IEmailNotificationService emailNotificationService,
+    ILogger<GetProfileEndpoint> logger )
+    : EndpointWithoutRequest<UserProfileResponse>
 {
     public override void Configure()
     {
@@ -41,7 +47,13 @@ public class GetProfileEndpoint( IQueryDispatcher queryDispatcher ) : EndpointWi
         var result = await queryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(userId), ct);
 
         await result.Match(
-            response => Send.OkAsync(result.Value),
+            response =>
+            {
+                _ = emailNotificationService.SendWelcomeEmail(new(response.Username, response.Email!, new System.Globalization.CultureInfo("en")), ct)
+                    .LogOnFaulted(logger);
+
+                return Send.OkAsync(result.Value);
+            },
             errors => result.Error switch
             {
                 NotFoundError e => Send.NotFoundAsync(e),
