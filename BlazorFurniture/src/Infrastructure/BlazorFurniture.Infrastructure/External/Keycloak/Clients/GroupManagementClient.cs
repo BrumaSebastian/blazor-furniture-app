@@ -9,6 +9,8 @@ namespace BlazorFurniture.Infrastructure.External.Keycloak.Clients;
 internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient, KeycloakConfiguration configuration, IMemoryCache cache )
     : KeycloakBaseHttpClient(endpoints, httpClient, configuration, cache), IGroupManagementClient
 {
+    private const string GROUP_TOP_LEVEL_ONLY_QUERY_PARAM = "top";
+
     public Task<HttpResult<EmptyResult, ErrorRepresentation>> AddUsers( Guid groupId, IEnumerable<Guid> userIds, CancellationToken ct )
     {
         throw new NotImplementedException();
@@ -43,6 +45,17 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .Build();
 
         return await SendRequest<List<GroupRepresentation>, ErrorRepresentation>(requestMessage, ct);
+    }
+
+    public async Task<HttpResult<CountRepresentation, ErrorRepresentation>> GetCount( CancellationToken ct )
+    {
+        var requestMessage = HttpRequestMessageBuilder
+            .Create(HttpClient, HttpMethod.Get)
+            .WithPath(Endpoints.GroupsCount())
+            .AddQueryParam(GROUP_TOP_LEVEL_ONLY_QUERY_PARAM, bool.TrueString)
+            .Build();
+
+        return await SendRequest<CountRepresentation, ErrorRepresentation>(requestMessage, ct);
     }
 
     public Task<HttpResult<List<UserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, CancellationToken ct )

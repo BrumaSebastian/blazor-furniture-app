@@ -18,8 +18,18 @@ internal class GetGroupsQueryHandler(
 {
     public async Task<Result<PaginatedResponse<GroupResponse>>> HandleAsync( GetGroupsQuery query, CancellationToken ct = default )
     {
-        var result = await groupManagementClient.Get(ct).ToDomainResult(errorMapper);
+        var countGroupsResult = await groupManagementClient.GetCount(ct).ToDomainResult(errorMapper);
 
-        return result.Map(groups => new PaginatedResponse<GroupResponse> { Results = groups.ToGroupResponses() });
+        if (countGroupsResult.IsFailure)
+            return countGroupsResult.PropagateFailure<PaginatedResponse<GroupResponse>>();
+
+        var groupsResult = await groupManagementClient.Get(ct).ToDomainResult(errorMapper);
+
+        return groupsResult.Map(groups =>
+            new PaginatedResponse<GroupResponse>
+            {
+                Results = groups.ToGroupResponses(),
+                Total = countGroupsResult.Value.Count
+            });
     }
 }
