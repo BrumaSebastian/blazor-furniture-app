@@ -1,10 +1,13 @@
-﻿using BlazorFurniture.Application.Features.GroupManagement.Responses;
+﻿using BlazorFurniture.Application.Common.Dispatchers;
+using BlazorFurniture.Application.Features.GroupManagement.Queries;
+using BlazorFurniture.Application.Features.GroupManagement.Responses;
 using BlazorFurniture.Constants;
+using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.Groups;
 
-internal sealed class GetGroupsEndpoint : EndpointWithoutRequest<IEnumerable<GroupResponse>>
+internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : EndpointWithoutRequest<IEnumerable<GroupResponse>>
 {
     public override void Configure()
     {
@@ -32,10 +35,13 @@ internal sealed class GetGroupsEndpoint : EndpointWithoutRequest<IEnumerable<Gro
 
     public async override Task HandleAsync( CancellationToken ct )
     {
-        await Send.OkAsync(
-        [
-            new() { Id = Guid.NewGuid(), Name = "Admin" },
-            new() { Id = Guid.NewGuid(), Name = "User" }
-        ], ct);
+        var result = await queryDispatcher.DispatchQuery<GetGroupsQuery, List<GroupResponse>>(new GetGroupsQuery(), ct);
+
+        await result.Match(
+            response => Send.OkAsync(response),
+            errors => result.Error switch
+            {
+                _ => Send.ErrorsAsync()
+            });
     }
 }
