@@ -2,7 +2,7 @@
 using BlazorFurniture.Domain.Entities.Keycloak;
 using System.Net;
 
-namespace BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
+namespace BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 
 internal class KeycloakHttpErrorMapper : IHttpErrorMapper
 {

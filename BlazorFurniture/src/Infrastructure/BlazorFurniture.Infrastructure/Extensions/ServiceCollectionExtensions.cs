@@ -5,6 +5,7 @@ using BlazorFurniture.Infrastructure.Constants;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Clients;
 using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
+using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.Notifications;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
 using Microsoft.Extensions.Configuration;

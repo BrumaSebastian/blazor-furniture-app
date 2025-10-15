@@ -4,7 +4,7 @@ using System.Net;
 namespace BlazorFurniture.Application.Common.Models;
 
 public class HttpResult<TValue, TError>
-    where TValue : class, new()
+    where TValue : class
     where TError : class
 {
     public bool IsSuccess { get; }
