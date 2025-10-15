@@ -1,5 +1,7 @@
 ﻿using BlazorFurniture.Application.Common.Dispatchers;
+using BlazorFurniture.Application.Common.Responses;
 using BlazorFurniture.Application.Features.GroupManagement.Queries;
+using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Application.Features.GroupManagement.Responses;
 using BlazorFurniture.Constants;
 using BlazorFurniture.Extensions.Endpoints;
@@ -7,7 +9,7 @@ using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.Groups;
 
-internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : EndpointWithoutRequest<IEnumerable<GroupResponse>>
+internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : Endpoint<GetGroupsRequest, PaginatedResponse<GroupResponse>>
 {
     public override void Configure()
     {
@@ -33,9 +35,9 @@ internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : En
         });
     }
 
-    public async override Task HandleAsync( CancellationToken ct )
+    public override async Task HandleAsync( GetGroupsRequest req, CancellationToken ct )
     {
-        var result = await queryDispatcher.DispatchQuery<GetGroupsQuery, List<GroupResponse>>(new GetGroupsQuery(), ct);
+        var result = await queryDispatcher.DispatchQuery<GetGroupsQuery, PaginatedResponse<GroupResponse>>(new GetGroupsQuery(), ct);
 
         await result.Match(
             response => Send.OkAsync(response),
