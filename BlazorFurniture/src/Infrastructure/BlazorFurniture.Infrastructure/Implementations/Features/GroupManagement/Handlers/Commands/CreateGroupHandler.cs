@@ -7,7 +7,7 @@ using BlazorFurniture.Infrastructure.Constants;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BlazorFurniture.Infrastructure.Implementations.Features.GroupManagement.Commands;
+namespace BlazorFurniture.Infrastructure.Implementations.Features.GroupManagement.Handlers.Commands;
 
 internal sealed class CreateGroupHandler(
     IGroupManagementClient groupManagementClient,

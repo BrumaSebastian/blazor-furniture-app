@@ -35,9 +35,14 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         throw new NotImplementedException();
     }
 
-    public Task<HttpResult<List<GroupRepresentation>, ErrorRepresentation>> Get( CancellationToken ct )
+    public async Task<HttpResult<List<GroupRepresentation>, ErrorRepresentation>> Get( CancellationToken ct )
     {
-        throw new NotImplementedException();
+        var requestMessage = HttpRequestMessageBuilder
+            .Create(HttpClient, HttpMethod.Get)
+            .WithPath(Endpoints.Groups())
+            .Build();
+
+        return await SendRequest<List<GroupRepresentation>, ErrorRepresentation>(requestMessage, ct);
     }
 
     public Task<HttpResult<List<UserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, CancellationToken ct )
