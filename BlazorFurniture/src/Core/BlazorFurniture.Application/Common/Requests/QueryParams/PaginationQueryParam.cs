@@ -1,6 +1,6 @@
 ﻿namespace BlazorFurniture.Application.Common.Requests.QueryParams;
 
-public sealed class PaginationQueryParam
+public class PaginationQueryParam
 {
     public int Page
     {

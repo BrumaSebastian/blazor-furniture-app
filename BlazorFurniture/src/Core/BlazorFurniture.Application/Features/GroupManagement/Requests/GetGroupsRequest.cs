@@ -1,4 +1,4 @@
-﻿using BlazorFurniture.Application.Common.Requests.QueryParams;
+﻿using BlazorFurniture.Application.Features.GroupManagement.Requests.Filters;
 using FastEndpoints;
 
 namespace BlazorFurniture.Application.Features.GroupManagement.Requests;
@@ -6,5 +6,5 @@ namespace BlazorFurniture.Application.Features.GroupManagement.Requests;
 public sealed class GetGroupsRequest
 {
     [FromQuery]
-    public required PaginationQueryParam Pagination { get; set; }
+    public required GroupQueryFilters QueryFilters { get; set; }
 }
