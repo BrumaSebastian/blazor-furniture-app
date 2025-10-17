@@ -5,6 +5,7 @@ using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Application.Features.GroupManagement.Responses;
 using BlazorFurniture.Constants;
 using BlazorFurniture.Extensions.Endpoints;
+using BlazorFurniture.Validators.Groups;
 using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.Groups;
@@ -15,6 +16,7 @@ internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : En
     {
         Get("");
         Group<GroupsEndpointGroup>();
+        Validator<GetGroupsRequestValidator>();
         Summary(options =>
         {
             options.Summary = "Get all groups";
@@ -37,7 +39,7 @@ internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : En
 
     public override async Task HandleAsync( GetGroupsRequest req, CancellationToken ct )
     {
-        var result = await queryDispatcher.DispatchQuery<GetGroupsQuery, PaginatedResponse<GroupResponse>>(new GetGroupsQuery(), ct);
+        var result = await queryDispatcher.DispatchQuery<GetGroupsQuery, PaginatedResponse<GroupResponse>>(new GetGroupsQuery(req.Filters), ct);
 
         await result.Match(
             response => Send.OkAsync(response),

@@ -23,7 +23,7 @@ internal class GetGroupsQueryHandler(
         if (countGroupsResult.IsFailure)
             return countGroupsResult.PropagateFailure<PaginatedResponse<GroupResponse>>();
 
-        var groupsResult = await groupManagementClient.Get(ct).ToDomainResult(errorMapper);
+        var groupsResult = await groupManagementClient.Get(query.Filters, ct).ToDomainResult(errorMapper);
 
         return groupsResult.Map(groups =>
             new PaginatedResponse<GroupResponse>

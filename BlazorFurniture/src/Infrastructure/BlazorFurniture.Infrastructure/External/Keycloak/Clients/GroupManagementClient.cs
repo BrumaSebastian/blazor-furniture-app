@@ -1,7 +1,9 @@
 ﻿using BlazorFurniture.Application.Common.Models;
+using BlazorFurniture.Application.Features.GroupManagement.Requests.Filters;
 using BlazorFurniture.Domain.Entities.Keycloak;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
+using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace BlazorFurniture.Infrastructure.External.Keycloak.Clients;
@@ -37,11 +39,13 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         throw new NotImplementedException();
     }
 
-    public async Task<HttpResult<List<GroupRepresentation>, ErrorRepresentation>> Get( CancellationToken ct )
+    public async Task<HttpResult<List<GroupRepresentation>, ErrorRepresentation>> Get( GroupQueryFilters filters, CancellationToken ct )
     {
         var requestMessage = HttpRequestMessageBuilder
             .Create(HttpClient, HttpMethod.Get)
             .WithPath(Endpoints.Groups())
+            .AddQueryParam(KeycloakQueryParams.PAGE, filters.Page)
+            .AddQueryParam(KeycloakQueryParams.PAGE_SIZE, filters.PageSize)
             .Build();
 
         return await SendRequest<List<GroupRepresentation>, ErrorRepresentation>(requestMessage, ct);

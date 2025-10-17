@@ -3,8 +3,8 @@ using FastEndpoints;
 
 namespace BlazorFurniture.Application.Features.GroupManagement.Requests;
 
-public sealed class GetGroupsRequest
+public sealed record GetGroupsRequest
 {
     [FromQuery]
-    public required GroupQueryFilters QueryFilters { get; set; }
+    public GroupQueryFilters Filters { get; init; } = new();
 }

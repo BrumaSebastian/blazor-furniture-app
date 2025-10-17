@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Extensions;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -54,7 +55,7 @@ internal sealed class HttpRequestMessageBuilder
         requestMessage.Content = new StringContent(
                 JsonSerializer.Serialize(content, serializerOptions ?? jsonSerializerOptions),
                 System.Text.Encoding.UTF8,
-                "application/json");
+                MediaTypeNames.Application.Json);
 
         return this;
     }
@@ -66,16 +67,21 @@ internal sealed class HttpRequestMessageBuilder
         return this;
     }
 
-    public HttpRequestMessageBuilder AddQueryParam( string key, string value )
+    public HttpRequestMessageBuilder AddQueryParam( string key, object value )
     {
-        queryBuilder.Add(key, value);
+        ArgumentNullException.ThrowIfNull(value);
+
+        queryBuilder.Add(key, value.ToString()
+            ?? throw new Exception($"There was a problem adding query param key:{key} value:{value}"));
 
         return this;
     }
 
     public HttpRequestMessageBuilder WithAuthorization( AccessTokenResponse accessTokenResponse )
     {
-        requestMessage.Headers.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessTokenResponse.AccessToken);
+        requestMessage.Headers.Authorization = new AuthenticationHeaderValue(
+            JwtBearerDefaults.AuthenticationScheme,
+            accessTokenResponse.AccessToken);
 
         return this;
     }
