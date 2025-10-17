@@ -47,7 +47,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         return await SendRequest<List<GroupRepresentation>, ErrorRepresentation>(requestMessage, ct);
     }
 
-    public async Task<HttpResult<CountRepresentation, ErrorRepresentation>> GetCount( CancellationToken ct )
+    public async Task<HttpResult<CountRepresentation, ErrorRepresentation>> GetGroupsCount( CancellationToken ct )
     {
         var requestMessage = HttpRequestMessageBuilder
             .Create(HttpClient, HttpMethod.Get)

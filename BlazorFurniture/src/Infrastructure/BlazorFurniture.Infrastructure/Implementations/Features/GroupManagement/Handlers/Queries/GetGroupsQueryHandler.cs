@@ -18,7 +18,7 @@ internal class GetGroupsQueryHandler(
 {
     public async Task<Result<PaginatedResponse<GroupResponse>>> HandleAsync( GetGroupsQuery query, CancellationToken ct = default )
     {
-        var countGroupsResult = await groupManagementClient.GetCount(ct).ToDomainResult(errorMapper);
+        var countGroupsResult = await groupManagementClient.GetGroupsCount(ct).ToDomainResult(errorMapper);
 
         if (countGroupsResult.IsFailure)
             return countGroupsResult.PropagateFailure<PaginatedResponse<GroupResponse>>();
