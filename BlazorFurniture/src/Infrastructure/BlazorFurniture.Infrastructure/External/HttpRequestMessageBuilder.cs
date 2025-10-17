@@ -67,9 +67,10 @@ internal sealed class HttpRequestMessageBuilder
         return this;
     }
 
-    public HttpRequestMessageBuilder AddQueryParam( string key, object value )
+    public HttpRequestMessageBuilder AddQueryParam( string key, object? value )
     {
-        ArgumentNullException.ThrowIfNull(value);
+        if (value is null)
+            return this;
 
         queryBuilder.Add(key, value.ToString()
             ?? throw new Exception($"There was a problem adding query param key:{key} value:{value}"));

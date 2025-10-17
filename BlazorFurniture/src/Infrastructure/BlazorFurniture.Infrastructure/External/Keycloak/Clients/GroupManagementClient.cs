@@ -46,6 +46,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .WithPath(Endpoints.Groups())
             .AddQueryParam(KeycloakQueryParams.PAGE, filters.Page)
             .AddQueryParam(KeycloakQueryParams.PAGE_SIZE, filters.PageSize)
+            .AddQueryParam(KeycloakQueryParams.SEARCH, filters.Name)
             .Build();
 
         return await SendRequest<List<GroupRepresentation>, ErrorRepresentation>(requestMessage, ct);
