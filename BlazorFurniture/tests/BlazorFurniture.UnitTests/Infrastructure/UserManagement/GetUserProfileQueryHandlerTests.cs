@@ -2,6 +2,7 @@ using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Domain.Entities.Keycloak;
 using BlazorFurniture.Infrastructure.External.Interfaces;
+using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
 using Moq;

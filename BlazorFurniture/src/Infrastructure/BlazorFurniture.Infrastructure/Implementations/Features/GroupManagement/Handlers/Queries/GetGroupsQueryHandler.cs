@@ -1,6 +1,7 @@
 ﻿using BlazorFurniture.Application.Common.Extensions;
 using BlazorFurniture.Application.Common.Interfaces;
 using BlazorFurniture.Application.Common.Models;
+using BlazorFurniture.Application.Common.Responses;
 using BlazorFurniture.Application.Features.GroupManagement.Queries;
 using BlazorFurniture.Application.Features.GroupManagement.Responses;
 using BlazorFurniture.Core.Shared.Errors;
@@ -13,12 +14,22 @@ namespace BlazorFurniture.Infrastructure.Implementations.Features.GroupManagemen
 
 internal class GetGroupsQueryHandler(
     IGroupManagementClient groupManagementClient,
-    [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper ) : IQueryHandler<GetGroupsQuery, List<GroupResponse>>
+    [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper ) : IQueryHandler<GetGroupsQuery, PaginatedResponse<GroupResponse>>
 {
-    public async Task<Result<List<GroupResponse>>> HandleAsync( GetGroupsQuery query, CancellationToken ct = default )
+    public async Task<Result<PaginatedResponse<GroupResponse>>> HandleAsync( GetGroupsQuery query, CancellationToken ct = default )
     {
-        var result = await groupManagementClient.Get(ct).ToDomainResult(errorMapper);
+        var countGroupsResult = await groupManagementClient.GetGroupsCount(ct).ToDomainResult(errorMapper);
 
-        return result.Map(groups => groups.ToGroupResponses());
+        if (countGroupsResult.IsFailure)
+            return countGroupsResult.PropagateFailure<PaginatedResponse<GroupResponse>>();
+
+        var groupsResult = await groupManagementClient.Get(query.Filters, ct).ToDomainResult(errorMapper);
+
+        return groupsResult.Map(groups =>
+            new PaginatedResponse<GroupResponse>
+            {
+                Results = groups.ToGroupResponses(),
+                Total = countGroupsResult.Value.Count
+            });
     }
 }

@@ -32,4 +32,9 @@
     <ProjectReference Include="..\..\src\Infrastructure\BlazorFurniture.Infrastructure\BlazorFurniture.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\External\Keycloak\" />
+    <Folder Include="Validators\" />
+  </ItemGroup>
+
 </Project>
