@@ -30,6 +30,7 @@
     <ProjectReference Include="..\..\src\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
     <ProjectReference Include="..\..\src\Core\BlazorFurniture.Shared\BlazorFurniture.Core.Shared.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure\BlazorFurniture.Infrastructure\BlazorFurniture.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Presentation\BlazorFurniture\BlazorFurniture.csproj" />
   </ItemGroup>
 
   <ItemGroup>
