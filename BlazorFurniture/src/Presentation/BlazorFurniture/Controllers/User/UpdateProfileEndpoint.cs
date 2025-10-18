@@ -2,7 +2,6 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.UserManagement.Commands;
 using BlazorFurniture.Application.Features.UserManagement.Requests;
-using BlazorFurniture.Constants;
 using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
@@ -30,7 +29,6 @@ public class UpdateProfileEndpoint( ICommandDispatcher commandDispatcher ) : End
         {
             options.WithDescription("This endpoint updates the profile information of the currently authenticated user.");
             options.WithDisplayName("Profile Update");
-            options.WithTags(ControllerTags.User);
             options.Produces(StatusCodes.Status204NoContent);
             options.Produces(StatusCodes.Status400BadRequest);
             options.Produces(StatusCodes.Status403Forbidden);

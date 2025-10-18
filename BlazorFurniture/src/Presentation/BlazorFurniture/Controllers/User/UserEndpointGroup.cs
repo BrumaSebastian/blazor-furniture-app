@@ -12,8 +12,7 @@ internal sealed class UserEndpointGroup : Group
     {
         options.Description(d => d
             .Produces(StatusCodes.Status401Unauthorized)
-            .Produces(StatusCodes.Status502BadGateway)
-            .WithTags(Name));
+            .Produces(StatusCodes.Status502BadGateway));
         options.AuthSchemeNames?.AddRange([JwtBearerDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme]);
     });
 }

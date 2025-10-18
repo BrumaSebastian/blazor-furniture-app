@@ -19,7 +19,7 @@ public class CreateGroupCommandHandlerTest
         // Arrange
         var groupName = "TestGroup";
         var id = Guid.NewGuid();
-        var command = new CreateGroupCommand(new CreateGroupRequest { Name = groupName });
+        var command = new CreateGroupCommand(new CreateGroupRequest(groupName));
         var client = new Mock<IGroupManagementClient>();
         var location = new Uri($"https://example.com/groups/{id}");
         client.Setup(c => c.Create(groupName, It.IsAny<CancellationToken>()))
@@ -28,7 +28,7 @@ public class CreateGroupCommandHandlerTest
         var handler = new CreateGroupHandler(client.Object, new KeycloakHttpErrorMapper());
 
         // Act
-        var result = await handler.HandleAsync(command);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -41,7 +41,7 @@ public class CreateGroupCommandHandlerTest
     {
         // Arrange
         var groupName = "TestGroup";
-        var command = new CreateGroupCommand(new CreateGroupRequest { Name = groupName });
+        var command = new CreateGroupCommand(new CreateGroupRequest(groupName));
         var client = new Mock<IGroupManagementClient>();
         client.Setup(c => c.Create(groupName, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<HttpHeaderLocationResult, ErrorRepresentation>
@@ -49,7 +49,7 @@ public class CreateGroupCommandHandlerTest
         var handler = new CreateGroupHandler(client.Object, new KeycloakHttpErrorMapper());
 
         // Act
-        var result = await handler.HandleAsync(command);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsSuccess);

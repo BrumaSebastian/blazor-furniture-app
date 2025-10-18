@@ -27,7 +27,6 @@ public class ResetPasswordEndpoint() : EndpointWithoutRequest<UserProfileRespons
         {
             options.WithDescription("Redirecting to oidc provider and process the action of resetting the password.");
             options.WithDisplayName("Reset password");
-            options.WithTags(ControllerTags.User);
             options.ClearDefaultProduces(StatusCodes.Status200OK);
             options.Produces(StatusCodes.Status302Found);
         });

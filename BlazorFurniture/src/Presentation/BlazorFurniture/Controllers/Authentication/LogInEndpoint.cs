@@ -1,5 +1,4 @@
 ﻿using BlazorFurniture.Application.Features.Authentication.Requests;
-using BlazorFurniture.Constants;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -18,11 +17,10 @@ public class LogInEndpoint : Endpoint<LogInRequest>
         {
             options.WithDescription("This endpoint authenticates the user.");
             options.WithDisplayName("Authenticate");
-            options.WithTags(ControllerTags.Authentication);
         });
     }
 
-    public override async Task HandleAsync(LogInRequest req, CancellationToken ct )
+    public override async Task HandleAsync( LogInRequest req, CancellationToken ct )
     {
         await Send.ResultAsync(TypedResults.Challenge(GetAuthProperties(req.RedirectUrl, HttpContext),
             [CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme]));

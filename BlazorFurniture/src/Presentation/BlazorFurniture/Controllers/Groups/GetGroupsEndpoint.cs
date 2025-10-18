@@ -3,7 +3,6 @@ using BlazorFurniture.Application.Common.Responses;
 using BlazorFurniture.Application.Features.GroupManagement.Queries;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Application.Features.GroupManagement.Responses;
-using BlazorFurniture.Constants;
 using BlazorFurniture.Extensions.Endpoints;
 using BlazorFurniture.Validators.Groups;
 using FastEndpoints;
@@ -30,7 +29,6 @@ internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : En
         {
             options.WithDescription("This endpoint retrieves all groups.");
             options.WithDisplayName("Retrieve All Groups");
-            options.WithTags(ControllerTags.Groups);
             options.Produces<IEnumerable<GroupResponse>>(StatusCodes.Status200OK);
             options.Produces(StatusCodes.Status403Forbidden);
             options.Produces(StatusCodes.Status502BadGateway);

@@ -1,14 +1,15 @@
 using BlazorFurniture.Components;
 using BlazorFurniture.Core.Shared.Configurations;
 using BlazorFurniture.Extensions;
-using BlazorFurniture.Extensions.DocumentTransformers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
 using FastEndpoints;
+using FastEndpoints.Swagger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.OpenApi;
 using MudBlazor.Services;
+using NSwag;
 using Scalar.AspNetCore;
 using Serilog;
 using System.Globalization;
@@ -31,14 +32,55 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
-builder.Services.AddFastEndpoints();
+// Get OIDC configuration for Swagger setup
+var openIdConnectOptions = builder.Configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()
+    ?? throw new Exception($"Missing {nameof(OpenIdConnectConfigOptions)} settings");
+
+var configManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+    $"{openIdConnectOptions.Authority}/.well-known/openid-configuration",
+    new OpenIdConnectConfigurationRetriever(),
+    new HttpDocumentRetriever { RequireHttps = false });
+
+var oidcConfiguration = await configManager.GetConfigurationAsync();
+
+builder.Services.AddFastEndpoints()
+.SwaggerDocument(options =>
+{
+    options.ShortSchemaNames = true;
+    options.EnableJWTBearerAuth = false;
+    options.DocumentSettings = o =>
+    {
+        o.Title = "BlazorFurniture";
+        o.Version = "v1";
+        o.Description = "BlazorFurniture API with OAuth2/OIDC authentication";
+
+        // Add OAuth2 security scheme with Authorization Code Flow + PKCE
+        o.AddAuth(JwtBearerDefaults.AuthenticationScheme, new NSwag.OpenApiSecurityScheme()
+        {
+            Type = OpenApiSecuritySchemeType.OAuth2,
+            Description = "OAuth2 Authorization Code Flow with PKCE",
+            Flows = new NSwag.OpenApiOAuthFlows()
+            {
+                AuthorizationCode = new NSwag.OpenApiOAuthFlow()
+                {
+                    AuthorizationUrl = oidcConfiguration.AuthorizationEndpoint,
+                    TokenUrl = oidcConfiguration.TokenEndpoint,
+                    RefreshUrl = oidcConfiguration.TokenEndpoint,
+                    Scopes = openIdConnectOptions.DevPublicClient?.Scopes.ToDictionary(s => s, s => s) ?? new Dictionary<string, string>()
+                }
+            }
+        });
+    };
+    options.TagCase = TagCase.LowerCase;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMemoryCache();
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer<OAuthSecurityTransformer>();
-    options.AddScalarTransformers();
-});
+//builder.Services.AddOpenApi(options =>
+//{
+//    options.AddDocumentTransformer<OAuthSecurityTransformer>();
+//    options.AddScalarTransformers();
+//});
 
 builder.Services.AddAppServices(builder.Configuration);
 builder.Services.AddSerilog();
@@ -62,29 +104,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-
-    var openIdConnectOptions = app.Services.GetRequiredService<OpenIdConnectConfigOptions>();
-    var configManager = new ConfigurationManager<OpenIdConnectConfiguration>(
-        $"{openIdConnectOptions.Authority}/.well-known/openid-configuration",
-        new OpenIdConnectConfigurationRetriever(),
-        new HttpDocumentRetriever { RequireHttps = false });
-    var config = await configManager.GetConfigurationAsync();
-
-    app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options.AddPreferredSecuritySchemes(nameof(SecuritySchemeType.OAuth2))
-            .AddAuthorizationCodeFlow(nameof(SecuritySchemeType.OAuth2), flow =>
-            {
-                flow.Pkce = Pkce.Sha256;
-                flow.ClientId = openIdConnectOptions.DevPublicClient?.ClientId;
-                flow.SelectedScopes = openIdConnectOptions.DevPublicClient?.Scopes;
-                flow.AuthorizationUrl = config.AuthorizationEndpoint;
-                flow.TokenUrl = config.TokenEndpoint;
-                flow.RefreshUrl = config.TokenEndpoint;
-            });
-        options.PersistentAuthentication = true;
-    });
 }
 else
 {
@@ -111,14 +130,39 @@ app.Use(async ( context, next ) =>
 app.UseCors();
 app.UseGlobalExceptionHandler();
 app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.UseAuthentication()
-    .UseAuthorization()
-    .UseFastEndpoints(options =>
+app.UseFastEndpoints(options =>
+{
+    options.Endpoints.RoutePrefix = "api";
+    options.Endpoints.ShortNames = true;
+    options.Errors.UseProblemDetails();
+})
+.UseSwaggerGen();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapScalarApiReference(options =>
     {
-        options.Endpoints.RoutePrefix = "api";
-        options.Errors.UseProblemDetails();
+        options.WithOpenApiRoutePattern("/swagger/{documentName}/swagger.json");
+
+        // Configure OAuth2 Authorization Code Flow with PKCE
+        options.AddPreferredSecuritySchemes(JwtBearerDefaults.AuthenticationScheme)
+            .AddAuthorizationCodeFlow(JwtBearerDefaults.AuthenticationScheme, flow =>
+            {
+                flow.Pkce = Pkce.Sha256;
+                flow.ClientId = openIdConnectOptions.DevPublicClient?.ClientId;
+                flow.SelectedScopes = openIdConnectOptions.DevPublicClient?.Scopes;
+                flow.AuthorizationUrl = oidcConfiguration.AuthorizationEndpoint;
+                flow.TokenUrl = oidcConfiguration.TokenEndpoint;
+                flow.RefreshUrl = oidcConfiguration.TokenEndpoint;
+            });
+
+        options.PersistentAuthentication = true;
+        options.DefaultOpenAllTags = true;
     });
+}
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

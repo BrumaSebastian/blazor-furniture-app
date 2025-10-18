@@ -8,17 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture" />
+    <PackageReference Include="AutoFixture.Xunit3" />
     <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="FastEndpoints.Testing" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="NSubstitute" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Moq" />
+    <PackageReference Include="xunit.v3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +34,7 @@
     <ProjectReference Include="..\..\src\Core\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
     <ProjectReference Include="..\..\src\Core\BlazorFurniture.Shared\BlazorFurniture.Core.Shared.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure\BlazorFurniture.Infrastructure\BlazorFurniture.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Presentation\BlazorFurniture\BlazorFurniture.csproj" />
   </ItemGroup>
 
   <ItemGroup>

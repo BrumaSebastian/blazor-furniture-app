@@ -2,7 +2,6 @@
 using BlazorFurniture.Application.Common.Interfaces;
 using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
-using BlazorFurniture.Constants;
 using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Core.Shared.Utils.Extensions;
 using BlazorFurniture.Extensions;
@@ -33,7 +32,6 @@ public class GetProfileEndpoint(
         {
             options.WithDescription("This endpoint retrieves the profile information of the currently authenticated user.");
             options.WithDisplayName("Retrieve Profile");
-            options.WithTags(ControllerTags.User);
             options.Produces<UserProfileResponse>(StatusCodes.Status200OK);
             options.Produces(StatusCodes.Status403Forbidden);
             options.Produces(StatusCodes.Status404NotFound);

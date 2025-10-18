@@ -1,6 +1,8 @@
+using AutoFixture;
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.UserManagement.Commands;
 using BlazorFurniture.Application.Features.UserManagement.Requests;
+using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Domain.Entities.Keycloak;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
@@ -13,36 +15,40 @@ namespace BlazorFurniture.UnitTests.Infrastructure.UserManagement;
 
 public class UpdateUserProfileCommandHandlerTests
 {
+    private readonly Fixture fixture;
+
+    public UpdateUserProfileCommandHandlerTests()
+    {
+        fixture = new Fixture();
+    }
+
     [Fact]
     public async Task HandleAsync_UpdatesUser_OnSuccess()
     {
         // Arrange
         var id = Guid.NewGuid();
-        var request = new UpdateUserProfileRequest
-        {
-            FirstName = "Jane",
-            LastName = "Smith",
-            Email = "jane@site.test"
-        };
-        var useRepresentation = new UserRepresentation
-        {
-            Id = id,
-            Username = "jane",
-            FirstName = "Old",
-            LastName = "Name",
-            Email = "old@site.test"
-        };
+        var request = fixture.Create<UpdateUserProfileRequest>();
+        var userRepresentation = fixture.Build<UserRepresentation>()
+            .With(u => u.Id, id)
+            .Create();
+
         var client = new Mock<IUserManagementClient>();
         client.Setup(c => c.Get(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<UserRepresentation, ErrorRepresentation>.Succeeded(useRepresentation));
+            .ReturnsAsync(HttpResult<UserRepresentation, ErrorRepresentation>.Succeeded(userRepresentation));
 
-        client.Setup(c => c.UpdateProfile(It.Is<UserRepresentation>(u => u.Id == id && u.FirstName == "Jane" && u.LastName == "Smith" && u.Email == "jane@site.test"), It.IsAny<CancellationToken>()))
+        client.Setup(c => c.UpdateProfile(
+            It.Is<UserRepresentation>(u =>
+                u.Id == id &&
+                u.FirstName == request.FirstName &&
+                u.LastName == request.LastName &&
+                u.Email == request.Email),
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>.NoContent());
 
         var handler = new UpdateUserProfileCommandHandler(client.Object, new KeycloakHttpErrorMapper());
 
         // Act
-        var result = await handler.HandleAsync(new UpdateUserProfileCommand(id, request));
+        var result = await handler.HandleAsync(new UpdateUserProfileCommand(id, request), TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -56,21 +62,27 @@ public class UpdateUserProfileCommandHandlerTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var request = new UpdateUserProfileRequest { FirstName = "Jane", LastName = "Smith", Email = "jane@site.test" };
+        var request = fixture.Create<UpdateUserProfileRequest>();
+        var errorRepresentation = fixture.Build<ErrorRepresentation>()
+            .With(e => e.Error, "nf")
+            .Without(e => e.Errors)
+            .Create();
 
         var client = new Mock<IUserManagementClient>();
         client
             .Setup(c => c.Get(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<UserRepresentation, ErrorRepresentation>.Failed(new ErrorRepresentation { Error = "nf" }, HttpStatusCode.NotFound));
+            .ReturnsAsync(HttpResult<UserRepresentation, ErrorRepresentation>.Failed(
+                errorRepresentation,
+                HttpStatusCode.NotFound));
 
         var handler = new UpdateUserProfileCommandHandler(client.Object, new KeycloakHttpErrorMapper());
 
         // Act
-        var result = await handler.HandleAsync(new UpdateUserProfileCommand(id, request));
+        var result = await handler.HandleAsync(new UpdateUserProfileCommand(id, request), TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.IsType<BlazorFurniture.Core.Shared.Errors.NotFoundError>(result.Error);
+        Assert.IsType<NotFoundError>(result.Error);
         client.Verify(c => c.Get(id, It.IsAny<CancellationToken>()), Times.Once);
         client.Verify(c => c.UpdateProfile(It.IsAny<UserRepresentation>(), It.IsAny<CancellationToken>()), Times.Never);
     }
