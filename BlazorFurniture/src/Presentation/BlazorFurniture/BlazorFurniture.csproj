@@ -14,7 +14,9 @@
 	  <Content Remove="Components\Authentication\**" />
 	  <EmbeddedResource Remove="Components\Authentication\**" />
 	  <None Remove="Components\Authentication\**" />
-	</ItemGroup>
+        <InternalsVisibleTo Include="BlazorFurniture.IntegrationTests" />
+        <InternalsVisibleTo Include="BlazorFurniture.UnitTests" />
+    </ItemGroup>
 
 
 	<ItemGroup>
