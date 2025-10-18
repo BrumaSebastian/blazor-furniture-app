@@ -2,7 +2,6 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
-using BlazorFurniture.Constants;
 using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
@@ -31,7 +30,6 @@ internal sealed class CreateGoupEndpoint( ICommandDispatcher commandDispatcher )
         {
             options.WithDisplayName("Create group");
             options.WithDescription("Creates a group with roles");
-            options.WithTags(ControllerTags.Groups);
             options.Produces(StatusCodes.Status204NoContent);
             options.Produces(StatusCodes.Status400BadRequest);
             options.Produces(StatusCodes.Status403Forbidden);

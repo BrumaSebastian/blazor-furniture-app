@@ -50,7 +50,6 @@ public static class ServiceCollectionExtensions
 
         private IServiceCollection RegisterHandlers( Assembly assembly )
         {
-            var commandHandlerType = typeof(ICommandHandler<>);
             var commandWithResultHandlerType = typeof(ICommandHandler<,>);
             var queryHandlerType = typeof(IQueryHandler<,>);
 
@@ -69,8 +68,7 @@ public static class ServiceCollectionExtensions
                     {
                         var genericTypeDefinition = interfaceType.GetGenericTypeDefinition();
 
-                        if (genericTypeDefinition == commandHandlerType ||
-                            genericTypeDefinition == commandWithResultHandlerType ||
+                        if (genericTypeDefinition == commandWithResultHandlerType ||
                             genericTypeDefinition == queryHandlerType)
                         {
                             services.AddScoped(interfaceType, type);

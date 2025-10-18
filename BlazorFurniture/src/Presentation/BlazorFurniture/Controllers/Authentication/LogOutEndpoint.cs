@@ -1,5 +1,4 @@
 ﻿using BlazorFurniture.Application.Features.Authentication.Requests;
-using BlazorFurniture.Constants;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -18,7 +17,6 @@ public class LogOutEndpoint : Endpoint<LogOutRequest>
         {
             options.WithDescription("This endpoint logs out the user.");
             options.WithDisplayName("Log Out");
-            options.WithTags(ControllerTags.Authentication);
         });
     }
 
