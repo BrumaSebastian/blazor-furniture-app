@@ -8,7 +8,7 @@ using NSubstitute;
 
 namespace BlazorFurniture.UnitTests.API.Controllers.Groups;
 
-internal class UpdateGroupEndpointTests
+public class UpdateGroupEndpointTests
 {
     private readonly UpdateGroupEndpoint sut;
     private readonly ICommandDispatcher commandDispatcher;

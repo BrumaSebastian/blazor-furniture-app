@@ -1,6 +1,8 @@
+using AutoFixture;
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Queries;
 using BlazorFurniture.Application.Features.GroupManagement.Requests.Filters;
+using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Domain.Entities.Keycloak;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
@@ -15,12 +17,14 @@ public class GetGroupsQueryHandlerTests
     private readonly Mock<IGroupManagementClient> clientMock;
     private readonly KeycloakHttpErrorMapper errorMapper;
     private readonly GetGroupsQueryHandler handler;
+    private readonly Fixture fixture;
 
     public GetGroupsQueryHandlerTests()
     {
         clientMock = new Mock<IGroupManagementClient>();
         errorMapper = new KeycloakHttpErrorMapper();
         handler = new GetGroupsQueryHandler(clientMock.Object, errorMapper);
+        fixture = new Fixture();
     }
 
     [Fact]
@@ -40,7 +44,7 @@ public class GetGroupsQueryHandlerTests
             .ReturnsAsync(HttpResult<List<GroupRepresentation>, ErrorRepresentation>.Succeeded([]));
 
         // Act
-        var result = await handler.HandleAsync(query);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -54,14 +58,16 @@ public class GetGroupsQueryHandlerTests
     public async Task HandleAsync_ReturnsPaginatedGroups_WhenGroupsExist()
     {
         // Arrange
-        var filters = new GroupQueryFilters { Page = 1, PageSize = 2 };
+        var filters = new GroupQueryFilters
+        {
+            Page = 0,
+            PageSize = 2
+        };
         var query = new GetGroupsQuery(filters);
 
-        var groups = new List<GroupRepresentation>
-        {
-            new() { Id = Guid.NewGuid(), Name = "Group 1" },
-            new() { Id = Guid.NewGuid(), Name = "Group 2" }
-        };
+        var groups = fixture.Build<GroupRepresentation>()
+            .CreateMany(2)
+            .ToList();
 
         clientMock
             .Setup(c => c.GetGroupsCount(It.IsAny<CancellationToken>()))
@@ -73,7 +79,7 @@ public class GetGroupsQueryHandlerTests
             .ReturnsAsync(HttpResult<List<GroupRepresentation>, ErrorRepresentation>.Succeeded(groups));
 
         // Act
-        var result = await handler.HandleAsync(query);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -89,12 +95,13 @@ public class GetGroupsQueryHandlerTests
     {
         // Arrange
         var groupId = Guid.NewGuid();
-        var filters = new GroupQueryFilters { Page = 1, PageSize = 10 };
+        var groupName = fixture.Create<string>();
+        var filters = fixture.Create<GroupQueryFilters>();
         var query = new GetGroupsQuery(filters);
 
         var groups = new List<GroupRepresentation>
         {
-            new() { Id = groupId, Name = "Test Group" }
+            new() { Id = groupId, Name = groupName }
         };
 
         clientMock
@@ -107,30 +114,35 @@ public class GetGroupsQueryHandlerTests
             .ReturnsAsync(HttpResult<List<GroupRepresentation>, ErrorRepresentation>.Succeeded(groups));
 
         // Act
-        var result = await handler.HandleAsync(query);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);
         var groupResponse = result.Value.Results.First();
         Assert.Equal(groupId, groupResponse.Id);
-        Assert.Equal("Test Group", groupResponse.Name);
+        Assert.Equal(groupName, groupResponse.Name);
     }
 
     [Fact]
     public async Task HandleAsync_PropagatesFailure_WhenGetGroupsCountFails()
     {
         // Arrange
-        var filters = new GroupQueryFilters { Page = 1, PageSize = 10 };
+        var filters = fixture.Create<GroupQueryFilters>();
         var query = new GetGroupsQuery(filters);
+        var errorRepresentation = fixture.Build<ErrorRepresentation>()
+            .With(e => e.Error, "server_error")
+            .With(e => e.Description, "Internal server error")
+            .Without(e => e.Errors)
+            .Create();
 
         clientMock
             .Setup(c => c.GetGroupsCount(It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<CountRepresentation, ErrorRepresentation>.Failed(
-                new ErrorRepresentation { Error = "server_error", Description = "Internal server error" },
+                errorRepresentation,
                 HttpStatusCode.InternalServerError));
 
         // Act
-        var result = await handler.HandleAsync(query);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsFailure);
@@ -143,8 +155,13 @@ public class GetGroupsQueryHandlerTests
     public async Task HandleAsync_PropagatesFailure_WhenGetGroupsFails()
     {
         // Arrange
-        var filters = new GroupQueryFilters { Page = 1, PageSize = 10 };
+        var filters = fixture.Create<GroupQueryFilters>();
         var query = new GetGroupsQuery(filters);
+        var errorRepresentation = fixture.Build<ErrorRepresentation>()
+            .With(e => e.Error, "forbidden")
+            .With(e => e.Description, "Access denied")
+            .Without(e => e.Errors)
+            .Create();
 
         clientMock
             .Setup(c => c.GetGroupsCount(It.IsAny<CancellationToken>()))
@@ -154,11 +171,11 @@ public class GetGroupsQueryHandlerTests
         clientMock
             .Setup(c => c.Get(filters, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<List<GroupRepresentation>, ErrorRepresentation>.Failed(
-                new ErrorRepresentation { Error = "forbidden", Description = "Access denied" },
+                errorRepresentation,
                 HttpStatusCode.Forbidden));
 
         // Act
-        var result = await handler.HandleAsync(query);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsFailure);
@@ -171,34 +188,42 @@ public class GetGroupsQueryHandlerTests
     public async Task HandleAsync_HandlesUnauthorizedError()
     {
         // Arrange
-        var filters = new GroupQueryFilters { Page = 1, PageSize = 10 };
+        var filters = fixture.Create<GroupQueryFilters>();
         var query = new GetGroupsQuery(filters);
+        var errorRepresentation = fixture.Build<ErrorRepresentation>()
+            .With(e => e.Error, "unauthorized")
+            .Without(e => e.Errors)
+            .Create();
 
         clientMock
             .Setup(c => c.GetGroupsCount(It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<CountRepresentation, ErrorRepresentation>.Failed(
-                new ErrorRepresentation { Error = "unauthorized" },
+                errorRepresentation,
                 HttpStatusCode.Unauthorized));
 
         // Act
-        var result = await handler.HandleAsync(query);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.IsType<BlazorFurniture.Core.Shared.Errors.GenericError>(result.Error);
+        Assert.IsType<GenericError>(result.Error);
     }
 
     [Fact]
     public async Task HandleAsync_AppliesPaginationFilters()
     {
         // Arrange
-        var filters = new GroupQueryFilters { Page = 2, PageSize = 5, Name = "Admin" };
+        var filters = fixture.Build<GroupQueryFilters>()
+            .With(f => f.Page, 2)
+            .With(f => f.PageSize, 5)
+            .With(f => f.Name, "Admin")
+            .Create();
         var query = new GetGroupsQuery(filters);
 
-        var groups = new List<GroupRepresentation>
-        {
-            new() { Id = Guid.NewGuid(), Name = "Admins" }
-        };
+        var groups = fixture.Build<GroupRepresentation>()
+            .With(g => g.Name, "Admins")
+            .CreateMany(1)
+            .ToList();
 
         clientMock
             .Setup(c => c.GetGroupsCount(It.IsAny<CancellationToken>()))
@@ -210,7 +235,7 @@ public class GetGroupsQueryHandlerTests
             .ReturnsAsync(HttpResult<List<GroupRepresentation>, ErrorRepresentation>.Succeeded(groups));
 
         // Act
-        var result = await handler.HandleAsync(query);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -241,7 +266,7 @@ public class GetGroupsQueryHandlerTests
                 new List<GroupRepresentation>()));
 
         // Act
-        var result = await handler.HandleAsync(query);
+        var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);

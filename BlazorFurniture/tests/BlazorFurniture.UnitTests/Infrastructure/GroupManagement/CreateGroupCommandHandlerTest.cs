@@ -28,7 +28,7 @@ public class CreateGroupCommandHandlerTest
         var handler = new CreateGroupHandler(client.Object, new KeycloakHttpErrorMapper());
 
         // Act
-        var result = await handler.HandleAsync(command);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -49,7 +49,7 @@ public class CreateGroupCommandHandlerTest
         var handler = new CreateGroupHandler(client.Object, new KeycloakHttpErrorMapper());
 
         // Act
-        var result = await handler.HandleAsync(command);
+        var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsSuccess);

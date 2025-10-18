@@ -1,3 +1,4 @@
+using AutoFixture;
 using BlazorFurniture.Application.Common.Dispatchers;
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
@@ -7,23 +8,19 @@ using Moq;
 
 namespace BlazorFurniture.UnitTests.Application.Features.GroupManagement.Commands;
 
-/// <summary>
-/// Unit tests for UpdateGroupCommand that verify the command creation
-/// and dispatcher behavior in isolation from the HTTP endpoint.
-/// </summary>
 public class UpdateGroupCommandTests
 {
+    private readonly Fixture fixture;
+
+    public UpdateGroupCommandTests()
+    {
+        fixture = new Fixture();
+    }
     [Fact]
     public async Task Dispatcher_ExecutesUpdateCommand_WithCorrectParameters()
     {
         // Arrange
-        var groupId = Guid.NewGuid();
-        var groupName = "Updated Group Name";
-        var request = new UpdateGroupRequest
-        {
-            Id = groupId,
-            Name = groupName
-        };
+        var request = fixture.Create<UpdateGroupRequest>();
 
         UpdateGroupCommand? capturedCommand = null;
         var mockDispatcher = new Mock<ICommandDispatcher>();
@@ -39,13 +36,13 @@ public class UpdateGroupCommandTests
         // Act
         var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
             command,
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert - Verify command execution and parameters
         Assert.True(result.IsSuccess);
         Assert.NotNull(capturedCommand);
-        Assert.Equal(groupId, capturedCommand.Request.Id);
-        Assert.Equal(groupName, capturedCommand.Request.Name);
+        Assert.Equal(request.Id, capturedCommand.Request.Id);
+        Assert.Equal(request.Name, capturedCommand.Request.Name);
         mockDispatcher.Verify(
             d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
                 It.IsAny<UpdateGroupCommand>(),
@@ -57,19 +54,14 @@ public class UpdateGroupCommandTests
     public async Task Dispatcher_ReturnsSuccess_WhenUpdateSucceeds()
     {
         // Arrange
-        var groupId = Guid.NewGuid();
-        var request = new UpdateGroupRequest
-        {
-            Id = groupId,
-            Name = "Updated Group Name"
-        };
+        var request = fixture.Create<UpdateGroupRequest>();
 
         var mockDispatcher = new Mock<ICommandDispatcher>();
         mockDispatcher
             .Setup(d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
                 It.Is<UpdateGroupCommand>(cmd =>
-                    cmd.Request.Id == groupId &&
-                    cmd.Request.Name == "Updated Group Name"),
+                    cmd.Request.Id == request.Id &&
+                    cmd.Request.Name == request.Name),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<EmptyResult>.Succeeded(new EmptyResult()));
 
@@ -78,7 +70,7 @@ public class UpdateGroupCommandTests
         // Act
         var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
             command,
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert - Verify successful result
         Assert.True(result.IsSuccess);
@@ -96,14 +88,8 @@ public class UpdateGroupCommandTests
     public async Task Dispatcher_ReturnsNotFoundError_WhenGroupDoesNotExist()
     {
         // Arrange
-        var groupId = Guid.NewGuid();
-        var request = new UpdateGroupRequest
-        {
-            Id = groupId,
-            Name = "Updated Group Name"
-        };
-
-        var notFoundError = new NotFoundError(groupId, typeof(UpdateGroupRequest));
+        var request = fixture.Create<UpdateGroupRequest>();
+        var notFoundError = new NotFoundError(request.Id, typeof(UpdateGroupRequest));
 
         var mockDispatcher = new Mock<ICommandDispatcher>();
         mockDispatcher
@@ -117,12 +103,12 @@ public class UpdateGroupCommandTests
         // Act
         var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
             command,
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert - Verify NotFound error
         Assert.False(result.IsSuccess);
         Assert.IsType<NotFoundError>(result.Error);
-        Assert.True(result.Error.Description.Contains(groupId.ToString()));
+        Assert.True(result.Error.Description.Contains(request.Id.ToString()));
 
         mockDispatcher.Verify(
             d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
@@ -135,15 +121,8 @@ public class UpdateGroupCommandTests
     public async Task Dispatcher_ReturnsConflictError_WhenGroupNameAlreadyExists()
     {
         // Arrange
-        var groupId = Guid.NewGuid();
-        var existingName = "Existing Group Name";
-        var request = new UpdateGroupRequest
-        {
-            Id = groupId,
-            Name = existingName
-        };
-
-        var conflictError = new ConflictError("name", existingName, typeof(UpdateGroupRequest));
+        var request = fixture.Create<UpdateGroupRequest>();
+        var conflictError = new ConflictError("name", request.Name, typeof(UpdateGroupRequest));
 
         var mockDispatcher = new Mock<ICommandDispatcher>();
         mockDispatcher
@@ -157,7 +136,7 @@ public class UpdateGroupCommandTests
         // Act
         var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
             command,
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert - Verify Conflict error
         Assert.False(result.IsSuccess);
@@ -175,12 +154,9 @@ public class UpdateGroupCommandTests
     public async Task Dispatcher_ReturnsValidationError_WhenValidationFails()
     {
         // Arrange
-        var groupId = Guid.NewGuid();
-        var request = new UpdateGroupRequest
-        {
-            Id = groupId,
-            Name = "" // Invalid empty name
-        };
+        var request = fixture.Build<UpdateGroupRequest>()
+            .With(r => r.Name, string.Empty) // Invalid empty name
+            .Create();
 
         var validationErrors = new Dictionary<string, string[]>
         {
@@ -200,7 +176,7 @@ public class UpdateGroupCommandTests
         // Act
         var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
             command,
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert - Verify Validation error
         Assert.False(result.IsSuccess);
@@ -223,12 +199,7 @@ public class UpdateGroupCommandTests
     public async Task Dispatcher_PropagatesCancellationToken()
     {
         // Arrange
-        var request = new UpdateGroupRequest
-        {
-            Id = Guid.NewGuid(),
-            Name = "Test Group"
-        };
-
+        var request = fixture.Create<UpdateGroupRequest>();
         var cancellationTokenSource = new CancellationTokenSource();
         var cancellationToken = cancellationTokenSource.Token;
         CancellationToken capturedToken = default;
@@ -257,12 +228,7 @@ public class UpdateGroupCommandTests
     public async Task Dispatcher_ReturnsGenericError_ForUnexpectedErrors()
     {
         // Arrange
-        var request = new UpdateGroupRequest
-        {
-            Id = Guid.NewGuid(),
-            Name = "Test Group"
-        };
-
+        var request = fixture.Create<UpdateGroupRequest>();
         var unexpectedError = new GenericError("An unexpected error occurred");
 
         var mockDispatcher = new Mock<ICommandDispatcher>();
@@ -277,7 +243,7 @@ public class UpdateGroupCommandTests
         // Act
         var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
             command,
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert - Verify generic error handling
         Assert.False(result.IsSuccess);
@@ -295,13 +261,7 @@ public class UpdateGroupCommandTests
     public void UpdateGroupCommand_CreatesCorrectlyWithRequest()
     {
         // Arrange
-        var groupId = Guid.NewGuid();
-        var groupName = "Test Group";
-        var request = new UpdateGroupRequest
-        {
-            Id = groupId,
-            Name = groupName
-        };
+        var request = fixture.Create<UpdateGroupRequest>();
 
         // Act
         var command = new UpdateGroupCommand(request);
@@ -309,27 +269,17 @@ public class UpdateGroupCommandTests
         // Assert
         Assert.NotNull(command);
         Assert.NotNull(command.Request);
-        Assert.Equal(groupId, command.Request.Id);
-        Assert.Equal(groupName, command.Request.Name);
+        Assert.Equal(request.Id, command.Request.Id);
+        Assert.Equal(request.Name, command.Request.Name);
     }
 
     [Fact]
     public void UpdateGroupRequest_SetsPropertiesCorrectly()
     {
-        // Arrange
-        var groupId = Guid.NewGuid();
-        var groupName = "Test Group Name";
-
-        // Act
-        var request = new UpdateGroupRequest
-        {
-            Id = groupId,
-            Name = groupName
-        };
+        // Arrange & Act
+        var request = fixture.Create<UpdateGroupRequest>();
 
         // Assert
-        Assert.Equal(groupId, request.Id);
-        Assert.Equal(groupName, request.Name);
         Assert.NotEqual(Guid.Empty, request.Id);
         Assert.False(string.IsNullOrEmpty(request.Name));
     }
@@ -338,14 +288,7 @@ public class UpdateGroupCommandTests
     public async Task Dispatcher_VerifiesCommandMatchesRequest()
     {
         // Arrange
-        var groupId = Guid.NewGuid();
-        var groupName = "Specific Group Name";
-        var request = new UpdateGroupRequest
-        {
-            Id = groupId,
-            Name = groupName
-        };
-
+        var request = fixture.Create<UpdateGroupRequest>();
         UpdateGroupCommand? capturedCommand = null;
 
         var mockDispatcher = new Mock<ICommandDispatcher>();
@@ -361,7 +304,7 @@ public class UpdateGroupCommandTests
         // Act
         await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
             command,
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert - Verify command contains exact request data
         Assert.NotNull(capturedCommand);
