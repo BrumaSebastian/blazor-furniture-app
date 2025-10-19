@@ -15,4 +15,5 @@ internal sealed class Endpoints( string Realm )
     public string Groups() => $"{AdminRestApiBaseUrl}/groups";
     public string GroupsExtension() => $"{Groups()}-extension";
     public string GroupsCount() => $"{Groups()}/count";
+    public string GroupById( Guid id ) => $"{Groups()}/{id}";
 }
