@@ -13,7 +13,12 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
 {
     private const string GROUP_TOP_LEVEL_ONLY_QUERY_PARAM = "top";
 
-    public Task<HttpResult<EmptyResult, ErrorRepresentation>> AddUsers( Guid groupId, IEnumerable<Guid> userIds, CancellationToken ct )
+    public Task<HttpResult<EmptyResult, ErrorRepresentation>> AddUser( Guid groupId, IEnumerable<Guid> userIds, CancellationToken ct )
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<HttpResult<EmptyResult, ErrorRepresentation>> AddUser( Guid groupId, Guid userId, CancellationToken ct )
     {
         throw new NotImplementedException();
     }
