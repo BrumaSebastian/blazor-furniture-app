@@ -81,7 +81,7 @@ public class HttpResult<TValue, TError>
         return IsSuccess;
     }
 
-    public Result<TValue> ToDomainResult( IHttpErrorMapper errorMapper, Guid? resourceId, Type? resourceType = null )
+    public Result<TValue> ToDomainResult( IHttpErrorMapper errorMapper, Guid? resourceId = null, Type? resourceType = null )
     {
         ArgumentNullException.ThrowIfNull(errorMapper);
 
