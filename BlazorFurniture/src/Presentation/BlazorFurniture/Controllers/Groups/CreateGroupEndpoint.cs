@@ -10,7 +10,7 @@ using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.Groups;
 
-internal sealed class CreateGoupEndpoint( ICommandDispatcher commandDispatcher ) : Endpoint<CreateGroupRequest>
+internal sealed class CreateGroupEndpoint( ICommandDispatcher commandDispatcher ) : Endpoint<CreateGroupRequest>
 {
     public override void Configure()
     {
