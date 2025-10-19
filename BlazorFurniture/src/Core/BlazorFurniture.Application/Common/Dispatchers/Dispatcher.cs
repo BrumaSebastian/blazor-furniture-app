@@ -7,14 +7,6 @@ namespace BlazorFurniture.Application.Common.Dispatchers;
 
 public class Dispatcher( IServiceProvider serviceProvider, ILogger<Dispatcher> logger ) : ICommandDispatcher, IQueryDispatcher
 {
-    //public async Task Dispatch<TCommand>(TCommand command, CancellationToken ct = default)
-    //    where TCommand : ICommand
-    //{
-    //    using var scope = serviceProvider.CreateScope();
-    //    var handler = serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
-    //    await handler.HandleAsync(command, ct);
-    //}
-
     public async Task<TResult> Dispatch<TCommand, TResult>( TCommand command, CancellationToken ct = default )
         where TCommand : ICommand<TResult>
     {
