@@ -1,11 +1,3 @@
-﻿using FastEndpoints;
+﻿namespace BlazorFurniture.Application.Features.GroupManagement.Requests;
 
-namespace BlazorFurniture.Application.Features.GroupManagement.Requests;
-
-public sealed class AddUserToGroupRequest
-{
-    [RouteParam]
-    public Guid GroupId { get; set; }
-    [RouteParam]
-    public Guid UserId { get; set; }
-}
+public sealed record AddUserToGroupRequest( Guid GroupId, Guid UserId );
