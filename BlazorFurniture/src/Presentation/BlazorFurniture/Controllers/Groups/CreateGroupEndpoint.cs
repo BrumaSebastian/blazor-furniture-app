@@ -5,16 +5,18 @@ using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
+using BlazorFurniture.Validators.Groups;
 using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.Groups;
 
-internal sealed class CreateGoupEndpoint( ICommandDispatcher commandDispatcher ) : Endpoint<CreateGroupRequest>
+internal sealed class CreateGroupEndpoint( ICommandDispatcher commandDispatcher ) : Endpoint<CreateGroupRequest>
 {
     public override void Configure()
     {
         Post("");
         Group<GroupsEndpointGroup>();
+        Validator<CreateGroupRequestValidator>();
         Summary(options =>
         {
             options.Summary = "Create group";

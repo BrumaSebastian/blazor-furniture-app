@@ -48,6 +48,7 @@ builder.Services.AddFastEndpoints()
 {
     options.ShortSchemaNames = true;
     options.EnableJWTBearerAuth = false;
+    options.FlattenSchema = true;
     options.DocumentSettings = o =>
     {
         o.Title = "BlazorFurniture";
@@ -66,8 +67,8 @@ builder.Services.AddFastEndpoints()
                     AuthorizationUrl = oidcConfiguration.AuthorizationEndpoint,
                     TokenUrl = oidcConfiguration.TokenEndpoint,
                     RefreshUrl = oidcConfiguration.TokenEndpoint,
-                    Scopes = openIdConnectOptions.DevPublicClient?.Scopes.ToDictionary(s => s, s => s) ?? new Dictionary<string, string>()
-                }
+                    Scopes = openIdConnectOptions.DevPublicClient?.Scopes.ToDictionary(s => s, s => s) ?? [],
+                },
             }
         });
     };
@@ -139,7 +140,27 @@ app.UseFastEndpoints(options =>
     options.Endpoints.ShortNames = true;
     options.Errors.UseProblemDetails();
 })
-.UseSwaggerGen();
+.UseSwaggerGen(uiConfig: c =>
+{
+    c.Path = "/swagger";
+    c.DocumentPath = "/swagger/{documentName}/swagger.json";
+
+    // Configure Swagger UI OAuth2 with PKCE
+    c.ConfigureDefaults(s =>
+    {
+        s.OAuth2Client = new NSwag.AspNetCore.OAuth2ClientSettings
+        {
+            ClientId = openIdConnectOptions.DevPublicClient?.ClientId,
+            UsePkceWithAuthorizationCodeGrant = true // Enable PKCE for Swagger UI
+        };
+
+        // Add scopes to the OAuth2Client
+        foreach (var scope in openIdConnectOptions.DevPublicClient?.Scopes ?? [])
+        {
+            s.OAuth2Client.Scopes.Add(scope);
+        }
+    });
+});
 
 if (app.Environment.IsDevelopment())
 {

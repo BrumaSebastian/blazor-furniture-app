@@ -72,4 +72,9 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
     {
         throw new NotImplementedException();
     }
+
+    public Task<HttpResult<EmptyResult, ErrorRepresentation>> Update( Guid groupId, GroupRepresentation groupRepresentation, CancellationToken ct )
+    {
+        throw new NotImplementedException();
+    }
 }

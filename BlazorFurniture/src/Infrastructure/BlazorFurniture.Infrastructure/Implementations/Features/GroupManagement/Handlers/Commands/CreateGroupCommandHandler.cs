@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorFurniture.Infrastructure.Implementations.Features.GroupManagement.Handlers.Commands;
 
-internal sealed class CreateGroupHandler(
+internal sealed class CreateGroupCommandHandler(
     IGroupManagementClient groupManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
     : ICommandHandler<CreateGroupCommand, Result<HttpHeaderLocationResult>>
