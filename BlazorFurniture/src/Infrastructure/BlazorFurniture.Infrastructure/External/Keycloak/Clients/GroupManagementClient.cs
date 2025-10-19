@@ -34,9 +34,14 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         return await SendRequest<HttpHeaderLocationResult, ErrorRepresentation>(requestMessage, ct);
     }
 
-    public Task<HttpResult<GroupRepresentation, ErrorRepresentation>> Get( Guid groupId, CancellationToken ct )
+    public async Task<HttpResult<GroupRepresentation, ErrorRepresentation>> Get( Guid groupId, CancellationToken ct )
     {
-        throw new NotImplementedException();
+        var requestMessage = HttpRequestMessageBuilder
+           .Create(HttpClient, HttpMethod.Get)
+           .WithPath(Endpoints.GroupById(groupId))
+           .Build();
+
+        return await SendRequest<GroupRepresentation, ErrorRepresentation>(requestMessage, ct);
     }
 
     public async Task<HttpResult<List<GroupRepresentation>, ErrorRepresentation>> Get( GroupQueryFilters filters, CancellationToken ct )
@@ -73,8 +78,14 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         throw new NotImplementedException();
     }
 
-    public Task<HttpResult<EmptyResult, ErrorRepresentation>> Update( Guid groupId, GroupRepresentation groupRepresentation, CancellationToken ct )
+    public async Task<HttpResult<EmptyResult, ErrorRepresentation>> Update( Guid groupId, GroupRepresentation groupRepresentation, CancellationToken ct )
     {
-        throw new NotImplementedException();
+        var requestMessage = HttpRequestMessageBuilder
+           .Create(HttpClient, HttpMethod.Put)
+           .WithPath(Endpoints.GroupById(groupId))
+           .WithContent(groupRepresentation)
+           .Build();
+
+        return await SendRequest<EmptyResult, ErrorRepresentation>(requestMessage, ct);
     }
 }
