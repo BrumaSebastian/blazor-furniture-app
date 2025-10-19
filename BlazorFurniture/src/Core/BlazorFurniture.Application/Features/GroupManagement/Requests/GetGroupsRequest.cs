@@ -5,6 +5,6 @@ namespace BlazorFurniture.Application.Features.GroupManagement.Requests;
 
 public sealed record GetGroupsRequest
 {
-    [FromQuery]
+    [FromQuery(IsRequired = false)]
     public GroupQueryFilters Filters { get; init; } = new();
 }
