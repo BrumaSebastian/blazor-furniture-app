@@ -30,7 +30,7 @@ public static class SendExtensions
             }
 
             return sender.HttpContext.Response
-                .SendAsync(problemDetails, problemDetails.Status.Value);
+                .SendAsync(problemDetails, problemDetails.Status ?? StatusCodes.Status500InternalServerError);
         }
     }
 }
