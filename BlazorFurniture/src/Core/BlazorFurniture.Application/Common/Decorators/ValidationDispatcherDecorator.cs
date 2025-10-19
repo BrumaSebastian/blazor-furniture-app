@@ -17,12 +17,6 @@ public class ValidationDispatcherDecorator(
     private readonly IServiceProvider _serviceProvider = serviceProvider;
     private readonly ILogger<ValidationDispatcherDecorator> _logger = logger;
 
-    //public async Task Dispatch<TCommand>( TCommand command, CancellationToken ct = default )
-    //    where TCommand : ICommand
-    //{
-    //    await commandDispatcher.Dispatch<TCommand>(command, ct);
-    //}
-
     public async Task<TResult> Dispatch<TCommand, TResult>( TCommand command, CancellationToken ct = default )
         where TCommand : ICommand<TResult>
     {

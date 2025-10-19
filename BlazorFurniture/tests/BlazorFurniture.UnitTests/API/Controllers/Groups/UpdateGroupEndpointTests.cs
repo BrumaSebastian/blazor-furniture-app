@@ -14,7 +14,7 @@ namespace BlazorFurniture.UnitTests.API.Controllers.Groups;
 public class UpdateGroupEndpointTests
 {
     private readonly ICommandDispatcher commandDispatcher;
-    private readonly IFixture fixture;
+    private readonly Fixture fixture;
 
     public UpdateGroupEndpointTests()
     {
