@@ -11,7 +11,7 @@ using Moq;
 
 namespace BlazorFurniture.UnitTests.Infrastructure.GroupManagement;
 
-public class CreateGroupCommandHandlerTest
+public class CreateGroupCommandHandlerTests
 {
     [Fact]
     public async Task HandleAsync_CreatesGroup_OnSuccess()
@@ -25,7 +25,7 @@ public class CreateGroupCommandHandlerTest
         client.Setup(c => c.Create(groupName, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<HttpHeaderLocationResult, ErrorRepresentation>
                 .Succeeded(new HttpHeaderLocationResult { Location = location }));
-        var handler = new CreateGroupHandler(client.Object, new KeycloakHttpErrorMapper());
+        var handler = new CreateGroupCommandHandler(client.Object, new KeycloakHttpErrorMapper());
 
         // Act
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
@@ -46,7 +46,7 @@ public class CreateGroupCommandHandlerTest
         client.Setup(c => c.Create(groupName, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<HttpHeaderLocationResult, ErrorRepresentation>
                 .Failed(new ErrorRepresentation { Error = "name already registered" }, System.Net.HttpStatusCode.Conflict));
-        var handler = new CreateGroupHandler(client.Object, new KeycloakHttpErrorMapper());
+        var handler = new CreateGroupCommandHandler(client.Object, new KeycloakHttpErrorMapper());
 
         // Act
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
