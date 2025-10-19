@@ -41,9 +41,6 @@ internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : En
 
         await result.Match(
             response => Send.OkAsync(response),
-            errors => result.Error switch
-            {
-                _ => Send.ErrorsAsync()
-            });
+            error => Send.SendErrorAsync(error));
     }
 }

@@ -2,7 +2,6 @@
 using BlazorFurniture.Application.Common.Interfaces;
 using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
-using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Core.Shared.Utils.Extensions;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
@@ -52,10 +51,6 @@ public class GetProfileEndpoint(
 
                 return Send.OkAsync(result.Value);
             },
-            errors => result.Error switch
-            {
-                NotFoundError e => Send.NotFoundAsync(e),
-                _ => Send.ErrorsAsync()
-            });
+            error => Send.SendErrorAsync(error));
     }
 }

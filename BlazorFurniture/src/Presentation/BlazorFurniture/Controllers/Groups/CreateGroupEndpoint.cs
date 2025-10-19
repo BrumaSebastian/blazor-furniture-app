@@ -2,7 +2,6 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
-using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using BlazorFurniture.Validators.Groups;
@@ -46,10 +45,6 @@ internal sealed class CreateGroupEndpoint( ICommandDispatcher commandDispatcher 
 
         await result.Match(
             response => Send.CreatedAtAsync(result.Value.Location?.ToString() ?? string.Empty),
-            errors => result.Error switch
-            {
-                ConflictError e => Send.ConflictAsync(e),
-                _ => Send.ErrorsAsync()
-            });
+            error => Send.SendErrorAsync(error));
     }
 }

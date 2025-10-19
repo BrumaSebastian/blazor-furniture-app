@@ -2,11 +2,9 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.UserManagement.Commands;
 using BlazorFurniture.Application.Features.UserManagement.Requests;
-using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
-
 
 namespace BlazorFurniture.Controllers.User;
 
@@ -45,11 +43,6 @@ public class UpdateProfileEndpoint( ICommandDispatcher commandDispatcher ) : End
 
         await result.Match(
             response => Send.NoContentAsync(),
-            errors => result.Error switch
-            {
-                ConflictError e => Send.ConflictAsync(e),
-                NotFoundError e => Send.NotFoundAsync(e),
-                _ => Send.ErrorsAsync()
-            });
+            error => Send.SendErrorAsync(error));
     }
 }
