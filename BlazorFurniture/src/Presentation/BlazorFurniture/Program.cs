@@ -11,7 +11,6 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MudBlazor.Services;
 using NSwag;
 using Scalar.AspNetCore;
-using Serilog;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -84,7 +83,7 @@ builder.Services.AddMemoryCache();
 //});
 
 builder.Services.AddAppServices(builder.Configuration);
-builder.Services.AddSerilog();
+//builder.Services.AddSerilog();
 builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddCors(options =>
