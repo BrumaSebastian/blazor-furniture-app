@@ -17,6 +17,7 @@ internal sealed class LoggingDelegatingHandler( ILogger<LoggingDelegatingHandler
 
         if (logger.IsEnabled(LogLevel.Debug) && request.Content is not null)
         {
+            await request.Content.LoadIntoBufferAsync(cancellationToken);
             var requestBody = await request.Content.ReadAsStringAsync(cancellationToken);
             logger.LogDebug(
                 "HTTP {Method} {Uri} - Request Body: {Body}",
