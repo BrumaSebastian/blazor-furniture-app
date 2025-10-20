@@ -16,4 +16,7 @@ internal sealed class Endpoints( string Realm )
     public string GroupsExtension() => $"{Groups()}-extension";
     public string GroupsCount() => $"{Groups()}/count";
     public string GroupById( Guid id ) => $"{Groups()}/{id}";
+    public string GroupByIdExtension( Guid id ) => $"{GroupsExtension()}/{id}";
+    public string GroupMembersExtension( Guid groupId ) => $"{GroupByIdExtension(groupId)}/members";
+    public string GroupMemberByIdExtension( Guid groupId, Guid userId ) => $"{GroupMembersExtension(groupId)}/{userId}";
 }

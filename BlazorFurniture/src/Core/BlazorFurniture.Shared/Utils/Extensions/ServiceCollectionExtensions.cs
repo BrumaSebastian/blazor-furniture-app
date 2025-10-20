@@ -6,16 +6,14 @@ public static class ServiceCollectionExtensions
 {
     extension ( IServiceCollection services )
     {
-        public IServiceCollection AddHttpClientWithBaseUrl<TInterface, TImplementation>( string baseUrl )
+        public IHttpClientBuilder AddHttpClientWithBaseUrl<TInterface, TImplementation>( string baseUrl )
                 where TInterface : class
                 where TImplementation : class, TInterface
         {
-            services.AddHttpClient<TInterface, TImplementation>(client =>
+            return services.AddHttpClient<TInterface, TImplementation>(client =>
             {
                 client.BaseAddress = new Uri(baseUrl);
             });
-
-            return services;
         }
     }
 }

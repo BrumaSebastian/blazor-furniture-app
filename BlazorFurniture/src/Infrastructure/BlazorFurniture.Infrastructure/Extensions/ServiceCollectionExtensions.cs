@@ -2,6 +2,7 @@
 using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Core.Shared.Utils.Extensions;
 using BlazorFurniture.Infrastructure.Constants;
+using BlazorFurniture.Infrastructure.External;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Clients;
 using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
@@ -42,8 +43,15 @@ public static class ServiceCollectionExtensions
             services.AddSingleton(rg => rg.GetRequiredService<IOptions<KeycloakConfiguration>>().Value);
             services.AddScoped<EndpointsFactory>();
             services.AddScoped(sp => sp.GetRequiredService<EndpointsFactory>().Create());
-            services.AddHttpClientWithBaseUrl<IUserManagementClient, UserManagementClient>(keycloakConfig.Url);
-            services.AddHttpClientWithBaseUrl<IGroupManagementClient, GroupManagementClient>(keycloakConfig.Url);
+            
+            // Register logging handler
+            services.AddScoped<LoggingDelegatingHandler>();
+            
+            services.AddHttpClientWithBaseUrl<IUserManagementClient, UserManagementClient>(keycloakConfig.Url)
+                .AddHttpMessageHandler<LoggingDelegatingHandler>();
+                
+            services.AddHttpClientWithBaseUrl<IGroupManagementClient, GroupManagementClient>(keycloakConfig.Url)
+                .AddHttpMessageHandler<LoggingDelegatingHandler>();
 
             return services;
         }

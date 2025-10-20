@@ -18,7 +18,7 @@ public class AddUserToGroupCommandHandlerTests
         // Arrange
         var groupId = Guid.NewGuid();
         var userId = Guid.NewGuid();
-        var command = new AddUserToGroupCommand(new AddUserToGroupRequest(groupId, userId));
+        var command = new AddUserToGroupCommand(new AddUserToGroupRequest { GroupId = groupId, UserId = userId });
         var client = new Mock<IGroupManagementClient>();
         client.Setup(c => c.AddUser(groupId, userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>.Succeeded(new EmptyResult()));
@@ -38,7 +38,7 @@ public class AddUserToGroupCommandHandlerTests
         // Arrange
         var groupId = Guid.NewGuid();
         var userId = Guid.NewGuid();
-        var command = new AddUserToGroupCommand(new AddUserToGroupRequest(groupId, userId));
+        var command = new AddUserToGroupCommand(new AddUserToGroupRequest { GroupId = groupId, UserId = userId });
         var client = new Mock<IGroupManagementClient>();
         client.Setup(c => c.AddUser(groupId, userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>
