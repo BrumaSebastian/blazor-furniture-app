@@ -7,29 +7,24 @@ using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.Groups;
 
-internal sealed class AddUserToGroupEndpoint( ICommandDispatcher commandDispatcher ) : Endpoint<AddUserToGroupRequest>
+internal sealed class RemoveUserFromGroupEndpoint( ICommandDispatcher commandDispatcher ) : Endpoint<RemoveUserFromGroupRequest>
 {
     public override void Configure()
     {
-        Post("{groupId:guid}/users/{userId:guid}");
+        Delete("{groupId:guid}/users/{userId:guid}");
         Group<GroupsEndpointGroup>();
 
         Summary(options =>
         {
-            options.Summary = "Adds a user into a group with role User";
+            options.Summary = "Remove a user from a group";
             options.Response(StatusCodes.Status204NoContent);
             options.Response(StatusCodes.Status404NotFound);
         });
-
-        Description(options =>
-        {
-            options.ProducesProblem(StatusCodes.Status400BadRequest);
-        });
     }
 
-    public override async Task HandleAsync( AddUserToGroupRequest req, CancellationToken ct )
+    public override async Task HandleAsync( RemoveUserFromGroupRequest req, CancellationToken ct )
     {
-        var result = await commandDispatcher.Dispatch<AddUserToGroupCommand, Result<EmptyResult>>(new AddUserToGroupCommand(req), ct);
+        var result = await commandDispatcher.Dispatch<RemoveUserFromGroupCommand, Result<EmptyResult>>(new RemoveUserFromGroupCommand(req), ct);
 
         await result.Match(
             response => Send.NoContentAsync(),
