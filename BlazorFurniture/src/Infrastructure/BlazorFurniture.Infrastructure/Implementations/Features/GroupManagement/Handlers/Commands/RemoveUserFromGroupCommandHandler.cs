@@ -8,14 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorFurniture.Infrastructure.Implementations.Features.GroupManagement.Handlers.Commands;
 
-internal sealed class AddUserToGroupCommandHandler(
+internal sealed class RemoveUserFromGroupCommandHandler(
     IGroupManagementClient groupManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
-    : ICommandHandler<AddUserToGroupCommand, Result<EmptyResult>>
+    : ICommandHandler<RemoveUserFromGroupCommand, Result<EmptyResult>>
 {
-    public async Task<Result<EmptyResult>> HandleAsync( AddUserToGroupCommand command, CancellationToken ct = default )
+    public async Task<Result<EmptyResult>> HandleAsync( RemoveUserFromGroupCommand command, CancellationToken ct = default )
     {
-        var result = await groupManagementClient.AddUser(command.Request.GroupId, command.Request.UserId, ct);
+        var result = await groupManagementClient.RemoveUser(command.Request.GroupId, command.Request.UserId, ct);
 
         return result.ToDomainResult(errorMapper);
     }
