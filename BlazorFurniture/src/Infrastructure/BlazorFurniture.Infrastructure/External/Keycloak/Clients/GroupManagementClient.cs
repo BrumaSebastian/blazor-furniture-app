@@ -83,9 +83,14 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         throw new NotImplementedException();
     }
 
-    public Task<HttpResult<EmptyResult, ErrorRepresentation>> RemoveUser( Guid groupId, Guid userId, CancellationToken ct )
+    public async Task<HttpResult<EmptyResult, ErrorRepresentation>> RemoveUser( Guid groupId, Guid userId, CancellationToken ct )
     {
-        throw new NotImplementedException();
+        var requestMessage = HttpRequestMessageBuilder
+           .Create(HttpClient, HttpMethod.Delete)
+           .WithPath(Endpoints.GroupMemberByIdExtension(groupId, userId))
+           .Build();
+
+        return await SendRequest<EmptyResult, ErrorRepresentation>(requestMessage, ct);
     }
 
     public async Task<HttpResult<EmptyResult, ErrorRepresentation>> Update( Guid groupId, GroupRepresentation groupRepresentation, CancellationToken ct )
