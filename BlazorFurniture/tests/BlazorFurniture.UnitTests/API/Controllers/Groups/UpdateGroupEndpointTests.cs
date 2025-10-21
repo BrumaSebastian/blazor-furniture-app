@@ -11,7 +11,7 @@ using NSubstitute;
 
 namespace BlazorFurniture.UnitTests.API.Controllers.Groups;
 
-public class UpdateGroupEndpointTests
+public sealed class UpdateGroupEndpointTests
 {
     private readonly ICommandDispatcher commandDispatcher;
     private readonly Fixture fixture;

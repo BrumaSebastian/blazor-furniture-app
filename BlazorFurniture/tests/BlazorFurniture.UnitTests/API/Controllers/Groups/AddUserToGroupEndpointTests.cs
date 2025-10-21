@@ -12,7 +12,7 @@ using NSubstitute;
 
 namespace BlazorFurniture.UnitTests.API.Controllers.Groups;
 
-public class AddUserToGroupEndpointTests
+public sealed class AddUserToGroupEndpointTests
 {
     private readonly ICommandDispatcher commandDispatcher;
     private readonly Fixture fixture;
