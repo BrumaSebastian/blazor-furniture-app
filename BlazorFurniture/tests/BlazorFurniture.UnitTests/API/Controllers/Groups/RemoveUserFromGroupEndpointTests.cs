@@ -21,7 +21,7 @@ public sealed class RemoveUserFromGroupEndpointTests
     }
 
     [Fact]
-    public async Task RemoveUserFromGroupEndpoint_OnSucessResult_Returns204()
+    public async Task RemoveUserFromGroupEndpoint_OnSuccessResult_Returns204()
     {
         // Arrange
         var request = fixture.Create<RemoveUserFromGroupRequest>();
