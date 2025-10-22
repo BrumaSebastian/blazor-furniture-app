@@ -15,11 +15,16 @@ namespace BlazorFurniture.UnitTests.Infrastructure.GroupManagement;
 public class RemoveUserFromGroupCommandHandlerTests
 {
     private readonly Fixture fixture;
+    private readonly Mock<IGroupManagementClient> clientMock;
     private readonly IHttpErrorMapper errorMapper;
+    private readonly RemoveUserFromGroupCommandHandler handler;
+
     public RemoveUserFromGroupCommandHandlerTests()
     {
         fixture = new Fixture();
+        clientMock = new Mock<IGroupManagementClient>();
         errorMapper = new KeycloakHttpErrorMapper();
+        handler = new RemoveUserFromGroupCommandHandler(clientMock.Object, errorMapper);
     }
 
     [Fact]
@@ -28,17 +33,15 @@ public class RemoveUserFromGroupCommandHandlerTests
         // Arrange
         var request = fixture.Create<RemoveUserFromGroupRequest>();
         var command = new RemoveUserFromGroupCommand(request);
-        var client = new Mock<IGroupManagementClient>();
-        client.Setup(c => c.RemoveUser(request.GroupId, request.UserId, It.IsAny<CancellationToken>()))
+        clientMock.Setup(c => c.RemoveUser(request.GroupId, request.UserId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>.Succeeded(new EmptyResult()));
-        var handler = new RemoveUserFromGroupCommandHandler(client.Object, errorMapper);
 
         // Act
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);
-        client.Verify(c => c.RemoveUser(request.GroupId, request.UserId, It.IsAny<CancellationToken>()), Times.Once);
+        clientMock.Verify(c => c.RemoveUser(request.GroupId, request.UserId, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -47,11 +50,9 @@ public class RemoveUserFromGroupCommandHandlerTests
         // Arrange
         var request = fixture.Create<RemoveUserFromGroupRequest>();
         var command = new RemoveUserFromGroupCommand(request);
-        var client = new Mock<IGroupManagementClient>();
-        client.Setup(c => c.RemoveUser(request.GroupId, request.UserId, It.IsAny<CancellationToken>()))
+        clientMock.Setup(c => c.RemoveUser(request.GroupId, request.UserId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>
                 .Failed(new ErrorRepresentation { Error = "user not found" }, HttpStatusCode.NotFound));
-        var handler = new RemoveUserFromGroupCommandHandler(client.Object, errorMapper);
 
         // Act
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
@@ -59,6 +60,6 @@ public class RemoveUserFromGroupCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(typeof(NotFoundError), result.Error!.GetType());
-        client.Verify(c => c.RemoveUser(request.GroupId, request.UserId, It.IsAny<CancellationToken>()), Times.Once);
+        clientMock.Verify(c => c.RemoveUser(request.GroupId, request.UserId, It.IsAny<CancellationToken>()), Times.Once);
     }
 }
