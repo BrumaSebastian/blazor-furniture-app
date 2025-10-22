@@ -37,41 +37,25 @@ public sealed class UpdateGroupEndpointTests
 
         var request = fixture.Create<UpdateGroupRequest>();
 
-        commandDispatcher
-            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                Arg.Any<UpdateGroupCommand>(),
-                Arg.Any<CancellationToken>())
-            .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
+        SetupSuccessfulDispatch();
 
         // Act
-        await endpoint.HandleAsync(request, CancellationToken.None);
+        await endpoint.HandleAsync(request, default);
 
         // Assert
-        await commandDispatcher.Received(1)
-            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                Arg.Any<UpdateGroupCommand>(),
-                Arg.Any<CancellationToken>());
+        await VerifyDispatcherCalled();
     }
 
     [Fact]
     public async Task HandleAsync_WithHttpContext_ShouldSetCorrectStatusCode()
     {
         // Arrange
-        var httpContext = new DefaultHttpContext();
-        var endpoint = Factory.Create<UpdateGroupEndpoint>(
-            httpContext,
-            commandDispatcher);
+        var (request, httpContext, endpoint) = CreateTestContext();
 
-        var request = fixture.Create<UpdateGroupRequest>();
-
-        commandDispatcher
-            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                Arg.Any<UpdateGroupCommand>(),
-                Arg.Any<CancellationToken>())
-            .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
+        SetupSuccessfulDispatch();
 
         // Act
-        await endpoint.HandleAsync(request, CancellationToken.None);
+        await endpoint.HandleAsync(request, default);
 
         // Assert
         Assert.Equal(StatusCodes.Status204NoContent, httpContext.Response.StatusCode);
@@ -81,12 +65,7 @@ public sealed class UpdateGroupEndpointTests
     public async Task HandleAsync_WhenNotFound_ShouldSetNotFoundStatusCode()
     {
         // Arrange
-        var httpContext = new DefaultHttpContext();
-        var endpoint = Factory.Create<UpdateGroupEndpoint>(
-            httpContext,
-            commandDispatcher);
-
-        var request = fixture.Create<UpdateGroupRequest>();
+        var (request, httpContext, endpoint) = CreateTestContext();
         var notFoundError = new NotFoundError(request.Id, typeof(UpdateGroupRequest));
 
         commandDispatcher
@@ -96,9 +75,34 @@ public sealed class UpdateGroupEndpointTests
             .Returns(Result<EmptyResult>.Failed(notFoundError));
 
         // Act
-        await endpoint.HandleAsync(request, CancellationToken.None);
+        await endpoint.HandleAsync(request, default);
 
         // Assert
         Assert.Equal(StatusCodes.Status404NotFound, httpContext.Response.StatusCode);
+    }
+
+    private (UpdateGroupRequest request, DefaultHttpContext httpContext, UpdateGroupEndpoint endpoint) CreateTestContext()
+    {
+        var request = fixture.Create<UpdateGroupRequest>();
+        var httpContext = new DefaultHttpContext();
+        var endpoint = Factory.Create<UpdateGroupEndpoint>(httpContext, commandDispatcher);
+        return (request, httpContext, endpoint);
+    }
+
+    private void SetupSuccessfulDispatch()
+    {
+        commandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                Arg.Any<UpdateGroupCommand>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
+    }
+
+    private async Task VerifyDispatcherCalled()
+    {
+        await commandDispatcher.Received(1)
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                Arg.Any<UpdateGroupCommand>(),
+                Arg.Any<CancellationToken>());
     }
 }

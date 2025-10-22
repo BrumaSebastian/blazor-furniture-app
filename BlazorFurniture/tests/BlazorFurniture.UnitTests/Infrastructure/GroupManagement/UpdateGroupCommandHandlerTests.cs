@@ -42,12 +42,10 @@ public class UpdateGroupCommandHandlerTests
             Name = "OldGroupName"
         };
 
-        clientMock
-            .Setup(c => c.Get(groupId, It.IsAny<CancellationToken>()))
+        clientMock.Setup(c => c.Get(groupId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<GroupRepresentation, ErrorRepresentation>.Succeeded(groupRepresentation));
 
-        clientMock
-            .Setup(c => c.Update(groupId, groupRepresentation, It.IsAny<CancellationToken>()))
+        clientMock.Setup(c => c.Update(groupId, groupRepresentation, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>.Succeeded(new EmptyResult()));
 
         // Act
@@ -72,8 +70,7 @@ public class UpdateGroupCommandHandlerTests
             .With(e => e.Error, "not_found")
             .Without(e => e.Errors)
             .Create();
-        clientMock
-            .Setup(c => c.Get(groupId, It.IsAny<CancellationToken>()))
+        clientMock.Setup(c => c.Get(groupId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<GroupRepresentation, ErrorRepresentation>.Failed(
                 errorRepresentation,
                 HttpStatusCode.NotFound));
@@ -97,8 +94,7 @@ public class UpdateGroupCommandHandlerTests
             .With(f => f.Id, updateRequest.Id)
             .Create();
 
-        clientMock
-            .Setup(c => c.Get(updateRequest.Id, It.IsAny<CancellationToken>()))
+        clientMock.Setup(c => c.Get(updateRequest.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<GroupRepresentation, ErrorRepresentation>.Succeeded(groupRepresentation));
 
         var errorRepresentation = fixture.Build<ErrorRepresentation>()
@@ -106,8 +102,7 @@ public class UpdateGroupCommandHandlerTests
             .Without(e => e.Errors)
             .Create();
 
-        clientMock
-            .Setup(c => c.Update(updateRequest.Id, groupRepresentation, It.IsAny<CancellationToken>()))
+        clientMock.Setup(c => c.Update(updateRequest.Id, groupRepresentation, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>.Failed(
                 errorRepresentation,
                 HttpStatusCode.Conflict));

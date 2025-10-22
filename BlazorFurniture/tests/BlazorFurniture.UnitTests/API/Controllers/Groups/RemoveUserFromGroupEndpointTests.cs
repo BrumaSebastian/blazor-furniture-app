@@ -14,6 +14,7 @@ public sealed class RemoveUserFromGroupEndpointTests
 {
     private readonly ICommandDispatcher commandDispatcher;
     private readonly Fixture fixture;
+
     public RemoveUserFromGroupEndpointTests()
     {
         commandDispatcher = Substitute.For<ICommandDispatcher>();
@@ -24,25 +25,35 @@ public sealed class RemoveUserFromGroupEndpointTests
     public async Task RemoveUserFromGroupEndpoint_OnSuccessResult_Returns204()
     {
         // Arrange
-        var request = fixture.Create<RemoveUserFromGroupRequest>();
-        var httpContext = new DefaultHttpContext();
-        var endpoint = Factory.Create<RemoveUserFromGroupEndpoint>(httpContext, commandDispatcher);
+        var (request, httpContext, endpoint) = CreateTestContext();
 
         commandDispatcher
            .Dispatch<RemoveUserFromGroupCommand, Result<EmptyResult>>(
-               new RemoveUserFromGroupCommand(request),
-               Arg.Any<CancellationToken>())
+                Arg.Any<RemoveUserFromGroupCommand>(),
+                Arg.Any<CancellationToken>())
            .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
 
         // Act
-        await endpoint.HandleAsync(request, CancellationToken.None);
+        await endpoint.HandleAsync(request, default);
 
         // Assert
+        await VerifyDispatcherCalled();
+        Assert.Equal(StatusCodes.Status204NoContent, httpContext.Response.StatusCode);
+    }
+
+    private (RemoveUserFromGroupRequest request, DefaultHttpContext httpContext, RemoveUserFromGroupEndpoint endpoint) CreateTestContext()
+    {
+        var request = fixture.Create<RemoveUserFromGroupRequest>();
+        var httpContext = new DefaultHttpContext();
+        var endpoint = Factory.Create<RemoveUserFromGroupEndpoint>(httpContext, commandDispatcher);
+        return (request, httpContext, endpoint);
+    }
+
+    private async Task VerifyDispatcherCalled()
+    {
         await commandDispatcher.Received(1)
-            .Dispatch<RemoveUserFromGroupCommand, Result<EmptyResult>>(
+           .Dispatch<RemoveUserFromGroupCommand, Result<EmptyResult>>(
                 Arg.Any<RemoveUserFromGroupCommand>(),
                 Arg.Any<CancellationToken>());
-
-        Assert.Equal(StatusCodes.Status204NoContent, httpContext.Response.StatusCode);
     }
 }

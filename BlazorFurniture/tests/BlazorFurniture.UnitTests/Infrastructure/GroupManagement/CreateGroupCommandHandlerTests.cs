@@ -6,13 +6,24 @@ using BlazorFurniture.Domain.Entities.Keycloak;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.GroupManagement.Handlers.Commands;
-using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
 using Moq;
+using System.Net;
 
 namespace BlazorFurniture.UnitTests.Infrastructure.GroupManagement;
 
 public class CreateGroupCommandHandlerTests
 {
+    private readonly Mock<IGroupManagementClient> clientMock;
+    private readonly IHttpErrorMapper errorMapper;
+    private readonly CreateGroupCommandHandler handler;
+
+    public CreateGroupCommandHandlerTests()
+    {
+        clientMock = new Mock<IGroupManagementClient>();
+        errorMapper = new KeycloakHttpErrorMapper();
+        handler = new CreateGroupCommandHandler(clientMock.Object, errorMapper);
+    }
+
     [Fact]
     public async Task HandleAsync_CreatesGroup_OnSuccess()
     {
@@ -20,12 +31,11 @@ public class CreateGroupCommandHandlerTests
         var groupName = "TestGroup";
         var id = Guid.NewGuid();
         var command = new CreateGroupCommand(new CreateGroupRequest(groupName));
-        var client = new Mock<IGroupManagementClient>();
         var location = new Uri($"https://example.com/groups/{id}");
-        client.Setup(c => c.Create(groupName, It.IsAny<CancellationToken>()))
+
+        clientMock.Setup(c => c.Create(groupName, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<HttpHeaderLocationResult, ErrorRepresentation>
                 .Succeeded(new HttpHeaderLocationResult { Location = location }));
-        var handler = new CreateGroupCommandHandler(client.Object, new KeycloakHttpErrorMapper());
 
         // Act
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
@@ -33,7 +43,7 @@ public class CreateGroupCommandHandlerTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal(location, result.Value.Location);
-        client.Verify(c => c.Create(groupName, It.IsAny<CancellationToken>()), Times.Once);
+        clientMock.Verify(c => c.Create(groupName, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -42,11 +52,10 @@ public class CreateGroupCommandHandlerTests
         // Arrange
         var groupName = "TestGroup";
         var command = new CreateGroupCommand(new CreateGroupRequest(groupName));
-        var client = new Mock<IGroupManagementClient>();
-        client.Setup(c => c.Create(groupName, It.IsAny<CancellationToken>()))
+
+        clientMock.Setup(c => c.Create(groupName, It.IsAny<CancellationToken>()))
             .ReturnsAsync(HttpResult<HttpHeaderLocationResult, ErrorRepresentation>
-                .Failed(new ErrorRepresentation { Error = "name already registered" }, System.Net.HttpStatusCode.Conflict));
-        var handler = new CreateGroupCommandHandler(client.Object, new KeycloakHttpErrorMapper());
+                .Failed(new ErrorRepresentation { Error = "name already registered" }, HttpStatusCode.Conflict));
 
         // Act
         var result = await handler.HandleAsync(command, TestContext.Current.CancellationToken);
@@ -54,6 +63,6 @@ public class CreateGroupCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(typeof(ConflictError), result.Error!.GetType());
-        client.Verify(c => c.Create(groupName, It.IsAny<CancellationToken>()), Times.Once);
+        clientMock.Verify(c => c.Create(groupName, It.IsAny<CancellationToken>()), Times.Once);
     }
 }
