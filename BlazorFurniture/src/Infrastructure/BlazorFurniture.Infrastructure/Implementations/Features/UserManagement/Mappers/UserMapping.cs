@@ -28,4 +28,20 @@ internal static class UserMapping
             LastName = source.LastName,
         };
     }
+
+    extension( UserPermissionsRepresentation source )
+    {
+        public UserPermissionsResponse ToResponse() => new()
+        {
+            Role = source.Role.ToString(),
+            Permissions = source.Permissions,
+            Groups = source.Groups?.Select(g => new GroupPermissionsResponse()
+            {
+                Id = g.Group.Id,
+                Name = g.Group.Name,
+                Role = g.Role.ToString(),
+                Permissions = g.Permissions,
+            }).ToList() ?? [],
+        };
+    }
 }

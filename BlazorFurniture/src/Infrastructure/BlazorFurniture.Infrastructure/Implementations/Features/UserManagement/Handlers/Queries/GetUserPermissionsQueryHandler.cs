@@ -1,0 +1,25 @@
+﻿using BlazorFurniture.Application.Common.Extensions;
+using BlazorFurniture.Application.Common.Interfaces;
+using BlazorFurniture.Application.Common.Models;
+using BlazorFurniture.Application.Features.UserManagement.Queries;
+using BlazorFurniture.Application.Features.UserManagement.Responses;
+using BlazorFurniture.Core.Shared.Errors;
+using BlazorFurniture.Infrastructure.Constants;
+using BlazorFurniture.Infrastructure.External.Interfaces;
+using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
+
+internal sealed class GetUserPermissionsQueryHandler(
+    IUserManagementClient userManagementClient,
+    [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
+    : IQueryHandler<GetUserPermissionsQuery, UserPermissionsResponse>
+{
+    public async Task<Result<UserPermissionsResponse>> HandleAsync( GetUserPermissionsQuery query, CancellationToken ct = default )
+    {
+        var result = await userManagementClient.GetPermissions(query.Id, ct).ToDomainResult(errorMapper, query.Id);
+
+        return result.Map(u => u.ToResponse());
+    }
+}
