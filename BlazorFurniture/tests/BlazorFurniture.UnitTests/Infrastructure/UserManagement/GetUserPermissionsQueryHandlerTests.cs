@@ -1,0 +1,52 @@
+using AutoFixture;
+using BlazorFurniture.Application.Common.Models;
+using BlazorFurniture.Application.Features.UserManagement.Queries;
+using BlazorFurniture.Core.Shared.Errors;
+using BlazorFurniture.Domain.Entities.Keycloak;
+using BlazorFurniture.Domain.Enums;
+using BlazorFurniture.Infrastructure.External.Interfaces;
+using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
+using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
+using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
+using Moq;
+
+namespace BlazorFurniture.UnitTests.Infrastructure.UserManagement;
+
+public class GetUserPermissionsQueryHandlerTests
+{
+    private readonly Fixture fixture;
+    private readonly Mock<IUserManagementClient> clientMock;
+    private readonly IHttpErrorMapper errorMapper;
+    private readonly GetUserPermissionsQueryHandler handler;
+
+    public GetUserPermissionsQueryHandlerTests()
+    {
+        fixture = new Fixture();
+        clientMock = new Mock<IUserManagementClient>();
+        errorMapper = new KeycloakHttpErrorMapper();
+        handler = new GetUserPermissionsQueryHandler(clientMock.Object, errorMapper);
+    }
+
+    [Fact]
+    public async Task HandleAsync_ReturnsMappedPermissions_OnSuccess()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var userPermissionRepresentation = fixture.Build<UserPermissionsRepresentation>()
+            .With(u => u.Role, PlatformRoles.User)
+            .Create();
+
+        clientMock.Setup(c => c.GetPermissions(id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(HttpResult<UserPermissionsRepresentation, ErrorRepresentation>.Succeeded(userPermissionRepresentation));
+
+        // Act
+        var result = await handler.HandleAsync(new GetUserPermissionsQuery(id), TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Equal(userPermissionRepresentation.Role.ToString(), result.Value.Role);
+        Assert.Equal(userPermissionRepresentation.Permissions, result.Value.Permissions);
+        Assert.Equal(userPermissionRepresentation.Groups.Select(g => g.Group.Name), result.Value.Groups.Select(g => g.Name));
+        clientMock.Verify(c => c.GetPermissions(id, It.IsAny<CancellationToken>()), Times.Once);
+    }
+}

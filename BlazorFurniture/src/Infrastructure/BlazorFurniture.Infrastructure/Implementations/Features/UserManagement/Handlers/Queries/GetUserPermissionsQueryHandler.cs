@@ -11,15 +11,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
 
-internal sealed class GetUserProfileQueryHandler(
+internal sealed class GetUserPermissionsQueryHandler(
     IUserManagementClient userManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
-    : IQueryHandler<GetUserProfileQuery, UserProfileResponse>
+    : IQueryHandler<GetUserPermissionsQuery, UserPermissionsResponse>
 {
-    public async Task<Result<UserProfileResponse>> HandleAsync( GetUserProfileQuery query, CancellationToken ct = default )
+    public async Task<Result<UserPermissionsResponse>> HandleAsync( GetUserPermissionsQuery query, CancellationToken ct = default )
     {
-        var result = await userManagementClient.Get(query.Id, ct).ToDomainResult(errorMapper, query.Id);
+        var result = await userManagementClient.GetPermissions(query.Id, ct).ToDomainResult(errorMapper, query.Id);
 
-        return result.Map(u => u.ToRespoonse());
+        return result.Map(u => u.ToResponse());
     }
 }
