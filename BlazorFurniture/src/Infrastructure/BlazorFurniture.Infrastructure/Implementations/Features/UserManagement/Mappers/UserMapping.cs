@@ -8,7 +8,7 @@ internal static class UserMapping
 {
     extension( UserRepresentation source )
     {
-        public UserProfileResponse ToRespoonse() => new()
+        public UserProfileResponse ToResponse() => new()
         {
             Id = source.Id,
             Username = source.Username!,
