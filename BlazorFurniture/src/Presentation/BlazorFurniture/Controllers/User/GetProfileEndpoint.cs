@@ -24,7 +24,6 @@ public class GetProfileEndpoint(
             options.Summary = "Get user profile";
             options.Description = "Endpoint to get the profile of the currently authenticated user.";
             options.Response<UserProfileResponse>(StatusCodes.Status200OK);
-            options.Response(StatusCodes.Status403Forbidden);
         });
 
         Description(options =>
