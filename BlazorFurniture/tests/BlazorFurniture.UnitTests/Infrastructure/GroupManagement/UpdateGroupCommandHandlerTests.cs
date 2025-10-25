@@ -7,24 +7,24 @@ using BlazorFurniture.Domain.Entities.Keycloak;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.GroupManagement.Handlers.Commands;
-using Moq;
+using NSubstitute;
 using System.Net;
 
 namespace BlazorFurniture.UnitTests.Infrastructure.GroupManagement;
 
 public class UpdateGroupCommandHandlerTests
 {
-    private readonly Mock<IGroupManagementClient> clientMock;
+    private readonly IGroupManagementClient clientMock;
     private readonly KeycloakHttpErrorMapper errorMapper;
     private readonly Fixture fixture;
     private readonly UpdateGroupCommandHandler handler;
 
     public UpdateGroupCommandHandlerTests()
     {
-        clientMock = new Mock<IGroupManagementClient>();
+        clientMock = Substitute.For<IGroupManagementClient>();
         errorMapper = new KeycloakHttpErrorMapper();
         fixture = new Fixture();
-        handler = new UpdateGroupCommandHandler(clientMock.Object, errorMapper);
+        handler = new UpdateGroupCommandHandler(clientMock, errorMapper);
     }
 
     [Fact]
@@ -42,11 +42,11 @@ public class UpdateGroupCommandHandlerTests
             Name = "OldGroupName"
         };
 
-        clientMock.Setup(c => c.Get(groupId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<GroupRepresentation, ErrorRepresentation>.Succeeded(groupRepresentation));
+        clientMock.Get(groupId, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<GroupRepresentation, ErrorRepresentation>.Succeeded(groupRepresentation));
 
-        clientMock.Setup(c => c.Update(groupId, groupRepresentation, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>.Succeeded(new EmptyResult()));
+        clientMock.Update(groupId, groupRepresentation, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<EmptyResult, ErrorRepresentation>.Succeeded(new EmptyResult()));
 
         // Act
         var result = await handler.HandleAsync(command, CancellationToken.None);
@@ -54,7 +54,7 @@ public class UpdateGroupCommandHandlerTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal(updateRequest.Name, groupRepresentation.Name);
-        clientMock.Verify(c => c.Update(groupId, groupRepresentation, It.IsAny<CancellationToken>()), Times.Once);
+        await clientMock.Received(1).Update(groupId, groupRepresentation, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -70,8 +70,9 @@ public class UpdateGroupCommandHandlerTests
             .With(e => e.Error, "not_found")
             .Without(e => e.Errors)
             .Create();
-        clientMock.Setup(c => c.Get(groupId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<GroupRepresentation, ErrorRepresentation>.Failed(
+
+        clientMock.Get(groupId, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<GroupRepresentation, ErrorRepresentation>.Failed(
                 errorRepresentation,
                 HttpStatusCode.NotFound));
 
@@ -81,7 +82,7 @@ public class UpdateGroupCommandHandlerTests
         // Assert
         Assert.True(result.IsFailure);
         Assert.IsType<NotFoundError>(result.Error);
-        clientMock.Verify(c => c.Get(groupId, It.IsAny<CancellationToken>()), Times.Once);
+        await clientMock.Received(1).Get(groupId, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -94,16 +95,16 @@ public class UpdateGroupCommandHandlerTests
             .With(f => f.Id, updateRequest.Id)
             .Create();
 
-        clientMock.Setup(c => c.Get(updateRequest.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<GroupRepresentation, ErrorRepresentation>.Succeeded(groupRepresentation));
+        clientMock.Get(updateRequest.Id, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<GroupRepresentation, ErrorRepresentation>.Succeeded(groupRepresentation));
 
         var errorRepresentation = fixture.Build<ErrorRepresentation>()
             .With(e => e.Error, "name-conflict")
             .Without(e => e.Errors)
             .Create();
 
-        clientMock.Setup(c => c.Update(updateRequest.Id, groupRepresentation, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>.Failed(
+        clientMock.Update(updateRequest.Id, groupRepresentation, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<EmptyResult, ErrorRepresentation>.Failed(
                 errorRepresentation,
                 HttpStatusCode.Conflict));
 
@@ -113,6 +114,6 @@ public class UpdateGroupCommandHandlerTests
         // Assert
         Assert.True(result.IsFailure);
         Assert.IsType<ConflictError>(result.Error);
-        clientMock.Verify(c => c.Update(updateRequest.Id, groupRepresentation, It.IsAny<CancellationToken>()), Times.Once);
+        await clientMock.Received(1).Update(updateRequest.Id, groupRepresentation, Arg.Any<CancellationToken>());
     }
 }

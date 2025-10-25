@@ -20,6 +20,6 @@ internal sealed class GetUserProfileQueryHandler(
     {
         var result = await userManagementClient.Get(query.Id, ct).ToDomainResult(errorMapper, query.Id);
 
-        return result.Map(u => u.ToRespoonse());
+        return result.Map(u => u.ToResponse());
     }
 }

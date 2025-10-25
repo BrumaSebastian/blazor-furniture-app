@@ -8,23 +8,23 @@ using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
-using Moq;
+using NSubstitute;
 
 namespace BlazorFurniture.UnitTests.Infrastructure.UserManagement;
 
 public class GetUserPermissionsQueryHandlerTests
 {
     private readonly Fixture fixture;
-    private readonly Mock<IUserManagementClient> clientMock;
+    private readonly IUserManagementClient clientMock;
     private readonly IHttpErrorMapper errorMapper;
     private readonly GetUserPermissionsQueryHandler handler;
 
     public GetUserPermissionsQueryHandlerTests()
     {
         fixture = new Fixture();
-        clientMock = new Mock<IUserManagementClient>();
+        clientMock = Substitute.For<IUserManagementClient>();
         errorMapper = new KeycloakHttpErrorMapper();
-        handler = new GetUserPermissionsQueryHandler(clientMock.Object, errorMapper);
+        handler = new GetUserPermissionsQueryHandler(clientMock, errorMapper);
     }
 
     [Fact]
@@ -36,8 +36,8 @@ public class GetUserPermissionsQueryHandlerTests
             .With(u => u.Role, PlatformRoles.User)
             .Create();
 
-        clientMock.Setup(c => c.GetPermissions(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<UserPermissionsRepresentation, ErrorRepresentation>.Succeeded(userPermissionRepresentation));
+        clientMock.GetPermissions(id, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<UserPermissionsRepresentation, ErrorRepresentation>.Succeeded(userPermissionRepresentation));
 
         // Act
         var result = await handler.HandleAsync(new GetUserPermissionsQuery(id), TestContext.Current.CancellationToken);
@@ -47,6 +47,6 @@ public class GetUserPermissionsQueryHandlerTests
         Assert.Equal(userPermissionRepresentation.Role.ToString(), result.Value.Role);
         Assert.Equal(userPermissionRepresentation.Permissions, result.Value.Permissions);
         Assert.Equal(userPermissionRepresentation.Groups.Select(g => g.Group.Name), result.Value.Groups.Select(g => g.Name));
-        clientMock.Verify(c => c.GetPermissions(id, It.IsAny<CancellationToken>()), Times.Once);
+        await clientMock.Received(1).GetPermissions(id, Arg.Any<CancellationToken>());
     }
 }

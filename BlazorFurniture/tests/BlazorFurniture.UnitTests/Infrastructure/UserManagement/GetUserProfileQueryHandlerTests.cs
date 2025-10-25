@@ -7,7 +7,7 @@ using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
-using Moq;
+using NSubstitute;
 using System.Net;
 
 namespace BlazorFurniture.UnitTests.Infrastructure.UserManagement;
@@ -15,16 +15,16 @@ namespace BlazorFurniture.UnitTests.Infrastructure.UserManagement;
 public class GetUserProfileQueryHandlerTests
 {
     private readonly Fixture fixture;
-    private readonly Mock<IUserManagementClient> clientMock;
+    private readonly IUserManagementClient clientMock;
     private readonly IHttpErrorMapper errorMapper;
     private readonly GetUserProfileQueryHandler handler;
 
     public GetUserProfileQueryHandlerTests()
     {
         fixture = new Fixture();
-        clientMock = new Mock<IUserManagementClient>();
+        clientMock = Substitute.For<IUserManagementClient>();
         errorMapper = new KeycloakHttpErrorMapper();
-        handler = new GetUserProfileQueryHandler(clientMock.Object, errorMapper);
+        handler = new GetUserProfileQueryHandler(clientMock, errorMapper);
     }
 
     [Fact]
@@ -36,8 +36,8 @@ public class GetUserProfileQueryHandlerTests
             .With(u => u.Id, id)
             .Create();
 
-        clientMock.Setup(c => c.Get(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<UserRepresentation, ErrorRepresentation>.Succeeded(userRepresentation));
+        clientMock.Get(id, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<UserRepresentation, ErrorRepresentation>.Succeeded(userRepresentation));
 
         // Act
         var result = await handler.HandleAsync(new GetUserProfileQuery(id), TestContext.Current.CancellationToken);
@@ -48,7 +48,7 @@ public class GetUserProfileQueryHandlerTests
         Assert.Equal(userRepresentation.FirstName, result.Value.FirstName);
         Assert.Equal(userRepresentation.LastName, result.Value.LastName);
         Assert.Equal(userRepresentation.Email, result.Value.Email);
-        clientMock.Verify(c => c.Get(id, It.IsAny<CancellationToken>()), Times.Once);
+        await clientMock.Received(1).Get(id, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -61,10 +61,9 @@ public class GetUserProfileQueryHandlerTests
             .Without(e => e.Errors)
             .Create();
 
-        clientMock.Setup(c => c.Get(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<UserRepresentation, ErrorRepresentation>.Failed(
-                errorRepresentation,
-                HttpStatusCode.NotFound));
+        clientMock.Get(id, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<UserRepresentation, ErrorRepresentation>.Failed(
+                errorRepresentation, HttpStatusCode.NotFound));
 
         // Act
         var result = await handler.HandleAsync(new GetUserProfileQuery(id), TestContext.Current.CancellationToken);
@@ -72,6 +71,6 @@ public class GetUserProfileQueryHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.IsType<NotFoundError>(result.Error);
-        clientMock.Verify(c => c.Get(id, It.IsAny<CancellationToken>()), Times.Once);
+        await clientMock.Received(1).Get(id, Arg.Any<CancellationToken>());
     }
 }
