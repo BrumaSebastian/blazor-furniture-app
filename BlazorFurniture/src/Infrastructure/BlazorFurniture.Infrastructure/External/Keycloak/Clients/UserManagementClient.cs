@@ -24,9 +24,14 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
         throw new NotImplementedException();
     }
 
-    public Task<HttpResult<UserPermissionsRepresentation, ErrorRepresentation>> GetPermissions( Guid userId, CancellationToken ct )
+    public async Task<HttpResult<UserPermissionsRepresentation, ErrorRepresentation>> GetPermissions( Guid userId, CancellationToken ct )
     {
-        throw new NotImplementedException();
+        var requestMessage = HttpRequestMessageBuilder
+           .Create(HttpClient, HttpMethod.Get)
+           .WithPath(Endpoints.UserPermissions(userId))
+           .Build();
+
+        return await SendRequest<UserPermissionsRepresentation, ErrorRepresentation>(requestMessage, ct);
     }
 
     public Task<HttpResult<EmptyResult, ErrorRepresentation>> UpdateCredentials( UserRepresentation userRepresentation, CancellationToken ct )

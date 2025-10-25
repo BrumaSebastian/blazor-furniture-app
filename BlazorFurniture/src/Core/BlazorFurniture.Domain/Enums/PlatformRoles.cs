@@ -4,6 +4,5 @@ public enum PlatformRoles
 {
     Undefined,
     User,
-    Admin,
-    PlatformAdmin
+    Admin
 }

@@ -37,8 +37,8 @@ internal static class UserMapping
             Permissions = source.Permissions,
             Groups = source.Groups?.Select(g => new GroupPermissionsResponse()
             {
-                Id = g.Group.Id,
-                Name = g.Group.Name,
+                Id = g.Id,
+                Name = g.Name,
                 Role = g.Role.ToString(),
                 Permissions = g.Permissions,
             }).ToList() ?? [],
