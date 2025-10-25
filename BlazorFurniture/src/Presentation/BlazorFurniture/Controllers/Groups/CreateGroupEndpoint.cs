@@ -44,7 +44,7 @@ internal sealed class CreateGroupEndpoint( ICommandDispatcher commandDispatcher 
         var result = await commandDispatcher.Dispatch<CreateGroupCommand, Result<HttpHeaderLocationResult>>(new CreateGroupCommand(req), ct);
 
         await result.Match(
-            response => Send.CreatedAtAsync(result.Value.Location?.ToString() ?? string.Empty),
+            response => Send.CreatedAtAsync(response.Location?.ToString() ?? string.Empty),
             error => Send.SendErrorAsync(error));
     }
 }
