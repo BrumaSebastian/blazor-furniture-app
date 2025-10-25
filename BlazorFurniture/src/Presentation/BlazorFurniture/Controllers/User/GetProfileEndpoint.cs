@@ -24,7 +24,6 @@ public class GetProfileEndpoint(
             options.Summary = "Get user profile";
             options.Description = "Endpoint to get the profile of the currently authenticated user.";
             options.Response<UserProfileResponse>(StatusCodes.Status200OK);
-            options.Response(StatusCodes.Status403Forbidden);
         });
 
         Description(options =>
@@ -49,7 +48,7 @@ public class GetProfileEndpoint(
                 _ = emailNotificationService.SendWelcomeEmail(new(response.Username, response.Email!, new System.Globalization.CultureInfo("en")), ct)
                     .LogOnFaulted(logger);
 
-                return Send.OkAsync(result.Value);
+                return Send.OkAsync(response);
             },
             error => Send.SendErrorAsync(error));
     }
