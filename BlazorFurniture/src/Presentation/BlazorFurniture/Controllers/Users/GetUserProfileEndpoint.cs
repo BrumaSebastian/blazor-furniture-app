@@ -30,7 +30,7 @@ public class GetUserProfileEndpoint( IQueryDispatcher queryDispatcher )
         var result = await queryDispatcher.DispatchQuery<GetUserProfileQuery, UserProfileResponse>(new GetUserProfileQuery(req.UserId), ct);
 
         await result.Match(
-            response => Send.OkAsync(result.Value),
+            response => Send.OkAsync(response),
             error => Send.SendErrorAsync(error));
     }
 }

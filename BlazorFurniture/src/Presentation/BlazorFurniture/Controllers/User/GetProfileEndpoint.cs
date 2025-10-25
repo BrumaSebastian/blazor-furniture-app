@@ -48,7 +48,7 @@ public class GetProfileEndpoint(
                 _ = emailNotificationService.SendWelcomeEmail(new(response.Username, response.Email!, new System.Globalization.CultureInfo("en")), ct)
                     .LogOnFaulted(logger);
 
-                return Send.OkAsync(result.Value);
+                return Send.OkAsync(response);
             },
             error => Send.SendErrorAsync(error));
     }
