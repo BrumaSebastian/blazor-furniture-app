@@ -3,6 +3,6 @@
 public enum GroupRoles
 {
     Undefined,
-    Member,
-    Admin
+    GroupMember,
+    GroupAdmin
 }

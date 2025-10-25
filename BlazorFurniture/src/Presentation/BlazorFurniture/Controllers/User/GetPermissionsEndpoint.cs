@@ -17,6 +17,7 @@ public class GetPermissionsEndpoint( IQueryDispatcher queryDispatcher ) : Endpoi
         Summary(options =>
         {
             options.Summary = "Retrieve user permissions";
+            options.Description = "Endpoint to get the permissions of the currently authenticated user.";
             options.Response(StatusCodes.Status200OK);
         });
     }
