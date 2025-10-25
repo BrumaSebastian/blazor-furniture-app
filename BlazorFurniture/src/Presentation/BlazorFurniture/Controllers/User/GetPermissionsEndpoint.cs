@@ -28,7 +28,7 @@ public class GetPermissionsEndpoint( IQueryDispatcher queryDispatcher ) : Endpoi
         var result = await queryDispatcher.DispatchQuery<GetUserPermissionsQuery, UserPermissionsResponse>(new GetUserPermissionsQuery(userId), ct);
 
         await result.Match(
-            response => Send.OkAsync(result.Value),
+            response => Send.OkAsync(response),
             error => Send.SendErrorAsync(error));
     }
 }
