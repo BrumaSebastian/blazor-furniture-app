@@ -8,7 +8,7 @@ using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Commands;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
-using Moq;
+using NSubstitute;
 using System.Net;
 
 namespace BlazorFurniture.UnitTests.Infrastructure.UserManagement;
@@ -16,16 +16,16 @@ namespace BlazorFurniture.UnitTests.Infrastructure.UserManagement;
 public class UpdateUserProfileCommandHandlerTests
 {
     private readonly Fixture fixture;
-    private readonly Mock<IUserManagementClient> clientMock;
+    private readonly IUserManagementClient clientMock;
     private readonly IHttpErrorMapper errorMapper;
     private readonly UpdateUserProfileCommandHandler handler;
 
     public UpdateUserProfileCommandHandlerTests()
     {
         fixture = new Fixture();
-        clientMock = new Mock<IUserManagementClient>();
+        clientMock = Substitute.For<IUserManagementClient>();
         errorMapper = new KeycloakHttpErrorMapper();
-        handler = new UpdateUserProfileCommandHandler(clientMock.Object, errorMapper);
+        handler = new UpdateUserProfileCommandHandler(clientMock, errorMapper);
     }
 
     [Fact]
@@ -38,17 +38,17 @@ public class UpdateUserProfileCommandHandlerTests
             .With(u => u.Id, id)
             .Create();
 
-        clientMock.Setup(c => c.Get(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<UserRepresentation, ErrorRepresentation>.Succeeded(userRepresentation));
+        clientMock.Get(id, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<UserRepresentation, ErrorRepresentation>.Succeeded(userRepresentation));
 
-        clientMock.Setup(c => c.UpdateProfile(
-            It.Is<UserRepresentation>(u =>
-                u.Id == id &&
-                u.FirstName == request.FirstName &&
-                u.LastName == request.LastName &&
-                u.Email == request.Email),
-            It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<EmptyResult, ErrorRepresentation>.NoContent());
+        clientMock.UpdateProfile(
+                Arg.Is<UserRepresentation>(u =>
+                    u.Id == id
+                    && u.FirstName == request.FirstName
+                    && u.LastName == request.LastName
+                    && u.Email == request.Email),
+                Arg.Any<CancellationToken>())
+            .Returns(HttpResult<EmptyResult, ErrorRepresentation>.NoContent());
 
         // Act
         var result = await handler.HandleAsync(new UpdateUserProfileCommand(id, request), TestContext.Current.CancellationToken);
@@ -56,8 +56,8 @@ public class UpdateUserProfileCommandHandlerTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
-        clientMock.Verify(c => c.Get(id, It.IsAny<CancellationToken>()), Times.Once);
-        clientMock.Verify(c => c.UpdateProfile(It.IsAny<UserRepresentation>(), It.IsAny<CancellationToken>()), Times.Once);
+        await clientMock.Received(1).Get(id, Arg.Any<CancellationToken>());
+        await clientMock.Received(1).UpdateProfile(Arg.Any<UserRepresentation>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -71,10 +71,9 @@ public class UpdateUserProfileCommandHandlerTests
             .Without(e => e.Errors)
             .Create();
 
-        clientMock.Setup(c => c.Get(id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(HttpResult<UserRepresentation, ErrorRepresentation>.Failed(
-                errorRepresentation,
-                HttpStatusCode.NotFound));
+        clientMock.Get(id, Arg.Any<CancellationToken>())
+            .Returns(HttpResult<UserRepresentation, ErrorRepresentation>.Failed(
+                errorRepresentation, HttpStatusCode.NotFound));
 
         // Act
         var result = await handler.HandleAsync(new UpdateUserProfileCommand(id, request), TestContext.Current.CancellationToken);
@@ -82,7 +81,7 @@ public class UpdateUserProfileCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.IsType<NotFoundError>(result.Error);
-        clientMock.Verify(c => c.Get(id, It.IsAny<CancellationToken>()), Times.Once);
-        clientMock.Verify(c => c.UpdateProfile(It.IsAny<UserRepresentation>(), It.IsAny<CancellationToken>()), Times.Never);
+        await clientMock.Received(1).Get(id, Arg.Any<CancellationToken>());
+        await clientMock.DidNotReceive().UpdateProfile(Arg.Any<UserRepresentation>(), Arg.Any<CancellationToken>());
     }
 }

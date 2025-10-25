@@ -4,50 +4,45 @@ using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Core.Shared.Errors;
-using Moq;
+using NSubstitute;
 
 namespace BlazorFurniture.UnitTests.Application.Features.GroupManagement.Commands;
 
 public class UpdateGroupCommandTests
 {
     private readonly Fixture fixture;
+    private readonly ICommandDispatcher mockCommandDispatcher;
 
     public UpdateGroupCommandTests()
     {
         fixture = new Fixture();
+        mockCommandDispatcher = Substitute.For<ICommandDispatcher>();
     }
+
     [Fact]
     public async Task Dispatcher_ExecutesUpdateCommand_WithCorrectParameters()
     {
         // Arrange
         var request = fixture.Create<UpdateGroupRequest>();
 
-        UpdateGroupCommand? capturedCommand = null;
-        var mockDispatcher = new Mock<ICommandDispatcher>();
-        mockDispatcher
-            .Setup(d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()))
-            .Callback<UpdateGroupCommand, CancellationToken>(( cmd, ct ) => capturedCommand = cmd)
-            .ReturnsAsync(Result<EmptyResult>.Succeeded(new EmptyResult()));
-
         var command = new UpdateGroupCommand(request);
+        mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>())
+            .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
+
 
         // Act
-        var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-            command,
-            TestContext.Current.CancellationToken);
+        var result = await mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(command, TestContext.Current.CancellationToken);
 
         // Assert - Verify command execution and parameters
         Assert.True(result.IsSuccess);
-        Assert.NotNull(capturedCommand);
-        Assert.Equal(request.Id, capturedCommand.Request.Id);
-        Assert.Equal(request.Name, capturedCommand.Request.Name);
-        mockDispatcher.Verify(
-            d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()),
-            Times.Once);
+        Assert.NotNull(command);
+        Assert.Equal(request.Id, command.Request.Id);
+        Assert.Equal(request.Name, command.Request.Name);
+        await mockCommandDispatcher.Received(1).Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+            command, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -55,33 +50,25 @@ public class UpdateGroupCommandTests
     {
         // Arrange
         var request = fixture.Create<UpdateGroupRequest>();
-
-        var mockDispatcher = new Mock<ICommandDispatcher>();
-        mockDispatcher
-            .Setup(d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.Is<UpdateGroupCommand>(cmd =>
-                    cmd.Request.Id == request.Id &&
-                    cmd.Request.Name == request.Name),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<EmptyResult>.Succeeded(new EmptyResult()));
-
         var command = new UpdateGroupCommand(request);
 
+        mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>())
+            .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
+
         // Act
-        var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-            command,
-            TestContext.Current.CancellationToken);
+        var result = await mockCommandDispatcher.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+            command, TestContext.Current.CancellationToken);
 
         // Assert - Verify successful result
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
         Assert.IsType<EmptyResult>(result.Value);
 
-        mockDispatcher.Verify(
-            d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()),
-            Times.Once);
+        await mockCommandDispatcher.Received(1)
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -90,31 +77,27 @@ public class UpdateGroupCommandTests
         // Arrange
         var request = fixture.Create<UpdateGroupRequest>();
         var notFoundError = new NotFoundError(request.Id, typeof(UpdateGroupRequest));
-
-        var mockDispatcher = new Mock<ICommandDispatcher>();
-        mockDispatcher
-            .Setup(d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<EmptyResult>.Failed(notFoundError));
-
         var command = new UpdateGroupCommand(request);
 
+        mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>())
+            .Returns(Result<EmptyResult>.Failed(notFoundError));
+
+
         // Act
-        var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-            command,
-            TestContext.Current.CancellationToken);
+        var result = await mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                 command, TestContext.Current.CancellationToken);
 
         // Assert - Verify NotFound error
         Assert.False(result.IsSuccess);
         Assert.IsType<NotFoundError>(result.Error);
-        Assert.True(result.Error.Description.Contains(request.Id.ToString()));
+        Assert.Contains(request.Id.ToString(), result.Error.Description);
 
-        mockDispatcher.Verify(
-            d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()),
-            Times.Once);
+        await mockCommandDispatcher.Received(1)
+               .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                    command, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -123,31 +106,27 @@ public class UpdateGroupCommandTests
         // Arrange
         var request = fixture.Create<UpdateGroupRequest>();
         var conflictError = new ConflictError("name", request.Name, typeof(UpdateGroupRequest));
-
-        var mockDispatcher = new Mock<ICommandDispatcher>();
-        mockDispatcher
-            .Setup(d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<EmptyResult>.Failed(conflictError));
-
         var command = new UpdateGroupCommand(request);
 
+        mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>())
+            .Returns(Result<EmptyResult>.Failed(conflictError));
+
+
         // Act
-        var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-            command,
-            TestContext.Current.CancellationToken);
+        var result = await mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, TestContext.Current.CancellationToken);
 
         // Assert - Verify Conflict error
         Assert.False(result.IsSuccess);
         Assert.IsType<ConflictError>(result.Error);
         Assert.Contains("conflict", result.Error.Title.ToLower());
 
-        mockDispatcher.Verify(
-            d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()),
-            Times.Once);
+        await mockCommandDispatcher.Received(1)
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -155,28 +134,26 @@ public class UpdateGroupCommandTests
     {
         // Arrange
         var request = fixture.Build<UpdateGroupRequest>()
-            .With(r => r.Name, string.Empty) // Invalid empty name
-            .Create();
+         .With(r => r.Name, string.Empty) // Invalid empty name
+        .Create();
 
         var validationErrors = new Dictionary<string, string[]>
         {
-            { "Name", new[] { "Name is required", "Name must not be empty" } }
+         { "Name", new[] { "Name is required", "Name must not be empty" } }
         };
         var validationError = new ValidationError(validationErrors);
-
-        var mockDispatcher = new Mock<ICommandDispatcher>();
-        mockDispatcher
-            .Setup(d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<EmptyResult>.Failed(validationError));
-
         var command = new UpdateGroupCommand(request);
 
+        mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>())
+            .Returns(Result<EmptyResult>.Failed(validationError));
+
+
         // Act
-        var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-            command,
-            TestContext.Current.CancellationToken);
+        var result = await mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, TestContext.Current.CancellationToken);
 
         // Assert - Verify Validation error
         Assert.False(result.IsSuccess);
@@ -188,11 +165,9 @@ public class UpdateGroupCommandTests
         Assert.Equal(2, validationErr.Errors["Name"].Length);
         Assert.Contains("Name is required", validationErr.Errors["Name"]);
 
-        mockDispatcher.Verify(
-            d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()),
-            Times.Once);
+        await mockCommandDispatcher.Received(1)
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -203,21 +178,22 @@ public class UpdateGroupCommandTests
         var cancellationTokenSource = new CancellationTokenSource();
         var cancellationToken = cancellationTokenSource.Token;
         CancellationToken capturedToken = default;
-
-        var mockDispatcher = new Mock<ICommandDispatcher>();
-        mockDispatcher
-            .Setup(d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()))
-            .Callback<UpdateGroupCommand, CancellationToken>(( cmd, ct ) => capturedToken = ct)
-            .ReturnsAsync(Result<EmptyResult>.Succeeded(new EmptyResult()));
-
         var command = new UpdateGroupCommand(request);
 
+        mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                capturedToken = callInfo.Arg<CancellationToken>();
+                return Result<EmptyResult>.Succeeded(new EmptyResult());
+            });
+
+
         // Act
-        await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-            command,
-            cancellationToken);
+        await mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, cancellationToken);
 
         // Assert - Verify cancellation token propagation
         Assert.Equal(cancellationToken, capturedToken);
@@ -230,31 +206,27 @@ public class UpdateGroupCommandTests
         // Arrange
         var request = fixture.Create<UpdateGroupRequest>();
         var unexpectedError = new GenericError("An unexpected error occurred");
-
-        var mockDispatcher = new Mock<ICommandDispatcher>();
-        mockDispatcher
-            .Setup(d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<EmptyResult>.Failed(unexpectedError));
-
         var command = new UpdateGroupCommand(request);
 
+        mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>())
+            .Returns(Result<EmptyResult>.Failed(unexpectedError));
+
+
         // Act
-        var result = await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-            command,
-            TestContext.Current.CancellationToken);
+        var result = await mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, TestContext.Current.CancellationToken);
 
         // Assert - Verify generic error handling
         Assert.False(result.IsSuccess);
         Assert.IsType<GenericError>(result.Error);
         Assert.Contains("unexpected", result.Error.Description.ToLower());
 
-        mockDispatcher.Verify(
-            d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()),
-            Times.Once);
+        await mockCommandDispatcher.Received(1)
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -290,21 +262,22 @@ public class UpdateGroupCommandTests
         // Arrange
         var request = fixture.Create<UpdateGroupRequest>();
         UpdateGroupCommand? capturedCommand = null;
-
-        var mockDispatcher = new Mock<ICommandDispatcher>();
-        mockDispatcher
-            .Setup(d => d.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-                It.IsAny<UpdateGroupCommand>(),
-                It.IsAny<CancellationToken>()))
-            .Callback<UpdateGroupCommand, CancellationToken>(( cmd, ct ) => capturedCommand = cmd)
-            .ReturnsAsync(Result<EmptyResult>.Succeeded(new EmptyResult()));
-
         var command = new UpdateGroupCommand(request);
 
+        mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+                {
+                    capturedCommand = callInfo.Arg<UpdateGroupCommand>();
+                    return Result<EmptyResult>.Succeeded(new EmptyResult());
+                });
+
+
         // Act
-        await mockDispatcher.Object.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
-            command,
-            TestContext.Current.CancellationToken);
+        await mockCommandDispatcher
+            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+                command, TestContext.Current.CancellationToken);
 
         // Assert - Verify command contains exact request data
         Assert.NotNull(capturedCommand);
