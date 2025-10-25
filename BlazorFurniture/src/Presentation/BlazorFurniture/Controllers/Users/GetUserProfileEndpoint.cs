@@ -19,7 +19,7 @@ public class GetUserProfileEndpoint( IQueryDispatcher queryDispatcher )
         Summary(options =>
         {
             options.Summary = "Get user profile";
-            options.Description = "Endpoint to get the profile a user.";
+            options.Description = "Endpoint to get the profile of a user.";
             options.Response<UserProfileResponse>(StatusCodes.Status200OK);
             options.Response(StatusCodes.Status403Forbidden);
         });
