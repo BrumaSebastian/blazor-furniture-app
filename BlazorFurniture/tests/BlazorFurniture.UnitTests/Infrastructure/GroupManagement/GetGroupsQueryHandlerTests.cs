@@ -266,10 +266,10 @@ public class GetGroupsQueryHandlerTests
         cts.Cancel();
 
         clientMock.GetGroupsCount(null, Arg.Any<CancellationToken>())
-      .ThrowsAsync(new OperationCanceledException());
+            .ThrowsAsync(new OperationCanceledException());
 
         // Act & Assert
         await Assert.ThrowsAsync<OperationCanceledException>(
-    async () => await handler.HandleAsync(query, cts.Token));
+        async () => await handler.HandleAsync(query, cts.Token));
     }
 }
