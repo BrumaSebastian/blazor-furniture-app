@@ -282,10 +282,10 @@ Email = email,
         var query = new GetGroupUsersQuery(request);
 
         var users = fixture.Build<GroupUserRepresentation>()
-        .With(u => u.FirstName, "John")
+            .With(u => u.FirstName, "John")
             .With(u => u.Email, "john@example.com")
-      .With(u => u.LastName, "Doe")
-       .CreateMany(1)
+            .With(u => u.LastName, "Doe")
+            .CreateMany(1)
             .ToList();
 
         clientMock.GetUsersCount(groupId, "John", Arg.Any<CancellationToken>())
