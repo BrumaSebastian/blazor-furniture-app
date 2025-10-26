@@ -319,8 +319,8 @@ Email = email,
    new CountRepresentation { Count = 0 }));
 
         clientMock.GetUsers(groupId, Arg.Is<GroupUsersQueryFilter>(f => f.Page == 0 && f.PageSize == 10),
-     Arg.Any<CancellationToken>())
-     .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded([]));
+            Arg.Any<CancellationToken>())
+            .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded([]));
 
         // Act
         var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
