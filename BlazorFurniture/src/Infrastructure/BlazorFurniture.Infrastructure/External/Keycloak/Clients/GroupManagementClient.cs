@@ -79,13 +79,15 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         return await SendRequest<CountRepresentation, ErrorRepresentation>(requestMessage, ct);
     }
 
-    public async Task<HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, GroupUsersQueryFilter filter, CancellationToken ct )
+    public async Task<HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, GroupUsersQueryFilter filters, CancellationToken ct )
     {
         var requestMessage = HttpRequestMessageBuilder
             .Create(HttpClient, HttpMethod.Get)
             .WithPath(Endpoints.GroupMembersExtension(groupId))
-            .AddQueryParam(KeycloakQueryParams.SEARCH, filter.Search)
+            .AddQueryParam(KeycloakQueryParams.SEARCH, filters.Search)
             .AddQueryParam(KeycloakQueryParams.EXACT, false)
+            .AddQueryParam(KeycloakQueryParams.PAGE, filters.Page)
+            .AddQueryParam(KeycloakQueryParams.PAGE_SIZE, filters.PageSize)
             .Build();
 
         return await SendRequest<List<GroupUserRepresentation>, ErrorRepresentation>(requestMessage, ct);
