@@ -1,6 +1,7 @@
 ﻿using BlazorFurniture.Application.Common.Responses;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Application.Features.GroupManagement.Responses;
+using BlazorFurniture.Validators.Groups;
 using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.Groups;
@@ -11,7 +12,7 @@ internal sealed class GetGroupUsersEndpoint : Endpoint<GetGroupUsersRequest, Pag
     {
         Get("{groupId:guid}/users");
         Group<GroupsEndpointGroup>();
-        //Validator<GetGroupsRequestValidator>();
+        Validator<GetGroupUsersRequestValidator>();
         Summary(options =>
         {
             options.Summary = "Get all users of a group";

@@ -7,6 +7,6 @@ public class GetGroupUsersRequest : GetGroupRequest, IPaginationQueryParams
 {
     public int? Page { get; init; } = 0;
     public int? PageSize { get; init; } = 10;
-    [FromQuery]
-    public string? Name { get; set; }
+    [QueryParam]
+    public string? Search { get; set; }
 }
