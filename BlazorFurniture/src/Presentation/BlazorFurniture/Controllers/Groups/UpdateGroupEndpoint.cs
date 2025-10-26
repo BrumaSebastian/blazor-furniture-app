@@ -12,7 +12,7 @@ internal sealed class UpdateGroupEndpoint( ICommandDispatcher commandDispatcher 
 {
     public override void Configure()
     {
-        Put("{id:guid}");
+        Put("{groupId:guid}");
         Group<GroupsEndpointGroup>();
         Validator<UpdateGroupRequestValidator>();
         Summary(options =>

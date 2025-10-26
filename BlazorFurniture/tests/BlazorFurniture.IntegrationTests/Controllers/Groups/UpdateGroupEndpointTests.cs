@@ -17,7 +17,7 @@ public class UpdateGroupEndpointTests( ProgramSut sut ) : TestBase<ProgramSut>
         var groupId = Guid.NewGuid();
         var request = new UpdateGroupRequest
         {
-            Id = groupId,
+            GroupId = groupId,
             Name = "Updated Group Name"
         };
 
@@ -38,7 +38,7 @@ public class UpdateGroupEndpointTests( ProgramSut sut ) : TestBase<ProgramSut>
         var nonExistentGroupId = Guid.NewGuid();
         var request = new UpdateGroupRequest
         {
-            Id = nonExistentGroupId,
+            GroupId = nonExistentGroupId,
             Name = "Updated Group Name"
         };
 
@@ -61,7 +61,7 @@ public class UpdateGroupEndpointTests( ProgramSut sut ) : TestBase<ProgramSut>
         var duplicateName = "Existing Group Name";
         var request = new UpdateGroupRequest
         {
-            Id = groupId,
+            GroupId = groupId,
             Name = duplicateName
         };
 
@@ -81,7 +81,7 @@ public class UpdateGroupEndpointTests( ProgramSut sut ) : TestBase<ProgramSut>
         // Arrange
         var request = new UpdateGroupRequest
         {
-            Id = Guid.NewGuid(),
+            GroupId = Guid.NewGuid(),
             Name = "" // Invalid
         };
 

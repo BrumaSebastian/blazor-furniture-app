@@ -66,7 +66,7 @@ public sealed class UpdateGroupEndpointTests
     {
         // Arrange
         var (request, httpContext, endpoint) = CreateTestContext();
-        var notFoundError = new NotFoundError(request.Id, typeof(UpdateGroupRequest));
+        var notFoundError = new NotFoundError(request.GroupId, typeof(UpdateGroupRequest));
 
         commandDispatcher
             .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(

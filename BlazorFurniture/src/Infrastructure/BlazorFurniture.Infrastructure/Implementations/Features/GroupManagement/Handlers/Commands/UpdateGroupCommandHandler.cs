@@ -15,18 +15,18 @@ internal sealed class UpdateGroupCommandHandler(
 {
     public async Task<Result<EmptyResult>> HandleAsync( UpdateGroupCommand command, CancellationToken ct )
     {
-        var groupResult = await groupManagementClient.Get(command.Request.Id, ct);
+        var groupResult = await groupManagementClient.Get(command.Request.GroupId, ct);
 
         if (groupResult.IsFailure)
         {
-            return groupResult.ToDomainResult(errorMapper, command.Request.Id).PropagateFailure<EmptyResult>();
+            return groupResult.ToDomainResult(errorMapper, command.Request.GroupId).PropagateFailure<EmptyResult>();
         }
 
         var groupRepresentation = groupResult.Value;
         groupRepresentation.Name = command.Request.Name;
 
-        var updateResult = await groupManagementClient.Update(command.Request.Id, groupRepresentation, ct);
+        var updateResult = await groupManagementClient.Update(command.Request.GroupId, groupRepresentation, ct);
 
-        return updateResult.ToDomainResult(errorMapper, command.Request.Id);
+        return updateResult.ToDomainResult(errorMapper, command.Request.GroupId);
     }
 }

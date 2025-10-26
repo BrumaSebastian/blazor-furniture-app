@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlazorFurniture.Domain\BlazorFurniture.Domain.csproj" />
     <ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Core.Shared.csproj" />
     <ProjectReference Include="..\BlazorFurniture.Templates\BlazorFurniture.Templates.csproj" />
   </ItemGroup>

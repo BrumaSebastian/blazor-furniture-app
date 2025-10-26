@@ -37,7 +37,7 @@ internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : En
 
     public override async Task HandleAsync( GetGroupsRequest req, CancellationToken ct )
     {
-        var result = await queryDispatcher.DispatchQuery<GetGroupsQuery, PaginatedResponse<GroupResponse>>(new GetGroupsQuery(req.Filters), ct);
+        var result = await queryDispatcher.DispatchQuery<GetGroupsQuery, PaginatedResponse<GroupResponse>>(new GetGroupsQuery(req), ct);
 
         await result.Match(
             response => Send.OkAsync(response),
