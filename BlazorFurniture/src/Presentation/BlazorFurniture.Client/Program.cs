@@ -1,3 +1,4 @@
+using BlazorFurniture.Client.Extensions;
 using BlazorFurniture.Core.Shared.Constants;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
@@ -12,6 +13,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthenticationStateDeserialization();
 
 builder.Services.AddLocalization();
+builder.Services.AddApiClients(builder.HostEnvironment.BaseAddress);
 
 var host = builder.Build();
 

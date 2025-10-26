@@ -8,6 +8,7 @@ using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
+using BlazorFurniture.Shared.DTOs.Users;
 using NSubstitute;
 
 namespace BlazorFurniture.UnitTests.Infrastructure.UserManagement;

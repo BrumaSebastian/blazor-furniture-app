@@ -9,6 +9,7 @@ using BlazorFurniture.Domain.Enums;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.GroupManagement.Handlers.Queries;
+using BlazorFurniture.Shared.DTOs.Users;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using System.Net;
