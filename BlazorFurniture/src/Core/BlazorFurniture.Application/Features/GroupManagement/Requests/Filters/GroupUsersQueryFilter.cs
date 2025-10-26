@@ -2,7 +2,7 @@
 
 namespace BlazorFurniture.Application.Features.GroupManagement.Requests.Filters;
 
-public record class GroupQueryFilters : IPaginationQueryParams
+public sealed class GroupUsersQueryFilter : IPaginationQueryParams, ISearchQueryParam
 {
     public int? Page { get; init; }
     public int? PageSize { get; init; }

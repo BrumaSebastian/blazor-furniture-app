@@ -58,29 +58,51 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
     {
         var requestMessage = HttpRequestMessageBuilder
             .Create(HttpClient, HttpMethod.Get)
-            .WithPath(Endpoints.Groups())
+            .WithPath(Endpoints.GroupsExtension())
             .AddQueryParam(KeycloakQueryParams.PAGE, filters.Page)
             .AddQueryParam(KeycloakQueryParams.PAGE_SIZE, filters.PageSize)
-            .AddQueryParam(KeycloakQueryParams.SEARCH, filters.Name)
+            .AddQueryParam(KeycloakQueryParams.SEARCH, filters.Search)
+            .AddQueryParam(GROUP_TOP_LEVEL_ONLY_QUERY_PARAM, true)
             .Build();
 
         return await SendRequest<List<GroupRepresentation>, ErrorRepresentation>(requestMessage, ct);
     }
 
-    public async Task<HttpResult<CountRepresentation, ErrorRepresentation>> GetGroupsCount( CancellationToken ct )
+    public async Task<HttpResult<CountRepresentation, ErrorRepresentation>> GetGroupsCount( string? search, CancellationToken ct )
     {
         var requestMessage = HttpRequestMessageBuilder
             .Create(HttpClient, HttpMethod.Get)
             .WithPath(Endpoints.GroupsCount())
-            .AddQueryParam(GROUP_TOP_LEVEL_ONLY_QUERY_PARAM, bool.TrueString)
+            .AddQueryParam(KeycloakQueryParams.SEARCH, search)
             .Build();
 
         return await SendRequest<CountRepresentation, ErrorRepresentation>(requestMessage, ct);
     }
 
-    public Task<HttpResult<List<UserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, CancellationToken ct )
+    public async Task<HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, GroupUsersQueryFilter filters, CancellationToken ct )
     {
-        throw new NotImplementedException();
+        var requestMessage = HttpRequestMessageBuilder
+            .Create(HttpClient, HttpMethod.Get)
+            .WithPath(Endpoints.GroupMembersExtension(groupId))
+            .AddQueryParam(KeycloakQueryParams.SEARCH, filters.Search)
+            .AddQueryParam(KeycloakQueryParams.EXACT, false)
+            .AddQueryParam(KeycloakQueryParams.PAGE, filters.Page)
+            .AddQueryParam(KeycloakQueryParams.PAGE_SIZE, filters.PageSize)
+            .Build();
+
+        return await SendRequest<List<GroupUserRepresentation>, ErrorRepresentation>(requestMessage, ct);
+    }
+
+    public async Task<HttpResult<CountRepresentation, ErrorRepresentation>> GetUsersCount( Guid groupId, string? search, CancellationToken ct )
+    {
+        var requestMessage = HttpRequestMessageBuilder
+            .Create(HttpClient, HttpMethod.Get)
+            .WithPath(Endpoints.GroupMembersCount(groupId))
+            .AddQueryParam(KeycloakQueryParams.SEARCH, search)
+            .AddQueryParam(KeycloakQueryParams.EXACT, false)
+            .Build();
+
+        return await SendRequest<CountRepresentation, ErrorRepresentation>(requestMessage, ct);
     }
 
     public async Task<HttpResult<EmptyResult, ErrorRepresentation>> RemoveUser( Guid groupId, Guid userId, CancellationToken ct )

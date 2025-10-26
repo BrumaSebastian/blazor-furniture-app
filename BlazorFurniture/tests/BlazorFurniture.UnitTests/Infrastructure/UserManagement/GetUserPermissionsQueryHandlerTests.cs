@@ -44,7 +44,7 @@ public class GetUserPermissionsQueryHandlerTests
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal(userPermissionRepresentation.Role.ToString(), result.Value.Role);
+        Assert.Equal(userPermissionRepresentation.Role, result.Value.Role);
         Assert.Equal(userPermissionRepresentation.Permissions, result.Value.Permissions);
         Assert.Equal(userPermissionRepresentation.Groups.Select(g => g.Name), result.Value.Groups!.Select(g => g.Name));
         await clientMock.Received(1).GetPermissions(id, Arg.Any<CancellationToken>());

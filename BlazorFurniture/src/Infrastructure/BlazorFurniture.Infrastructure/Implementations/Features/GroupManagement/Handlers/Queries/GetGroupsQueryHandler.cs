@@ -3,6 +3,7 @@ using BlazorFurniture.Application.Common.Interfaces;
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Common.Responses;
 using BlazorFurniture.Application.Features.GroupManagement.Queries;
+using BlazorFurniture.Application.Features.GroupManagement.Requests.Filters;
 using BlazorFurniture.Application.Features.GroupManagement.Responses;
 using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Infrastructure.Constants;
@@ -18,12 +19,19 @@ internal class GetGroupsQueryHandler(
 {
     public async Task<Result<PaginatedResponse<GroupResponse>>> HandleAsync( GetGroupsQuery query, CancellationToken ct = default )
     {
-        var countGroupsResult = await groupManagementClient.GetGroupsCount(ct).ToDomainResult(errorMapper);
+        var countGroupsResult = await groupManagementClient.GetGroupsCount(query.Request.Name, ct).ToDomainResult(errorMapper);
 
         if (countGroupsResult.IsFailure)
             return countGroupsResult.PropagateFailure<PaginatedResponse<GroupResponse>>();
 
-        var groupsResult = await groupManagementClient.Get(query.Filters, ct).ToDomainResult(errorMapper);
+        var queryFilter = new GroupQueryFilters
+        {
+            Page = query.Request.Page,
+            PageSize = query.Request.PageSize,
+            Search = query.Request.Name
+        };
+
+        var groupsResult = await groupManagementClient.Get(queryFilter, ct).ToDomainResult(errorMapper);
 
         return groupsResult.Map(groups =>
             new PaginatedResponse<GroupResponse>

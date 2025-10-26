@@ -33,7 +33,7 @@ public class UpdateGroupCommandHandlerTests
         // Arrange
         var groupId = Guid.NewGuid();
         var updateRequest = fixture.Build<UpdateGroupRequest>()
-            .With(f => f.Id, groupId)
+            .With(f => f.GroupId, groupId)
             .Create();
         var command = new UpdateGroupCommand(updateRequest);
         var groupRepresentation = new GroupRepresentation
@@ -63,7 +63,7 @@ public class UpdateGroupCommandHandlerTests
         // Arrange
         var groupId = Guid.NewGuid();
         var updateRequest = fixture.Build<UpdateGroupRequest>()
-            .With(f => f.Id, groupId)
+            .With(f => f.GroupId, groupId)
             .Create();
         var command = new UpdateGroupCommand(updateRequest);
         var errorRepresentation = fixture.Build<ErrorRepresentation>()
@@ -92,10 +92,10 @@ public class UpdateGroupCommandHandlerTests
         var updateRequest = fixture.Create<UpdateGroupRequest>();
         var command = new UpdateGroupCommand(updateRequest);
         var groupRepresentation = fixture.Build<GroupRepresentation>()
-            .With(f => f.Id, updateRequest.Id)
+            .With(f => f.Id, updateRequest.GroupId)
             .Create();
 
-        clientMock.Get(updateRequest.Id, Arg.Any<CancellationToken>())
+        clientMock.Get(updateRequest.GroupId, Arg.Any<CancellationToken>())
             .Returns(HttpResult<GroupRepresentation, ErrorRepresentation>.Succeeded(groupRepresentation));
 
         var errorRepresentation = fixture.Build<ErrorRepresentation>()
@@ -103,7 +103,7 @@ public class UpdateGroupCommandHandlerTests
             .Without(e => e.Errors)
             .Create();
 
-        clientMock.Update(updateRequest.Id, groupRepresentation, Arg.Any<CancellationToken>())
+        clientMock.Update(updateRequest.GroupId, groupRepresentation, Arg.Any<CancellationToken>())
             .Returns(HttpResult<EmptyResult, ErrorRepresentation>.Failed(
                 errorRepresentation,
                 HttpStatusCode.Conflict));
@@ -114,6 +114,6 @@ public class UpdateGroupCommandHandlerTests
         // Assert
         Assert.True(result.IsFailure);
         Assert.IsType<ConflictError>(result.Error);
-        await clientMock.Received(1).Update(updateRequest.Id, groupRepresentation, Arg.Any<CancellationToken>());
+        await clientMock.Received(1).Update(updateRequest.GroupId, groupRepresentation, Arg.Any<CancellationToken>());
     }
 }

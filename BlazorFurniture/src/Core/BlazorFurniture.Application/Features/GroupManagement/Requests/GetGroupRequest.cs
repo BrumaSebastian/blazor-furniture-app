@@ -2,8 +2,8 @@
 
 namespace BlazorFurniture.Application.Features.GroupManagement.Requests;
 
-public sealed class RemoveUserFromGroupRequest : GetGroupRequest
+public class GetGroupRequest
 {
     [RouteParam]
-    public Guid UserId { get; init; }
+    public Guid GroupId { get; init; }
 }

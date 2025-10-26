@@ -3,10 +3,10 @@ using FastEndpoints;
 
 namespace BlazorFurniture.Application.Features.GroupManagement.Requests;
 
-public sealed record GetGroupsRequest : IPaginationQueryParams
+public class GetGroupUsersRequest : GetGroupRequest, IPaginationQueryParams
 {
     public int? Page { get; init; } = 0;
     public int? PageSize { get; init; } = 10;
     [QueryParam]
-    public string? Name { get; set; }
+    public string? Search { get; set; }
 }

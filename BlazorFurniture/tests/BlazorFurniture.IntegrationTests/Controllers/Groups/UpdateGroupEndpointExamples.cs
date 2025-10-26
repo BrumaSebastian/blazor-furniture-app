@@ -27,7 +27,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
 
         var request = new UpdateGroupRequest
         {
-            Id = groupId,
+            GroupId = groupId,
             Name = "Updated Name"
         };
 
@@ -62,7 +62,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
         var nonExistentId = Guid.NewGuid();
         var request1 = new UpdateGroupRequest
         {
-            Id = nonExistentId,
+            GroupId = nonExistentId,
             Name = "Test Name"
         };
 
@@ -75,7 +75,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
         // Scenario 2: Update with invalid data (should fail)
         var request2 = new UpdateGroupRequest
         {
-            Id = Guid.NewGuid(),
+            GroupId = Guid.NewGuid(),
             Name = "" // Empty name should fail validation
         };
 
@@ -95,7 +95,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
         // Arrange
         var request = new UpdateGroupRequest
         {
-            Id = Guid.NewGuid(),
+            GroupId = Guid.NewGuid(),
             Name = "Test Group"
         };
 
@@ -121,7 +121,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
         // Arrange
         var request = new UpdateGroupRequest
         {
-            Id = Guid.NewGuid(),
+            GroupId = Guid.NewGuid(),
             Name = "" // Invalid
         };
 
@@ -161,7 +161,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
         var groupId2 = Guid.NewGuid();
         var request = new UpdateGroupRequest
         {
-            Id = groupId2,
+            GroupId = groupId2,
             Name = "Existing Name" // This name already exists for Group 1
         };
 

@@ -39,7 +39,7 @@ public class UpdateGroupCommandTests
         // Assert - Verify command execution and parameters
         Assert.True(result.IsSuccess);
         Assert.NotNull(command);
-        Assert.Equal(request.Id, command.Request.Id);
+        Assert.Equal(request.GroupId, command.Request.GroupId);
         Assert.Equal(request.Name, command.Request.Name);
         await mockCommandDispatcher.Received(1).Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
             command, Arg.Any<CancellationToken>());
@@ -76,7 +76,7 @@ public class UpdateGroupCommandTests
     {
         // Arrange
         var request = fixture.Create<UpdateGroupRequest>();
-        var notFoundError = new NotFoundError(request.Id, typeof(UpdateGroupRequest));
+        var notFoundError = new NotFoundError(request.GroupId, typeof(UpdateGroupRequest));
         var command = new UpdateGroupCommand(request);
 
         mockCommandDispatcher
@@ -93,7 +93,7 @@ public class UpdateGroupCommandTests
         // Assert - Verify NotFound error
         Assert.False(result.IsSuccess);
         Assert.IsType<NotFoundError>(result.Error);
-        Assert.Contains(request.Id.ToString(), result.Error.Description);
+        Assert.Contains(request.GroupId.ToString(), result.Error.Description);
 
         await mockCommandDispatcher.Received(1)
                .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
@@ -241,7 +241,7 @@ public class UpdateGroupCommandTests
         // Assert
         Assert.NotNull(command);
         Assert.NotNull(command.Request);
-        Assert.Equal(request.Id, command.Request.Id);
+        Assert.Equal(request.GroupId, command.Request.GroupId);
         Assert.Equal(request.Name, command.Request.Name);
     }
 
@@ -252,7 +252,7 @@ public class UpdateGroupCommandTests
         var request = fixture.Create<UpdateGroupRequest>();
 
         // Assert
-        Assert.NotEqual(Guid.Empty, request.Id);
+        Assert.NotEqual(Guid.Empty, request.GroupId);
         Assert.False(string.IsNullOrEmpty(request.Name));
     }
 
@@ -282,7 +282,7 @@ public class UpdateGroupCommandTests
         // Assert - Verify command contains exact request data
         Assert.NotNull(capturedCommand);
         Assert.Same(request, capturedCommand.Request);
-        Assert.Equal(request.Id, capturedCommand.Request.Id);
+        Assert.Equal(request.GroupId, capturedCommand.Request.GroupId);
         Assert.Equal(request.Name, capturedCommand.Request.Name);
     }
 }
