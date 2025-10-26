@@ -78,7 +78,12 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         return await SendRequest<CountRepresentation, ErrorRepresentation>(requestMessage, ct);
     }
 
-    public Task<HttpResult<List<UserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, CancellationToken ct )
+    public Task<HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, GroupUsersQueryFilter filter, CancellationToken ct )
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<HttpResult<CountRepresentation, ErrorRepresentation>> GetUsersCount( Guid groupId, CancellationToken ct )
     {
         throw new NotImplementedException();
     }

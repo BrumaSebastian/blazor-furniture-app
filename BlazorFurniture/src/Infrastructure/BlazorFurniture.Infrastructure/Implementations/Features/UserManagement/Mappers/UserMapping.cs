@@ -1,4 +1,5 @@
-﻿using BlazorFurniture.Application.Features.UserManagement.Requests;
+﻿using BlazorFurniture.Application.Features.GroupManagement.Responses;
+using BlazorFurniture.Application.Features.UserManagement.Requests;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
 using BlazorFurniture.Domain.Entities.Keycloak;
 
@@ -42,6 +43,18 @@ internal static class UserMapping
                 Role = g.Role.ToString(),
                 Permissions = g.Permissions,
             }).ToList() ?? [],
+        };
+    }
+
+    extension( GroupUserRepresentation source )
+    {
+        public GroupUserResponse ToResponse() => new()
+        {
+            Id = source.Id,
+            Email = source.Email!,
+            FirstName = source.FirstName!,
+            LastName = source.LastName!,
+            Role = source.Role,
         };
     }
 }
