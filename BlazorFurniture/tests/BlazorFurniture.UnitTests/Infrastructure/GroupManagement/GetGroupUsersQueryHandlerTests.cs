@@ -38,7 +38,7 @@ public class GetGroupUsersQueryHandlerTests
         var request = new GetGroupUsersRequest { GroupId = groupId, Page = 1, PageSize = 10 };
         var query = new GetGroupUsersQuery(request);
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
             .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
                 new CountRepresentation { Count = 0 }));
 
@@ -52,7 +52,7 @@ public class GetGroupUsersQueryHandlerTests
         Assert.True(result.IsSuccess);
         Assert.Equal(0, result.Value.Total);
         Assert.Empty(result.Value.Results);
-        await clientMock.Received(1).GetUsersCount(groupId, Arg.Any<CancellationToken>());
+        await clientMock.Received(1).GetUsersCount(groupId, null, Arg.Any<CancellationToken>());
         await clientMock.Received(1).GetUsers(groupId,
             Arg.Is<GroupUsersQueryFilter>(f => f.Page == 1 && f.PageSize == 10),
             Arg.Any<CancellationToken>());
@@ -78,7 +78,7 @@ public class GetGroupUsersQueryHandlerTests
             .CreateMany(2)
             .ToList();
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
             .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
                 new CountRepresentation { Count = 10 }));
 
@@ -95,7 +95,7 @@ public class GetGroupUsersQueryHandlerTests
         Assert.Equal(10, result.Value.Total);
         Assert.Equal(2, result.Value.Results.Count());
         users.ForEach(u => Assert.Contains(result.Value.Results, ru => ru.Email == u.Email));
-        await clientMock.Received(1).GetUsersCount(groupId, Arg.Any<CancellationToken>());
+        await clientMock.Received(1).GetUsersCount(groupId, null, Arg.Any<CancellationToken>());
         await clientMock.Received(1).GetUsers(groupId, Arg.Is<GroupUsersQueryFilter>(f => f.Page == 0 && f.PageSize == 2), Arg.Any<CancellationToken>());
     }
 
@@ -115,24 +115,24 @@ public class GetGroupUsersQueryHandlerTests
 
         var users = new List<GroupUserRepresentation>
          {
-            new()
-            {
-                Id = userId,
-                Email = email,
-                FirstName = firstName,
-                LastName = lastName,
-                Enabled = true,
-                Role = role
-            }
+ new()
+       {
+      Id = userId,
+Email = email,
+     FirstName = firstName,
+    LastName = lastName,
+        Enabled = true,
+     Role = role
+     }
         };
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
-            .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
-                new CountRepresentation { Count = 1 }));
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
+  .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
+              new CountRepresentation { Count = 1 }));
 
         clientMock.GetUsers(groupId, Arg.Is<GroupUsersQueryFilter>(f => f.Page == 0 && f.PageSize == 10),
-                Arg.Any<CancellationToken>())
-            .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded(users));
+     Arg.Any<CancellationToken>())
+          .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded(users));
 
         // Act
         var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
@@ -163,17 +163,17 @@ public class GetGroupUsersQueryHandlerTests
 
         var users = fixture.Build<GroupUserRepresentation>()
             .With(u => u.Email, "user@example.com")
-            .With(u => u.FirstName, "User")
-            .With(u => u.LastName, "Test")
-            .CreateMany(10)
+        .With(u => u.FirstName, "User")
+   .With(u => u.LastName, "Test")
+        .CreateMany(10)
             .ToList();
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
-            .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
-                new CountRepresentation { Count = expectedCount }));
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
+        .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
+          new CountRepresentation { Count = expectedCount }));
 
         clientMock.GetUsers(groupId, Arg.Any<GroupUsersQueryFilter>(), Arg.Any<CancellationToken>())
-            .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded(users));
+.Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded(users));
 
         // Act
         var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
@@ -192,14 +192,14 @@ public class GetGroupUsersQueryHandlerTests
         var request = new GetGroupUsersRequest { GroupId = groupId, Page = 0, PageSize = 10 };
         var query = new GetGroupUsersQuery(request);
         var errorRepresentation = fixture.Build<ErrorRepresentation>()
-            .With(e => e.Error, "server_error")
-            .With(e => e.Description, "Internal server error")
-            .Without(e => e.Errors)
-            .Create();
+  .With(e => e.Error, "server_error")
+        .With(e => e.Description, "Internal server error")
+       .Without(e => e.Errors)
+.Create();
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
-            .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Failed(
-                errorRepresentation, HttpStatusCode.InternalServerError));
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
+      .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Failed(
+     errorRepresentation, HttpStatusCode.InternalServerError));
 
         // Act
         var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
@@ -207,7 +207,7 @@ public class GetGroupUsersQueryHandlerTests
         // Assert
         Assert.True(result.IsFailure);
         Assert.NotNull(result.Error);
-        await clientMock.Received(1).GetUsersCount(groupId, Arg.Any<CancellationToken>());
+        await clientMock.Received(1).GetUsersCount(groupId, null, Arg.Any<CancellationToken>());
         await clientMock.DidNotReceive().GetUsers(Arg.Any<Guid>(), Arg.Any<GroupUsersQueryFilter>(), Arg.Any<CancellationToken>());
     }
 
@@ -219,19 +219,19 @@ public class GetGroupUsersQueryHandlerTests
         var request = new GetGroupUsersRequest { GroupId = groupId, Page = 1, PageSize = 20, Search = "John" };
         var query = new GetGroupUsersQuery(request);
         var errorRepresentation = fixture.Build<ErrorRepresentation>()
-            .With(e => e.Error, "forbidden")
-            .With(e => e.Description, "Access denied")
-            .Without(e => e.Errors)
-            .Create();
+  .With(e => e.Error, "forbidden")
+       .With(e => e.Description, "Access denied")
+        .Without(e => e.Errors)
+.Create();
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
-            .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
-                new CountRepresentation { Count = 5 }));
+        clientMock.GetUsersCount(groupId, "John", Arg.Any<CancellationToken>())
+        .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
+           new CountRepresentation { Count = 5 }));
 
         clientMock.GetUsers(groupId, Arg.Is<GroupUsersQueryFilter>(f => f.Page == 1 && f.PageSize == 20 && f.Search == "John"),
-                Arg.Any<CancellationToken>())
-            .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Failed(
-                errorRepresentation, HttpStatusCode.Forbidden));
+           Arg.Any<CancellationToken>())
+.Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Failed(
+    errorRepresentation, HttpStatusCode.Forbidden));
 
         // Act
         var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
@@ -239,7 +239,7 @@ public class GetGroupUsersQueryHandlerTests
         // Assert
         Assert.True(result.IsFailure);
         Assert.NotNull(result.Error);
-        await clientMock.Received(1).GetUsersCount(groupId, Arg.Any<CancellationToken>());
+        await clientMock.Received(1).GetUsersCount(groupId, "John", Arg.Any<CancellationToken>());
         await clientMock.Received(1).GetUsers(groupId, Arg.Is<GroupUsersQueryFilter>(f => f.Page == 1 && f.PageSize == 20 && f.Search == "John"), Arg.Any<CancellationToken>());
     }
 
@@ -251,13 +251,13 @@ public class GetGroupUsersQueryHandlerTests
         var request = new GetGroupUsersRequest { GroupId = groupId, Page = 0, PageSize = 10 };
         var query = new GetGroupUsersQuery(request);
         var errorRepresentation = fixture.Build<ErrorRepresentation>()
-            .With(e => e.Error, "unauthorized")
-            .Without(e => e.Errors)
+  .With(e => e.Error, "unauthorized")
+   .Without(e => e.Errors)
             .Create();
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
-            .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Failed(
-                errorRepresentation, HttpStatusCode.Unauthorized));
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
+       .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Failed(
+       errorRepresentation, HttpStatusCode.Unauthorized));
 
         // Act
         var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
@@ -282,18 +282,18 @@ public class GetGroupUsersQueryHandlerTests
         var query = new GetGroupUsersQuery(request);
 
         var users = fixture.Build<GroupUserRepresentation>()
-            .With(u => u.FirstName, "John")
+        .With(u => u.FirstName, "John")
             .With(u => u.Email, "john@example.com")
-            .With(u => u.LastName, "Doe")
-            .CreateMany(1)
+      .With(u => u.LastName, "Doe")
+       .CreateMany(1)
             .ToList();
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
-            .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
-                new CountRepresentation { Count = 10 }));
+        clientMock.GetUsersCount(groupId, "John", Arg.Any<CancellationToken>())
+   .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
+     new CountRepresentation { Count = 10 }));
 
         clientMock.GetUsers(groupId, Arg.Is<GroupUsersQueryFilter>(f => f.Page == 2 && f.PageSize == 5 && f.Search == "John"),
-                Arg.Any<CancellationToken>())
+        Arg.Any<CancellationToken>())
             .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded(users));
 
         // Act
@@ -303,7 +303,7 @@ public class GetGroupUsersQueryHandlerTests
         Assert.True(result.IsSuccess);
         await clientMock.Received(1).GetUsers(groupId,
             Arg.Is<GroupUsersQueryFilter>(f => f.Page == 2 && f.PageSize == 5 && f.Search == "John"),
-            Arg.Any<CancellationToken>());
+     Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -314,13 +314,13 @@ public class GetGroupUsersQueryHandlerTests
         var request = new GetGroupUsersRequest { GroupId = groupId }; // Using defaults (Page = 0, PageSize = 10)
         var query = new GetGroupUsersQuery(request);
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
-            .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
-                new CountRepresentation { Count = 0 }));
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
+    .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
+   new CountRepresentation { Count = 0 }));
 
         clientMock.GetUsers(groupId, Arg.Is<GroupUsersQueryFilter>(f => f.Page == 0 && f.PageSize == 10),
-                Arg.Any<CancellationToken>())
-            .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded([]));
+     Arg.Any<CancellationToken>())
+     .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded([]));
 
         // Act
         var result = await handler.HandleAsync(query, TestContext.Current.CancellationToken);
@@ -328,8 +328,8 @@ public class GetGroupUsersQueryHandlerTests
         // Assert
         Assert.True(result.IsSuccess);
         await clientMock.Received(1).GetUsers(groupId,
-            Arg.Is<GroupUsersQueryFilter>(f => f.Page == 0 && f.PageSize == 10),
-            Arg.Any<CancellationToken>());
+      Arg.Is<GroupUsersQueryFilter>(f => f.Page == 0 && f.PageSize == 10),
+    Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -340,18 +340,18 @@ public class GetGroupUsersQueryHandlerTests
         var request = new GetGroupUsersRequest { GroupId = groupId, Page = 0, PageSize = 10 };
         var query = new GetGroupUsersQuery(request);
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
             .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
-                new CountRepresentation { Count = 0 }));
+    new CountRepresentation { Count = 0 }));
 
         clientMock.GetUsers(groupId, Arg.Any<GroupUsersQueryFilter>(), Arg.Any<CancellationToken>())
-            .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded([]));
+           .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded([]));
 
         // Act
         await handler.HandleAsync(query, TestContext.Current.CancellationToken);
 
         // Assert
-        await clientMock.Received(1).GetUsersCount(groupId, Arg.Any<CancellationToken>());
+        await clientMock.Received(1).GetUsersCount(groupId, null, Arg.Any<CancellationToken>());
         await clientMock.Received(1).GetUsers(groupId, Arg.Any<GroupUsersQueryFilter>(), Arg.Any<CancellationToken>());
     }
 
@@ -365,36 +365,36 @@ public class GetGroupUsersQueryHandlerTests
 
         var users = new List<GroupUserRepresentation>
         {
-            new()
-            {
+       new()
+      {
                 Id = Guid.NewGuid(),
-                Email = "admin@example.com",
-                FirstName = "Admin",
-                LastName = "User",
-                Enabled = true,
-                Role = GroupRoles.GroupAdmin
-            },
-            new()
+       Email = "admin@example.com",
+        FirstName = "Admin",
+             LastName = "User",
+ Enabled = true,
+        Role = GroupRoles.GroupAdmin
+   },
+       new()
+   {
+    Id = Guid.NewGuid(),
+            Email = "member@example.com",
+        FirstName = "Member",
+ LastName = "User",
+     Enabled = true,
+     Role = GroupRoles.GroupMember
+          },
+        new()
             {
-                Id = Guid.NewGuid(),
-                Email = "member@example.com",
-                FirstName = "Member",
-                LastName = "User",
-                Enabled = true,
-                Role = GroupRoles.GroupMember
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Email = "undefined@example.com",
-                FirstName = "Undefined",
-                LastName = "User",
-                Enabled = false,
-                Role = GroupRoles.Undefined
-            }
-        };
+Id = Guid.NewGuid(),
+Email = "undefined@example.com",
+       FirstName = "Undefined",
+   LastName = "User",
+    Enabled = false,
+         Role = GroupRoles.Undefined
+   }
+  };
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
             .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
                 new CountRepresentation { Count = 3 }));
 
@@ -428,12 +428,12 @@ public class GetGroupUsersQueryHandlerTests
         var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
             .ThrowsAsync(new OperationCanceledException());
 
         // Act & Assert
         await Assert.ThrowsAsync<OperationCanceledException>(
-        async () => await handler.HandleAsync(query, cts.Token));
+            async () => await handler.HandleAsync(query, cts.Token));
     }
 
     [Fact]
@@ -449,7 +449,7 @@ public class GetGroupUsersQueryHandlerTests
             .Without(e => e.Errors)
             .Create();
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
+        clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
             .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Failed(
                 errorRepresentation, HttpStatusCode.NotFound));
 
@@ -482,9 +482,9 @@ public class GetGroupUsersQueryHandlerTests
             .CreateMany(1)
             .ToList();
 
-        clientMock.GetUsersCount(groupId, Arg.Any<CancellationToken>())
+        clientMock.GetUsersCount(groupId, "Jane", Arg.Any<CancellationToken>())
             .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
-                new CountRepresentation { Count = 1 }));
+                 new CountRepresentation { Count = 1 }));
 
         clientMock.GetUsers(groupId, Arg.Is<GroupUsersQueryFilter>(f => f.Search == "Jane"), Arg.Any<CancellationToken>())
             .Returns(HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>.Succeeded(users));

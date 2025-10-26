@@ -1,4 +1,5 @@
 ﻿using BlazorFurniture.Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace BlazorFurniture.Domain.Entities.Keycloak;
 
@@ -9,5 +10,6 @@ public sealed record GroupUserRepresentation
     public string? LastName { get; set; }
     public string? Email { get; set; }
     public bool Enabled { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public GroupRoles Role { get; set; }
 }

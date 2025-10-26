@@ -20,19 +20,19 @@ internal sealed class GetGroupUsersQueryHandler(
 {
     public async Task<Result<PaginatedResponse<GroupUserResponse>>> HandleAsync( GetGroupUsersQuery query, CancellationToken ct = default )
     {
-        var countGroupsResult = await groupManagementClient.GetUsersCount(query.Request.GroupId, ct).ToDomainResult(errorMapper);
+        var countGroupsResult = await groupManagementClient.GetUsersCount(query.Request.GroupId, query.Request.Search, ct).ToDomainResult(errorMapper);
 
         if (countGroupsResult.IsFailure)
             return countGroupsResult.PropagateFailure<PaginatedResponse<GroupUserResponse>>();
 
-        var queryFilter = new GroupUsersQueryFilter
+        var queryFilters = new GroupUsersQueryFilter
         {
             Page = query.Request.Page,
             PageSize = query.Request.PageSize,
             Search = query.Request.Search
         };
 
-        var groupUserResult = await groupManagementClient.GetUsers(query.Request.GroupId, queryFilter, ct).ToDomainResult(errorMapper);
+        var groupUserResult = await groupManagementClient.GetUsers(query.Request.GroupId, queryFilters, ct).ToDomainResult(errorMapper);
 
         return groupUserResult.Map(users =>
             new PaginatedResponse<GroupUserResponse>

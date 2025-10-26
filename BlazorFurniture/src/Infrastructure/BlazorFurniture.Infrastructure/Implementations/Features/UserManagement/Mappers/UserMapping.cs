@@ -34,13 +34,13 @@ internal static class UserMapping
     {
         public UserPermissionsResponse ToResponse() => new()
         {
-            Role = source.Role.ToString(),
+            Role = source.Role,
             Permissions = source.Permissions,
             Groups = source.Groups?.Select(g => new GroupPermissionsResponse()
             {
                 Id = g.Id,
                 Name = g.Name,
-                Role = g.Role.ToString(),
+                Role = g.Role,
                 Permissions = g.Permissions,
             }).ToList() ?? [],
         };

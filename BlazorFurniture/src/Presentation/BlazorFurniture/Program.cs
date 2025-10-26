@@ -12,6 +12,7 @@ using MudBlazor.Services;
 using NSwag;
 using Scalar.AspNetCore;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +73,11 @@ builder.Services.AddFastEndpoints()
         });
     };
     options.TagCase = TagCase.LowerCase;
+});
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
 builder.Services.AddEndpointsApiExplorer();
