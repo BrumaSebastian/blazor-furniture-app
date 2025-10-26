@@ -379,20 +379,20 @@ Email = email,
     Id = Guid.NewGuid(),
             Email = "member@example.com",
         FirstName = "Member",
- LastName = "User",
-     Enabled = true,
-     Role = GroupRoles.GroupMember
-          },
-        new()
-            {
-Id = Guid.NewGuid(),
-Email = "undefined@example.com",
-       FirstName = "Undefined",
-   LastName = "User",
+    LastName = "User",
+    Enabled = true,
+    Role = GroupRoles.GroupMember
+},
+new()
+{
+    Id = Guid.NewGuid(),
+    Email = "undefined@example.com",
+    FirstName = "Undefined",
+    LastName = "User",
     Enabled = false,
-         Role = GroupRoles.Undefined
-   }
-  };
+    Role = GroupRoles.Undefined
+}
+};
 
         clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
             .Returns(HttpResult<CountRepresentation, ErrorRepresentation>.Succeeded(
