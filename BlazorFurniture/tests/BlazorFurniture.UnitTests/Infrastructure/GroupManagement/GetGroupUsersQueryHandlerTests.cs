@@ -163,9 +163,9 @@ Email = email,
 
         var users = fixture.Build<GroupUserRepresentation>()
             .With(u => u.Email, "user@example.com")
-        .With(u => u.FirstName, "User")
-   .With(u => u.LastName, "Test")
-        .CreateMany(10)
+            .With(u => u.FirstName, "User")
+            .With(u => u.LastName, "Test")
+            .CreateMany(10)
             .ToList();
 
         clientMock.GetUsersCount(groupId, null, Arg.Any<CancellationToken>())
