@@ -1,35 +1,73 @@
 ﻿@inherits LayoutComponentBase
+@inject IThemeService ThemeService
+@implements IDisposable
 
-<MudThemeProvider IsDarkMode="true" />
+<MudThemeProvider Theme="@theme" IsDarkMode="isDarkMode" />
+<MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
-<MudPopoverProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@DrawerToggle" />
-        <MudText Typo="Typo.h6">Admin Dashboard</MudText>
-        <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Home" Href="/" />
-        <MudMenu Icon="@Icons.Material.Filled.AccountCircle">
-            <MudMenuItem Href="/account">My Account</MudMenuItem>
-            <MudMenuItem Href="/api/authentication/logout">Logout</MudMenuItem>
-        </MudMenu>
-    </MudAppBar>
+	<MudAppBar Elevation="1" Dense="true">
+		<MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
 
-    <MudDrawer @bind-Open="drawerOpen" Elevation="2">
-        <MudNavMenu>
-            @* <AdminNavMenu /> *@
-			<MudNavLink Href="/admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-        </MudNavMenu>
-    </MudDrawer>
+		<MudIconButton Icon="@Icons.Material.Filled.Menu"
+					   Color="Color.Inherit"
+					   Edge="Edge.Start"
+					   OnClick="@DrawerToggle" />
+		<MudText Typo="Typo.h6">Admin Dashboard</MudText>
+		<MudSpacer />
+		<MudIconButton Icon="@Icons.Material.Filled.Home"
+					   Color="Color.Inherit"
+					   Href="/"/>
+		<AdminNavMenu />
+	</MudAppBar>
 
-    <MudMainContent Class="pa-4">
-        @Body
-    </MudMainContent>
+	<MudDrawer @bind-Open="drawerOpen"
+			   Elevation="2"
+			   Variant="DrawerVariant.Persistent">
+		<MudDrawerHeader>
+			<MudText Typo="Typo.h6">Management</MudText>
+		</MudDrawerHeader>
+		<MudNavMenu>
+			<AdminNavMenu />
+		</MudNavMenu>
+	</MudDrawer>
+
+	<MudMainContent Class="pt-16 px-4">
+		@Body
+	</MudMainContent>
 </MudLayout>
 
 @code {
-    private bool drawerOpen = true;
-    private void DrawerToggle() => drawerOpen = !drawerOpen;
+	private MudTheme? theme;
+	private bool isDarkMode = true;
+	private bool drawerOpen = true; // Admin drawer open by default
+
+	protected override void OnInitialized()
+	{
+		theme = ThemeService.GetTheme(ThemeType.Admin);
+		isDarkMode = ThemeService.IsDarkMode;
+		ThemeService.OnThemeChanged += OnThemeChanged;
+	}
+
+	private string DarkLightModeButtonIcon => isDarkMode switch
+	{
+		true => Icons.Material.Rounded.AutoMode,
+		false => Icons.Material.Outlined.DarkMode,
+	};
+
+	private void DrawerToggle() => drawerOpen = !drawerOpen;
+	private void DarkModeToggle() => ThemeService.ToggleDarkMode();
+
+	private void OnThemeChanged()
+	{
+		isDarkMode = ThemeService.IsDarkMode;
+		StateHasChanged();
+	}
+
+	public void Dispose()	
+	{
+		ThemeService.OnThemeChanged -= OnThemeChanged;
+	}
 }

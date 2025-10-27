@@ -36,6 +36,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddApiClients("https://localhost:7128");
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
+builder.Services.AddSingleton<IThemeService, ThemeService>();
 
 // Get OIDC configuration for Swagger setup
 var openIdConnectOptions = builder.Configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()

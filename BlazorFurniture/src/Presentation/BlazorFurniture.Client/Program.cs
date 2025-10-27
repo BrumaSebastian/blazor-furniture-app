@@ -17,6 +17,7 @@ builder.Services.AddAuthenticationStateDeserialization();
 builder.Services.AddLocalization();
 builder.Services.AddApiClients(builder.HostEnvironment.BaseAddress);
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
+builder.Services.AddSingleton<IThemeService, ThemeService>();
 
 var host = builder.Build();
 
