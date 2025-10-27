@@ -1,6 +1,7 @@
 ﻿using BlazorFurniture.Client.Services.API;
 using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Shared.DTOs.Users.Responses;
+using Refit;
 
 namespace BlazorFurniture.Client.Services;
 
@@ -23,9 +24,15 @@ public class PermissionsService( IUserApi userApi ) : IPermissionsService
             userPermissions = await userApi.GetUserPermissions();
             return userPermissions;
         }
+        catch (ApiException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized
+                                   || ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        {
+            // User is not authenticated or lacks permissions
+            return null;
+        }
         catch (HttpRequestException)
         {
-            // User is not authenticated or endpoint failed
+            // Network error or server unavailable
             return null;
         }
     }

@@ -2,7 +2,7 @@
 
 namespace BlazorFurniture.Client.Services.Interfaces;
 
-public interface IPermissionService
+public interface IPermissionsService
 {
     Task<UserPermissions?> GetUserPermissions();
     Task<bool> HasPermission( string permission );

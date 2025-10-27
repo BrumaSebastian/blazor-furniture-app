@@ -1,6 +1,6 @@
 ﻿namespace BlazorFurniture.Shared.DTOs.Users.Responses;
 
-public sealed class UserProfileResponse
+public sealed class UserProfile
 {
     public required Guid Id { get; init; }
     public required string Username { get; init; }

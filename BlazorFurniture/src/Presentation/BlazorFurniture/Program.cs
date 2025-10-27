@@ -1,3 +1,6 @@
+using BlazorFurniture.Client.Extensions;
+using BlazorFurniture.Client.Services;
+using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Components;
 using BlazorFurniture.Core.Shared.Configurations;
 using BlazorFurniture.Extensions;
@@ -13,7 +16,6 @@ using NSwag;
 using Scalar.AspNetCore;
 using System.Globalization;
 using System.Text.Json.Serialization;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
@@ -31,6 +33,9 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
+
+builder.Services.AddApiClients("https://localhost:7128");
+builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 
 // Get OIDC configuration for Swagger setup
 var openIdConnectOptions = builder.Configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()

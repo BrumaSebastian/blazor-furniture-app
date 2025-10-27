@@ -1,4 +1,6 @@
 using BlazorFurniture.Client.Extensions;
+using BlazorFurniture.Client.Services;
+using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Core.Shared.Constants;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
@@ -14,6 +16,7 @@ builder.Services.AddAuthenticationStateDeserialization();
 
 builder.Services.AddLocalization();
 builder.Services.AddApiClients(builder.HostEnvironment.BaseAddress);
+builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 
 var host = builder.Build();
 
