@@ -1,0 +1,35 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider IsDarkMode="true" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@DrawerToggle" />
+        <MudText Typo="Typo.h6">Admin Dashboard</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Home" Href="/" />
+        <MudMenu Icon="@Icons.Material.Filled.AccountCircle">
+            <MudMenuItem Href="/account">My Account</MudMenuItem>
+            <MudMenuItem Href="/api/authentication/logout">Logout</MudMenuItem>
+        </MudMenu>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="drawerOpen" Elevation="2">
+        <MudNavMenu>
+            @* <AdminNavMenu /> *@
+			<MudNavLink Href="/admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent Class="pa-4">
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool drawerOpen = true;
+    private void DrawerToggle() => drawerOpen = !drawerOpen;
+}

@@ -1,16 +1,11 @@
 ﻿@page "/"
 @attribute [AllowAnonymous]
-@inject IPermissionsService PermissionsService
 
 <PageTitle>Home</PageTitle>
 
 <MudGrid id="section-1">
     <MudItem xs="12" md="6" class="align-content-center">
         <MudStack Spacing="3" class="mx-4">
-			@if (permissions is not null)
-			{
-				<TextBlock Title=@permissions.Role.ToString()></TextBlock>
-			}
             <TextBlock Title="Discover your perfect rental property today"
                        Description="Explore a wide range of rental properties that fit your lifestyle and budget.
                                     Your dream home is just a click away!" />
@@ -254,7 +249,7 @@
     </MudItem>
 </MudGrid>
 
-@code {
+@* @code {
 	private UserPermissions? permissions;
 	// private bool isLoading = false;
 	private string? errorMessage;
@@ -310,4 +305,4 @@
 		await LoadPermissions();
 		StateHasChanged();
 	}
-}
+} *@
