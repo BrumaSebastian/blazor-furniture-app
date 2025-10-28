@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@rendermode InteractiveWebAssembly
 @inject IThemeService ThemeService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @implements IDisposable
 
 <MudThemeProvider Theme="@theme" IsDarkMode="isDarkMode" />
@@ -9,18 +11,18 @@
 
 <MudLayout>
 	<MudAppBar Elevation="1" Dense="true">
-		<MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-
 		<MudIconButton Icon="@Icons.Material.Filled.Menu"
 					   Color="Color.Inherit"
 					   Edge="Edge.Start"
 					   OnClick="@DrawerToggle" />
-		<MudText Typo="Typo.h6">Admin Dashboard</MudText>
+		<MudText Typo="Typo.h6">@CommonResource.message_welcome, @userFirstName</MudText>
+
 		<MudSpacer />
+
+		<MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
 		<MudIconButton Icon="@Icons.Material.Filled.Home"
 					   Color="Color.Inherit"
 					   Href="/"/>
-		<AdminNavMenu />
 	</MudAppBar>
 
 	<MudDrawer @bind-Open="drawerOpen"
@@ -42,13 +44,28 @@
 @code {
 	private MudTheme? theme;
 	private bool isDarkMode = true;
-	private bool drawerOpen = true; // Admin drawer open by default
+	private bool drawerOpen = true;
+	private string? userFirstName;
 
-	protected override void OnInitialized()
+	protected override async Task OnInitializedAsync()
 	{
 		theme = ThemeService.GetTheme(ThemeType.Admin);
 		isDarkMode = ThemeService.IsDarkMode;
 		ThemeService.OnThemeChanged += OnThemeChanged;
+
+		// Get user info directly from AuthenticationStateProvider
+		await LoadUserInfo();
+	}
+
+	private async Task LoadUserInfo()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
+
+		if (user.Identity?.IsAuthenticated is true)
+		{
+			userFirstName = user.Identity.Name;
+		}
 	}
 
 	private string DarkLightModeButtonIcon => isDarkMode switch

@@ -1,12 +1,14 @@
 ﻿@page "/admin/dashboard"
 @rendermode InteractiveWebAssembly
 @layout AdminLayout
+@attribute [Authorize]
+@* @inject AuthenticationStateProvider AuthenticationStateProvider *@
+@* @inject IStringLocalizer<CommonResource> CommonLocalizer *@
 
 <PermissionGuard RequiredRole="PlatformRoles.Admin" RedirectTo="/">
     <PageTitle>Admin Dashboard</PageTitle>
 
     <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
-        <MudText Typo="Typo.h3" GutterBottom>Management Dashboard</MudText>
         
         <!-- Dashboard content -->
     </MudContainer>

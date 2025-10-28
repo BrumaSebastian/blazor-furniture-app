@@ -1,4 +1,13 @@
-﻿<h3>AdminNavMenu</h3>
+﻿ 
+<MudNavMenu Color="Color.Info">
+	<MudNavLink Href="/admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+	<MudNavLink Href="/admin/group" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
+	<MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">Users</MudNavLink>
+	<MudNavGroup Title="Settings" Expanded="true">
+		<MudNavLink Href="/users">Users</MudNavLink>
+		<MudNavLink Href="/security">Security</MudNavLink>
+	</MudNavGroup>
+</MudNavMenu>
 
 @code {
 

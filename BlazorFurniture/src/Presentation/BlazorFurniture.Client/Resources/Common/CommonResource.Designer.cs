@@ -106,6 +106,15 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Welcome.
+        /// </summary>
+        public static string message_welcome {
+            get {
+                return ResourceManager.GetString("message.welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Counter.
         /// </summary>
         public static string navigation_counter {
