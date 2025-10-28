@@ -5,14 +5,13 @@ using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Application.Features.GroupManagement.Requests.Filters;
 using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Domain.Entities.Keycloak;
-using BlazorFurniture.Domain.Enums;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.GroupManagement.Handlers.Queries;
-using BlazorFurniture.Shared.DTOs.Users;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using System.Net;
+using GroupRoles = BlazorFurniture.Domain.Enums.GroupRoles;
 
 namespace BlazorFurniture.UnitTests.Infrastructure.GroupManagement;
 
