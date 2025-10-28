@@ -10,7 +10,7 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-	<MudAppBar Elevation="1" Dense="true" Fixed=true>
+	<MudAppBar Dense=true Fixed=true Class="mt-2">
 		<MudIconButton Icon="@Icons.Material.Filled.Menu"
 					   Color="Color.Inherit"
 					   Edge="Edge.Start"
@@ -19,7 +19,7 @@
 
 		<MudSpacer />
 
-		<MudTextField Class="py-4" @bind-Value="Search" Label="Search" Variant="Variant.Text"></MudTextField>
+		<MudTextField @bind-Value="Search" Label="Search" Variant="Variant.Text"></MudTextField>
 		<MudBadge Content="2" Color="Color.Primary" Overlap=true>
 			<MudIconButton Icon="@Icons.Material.Filled.CircleNotifications" Color="Color.Default" />
 		</MudBadge>
