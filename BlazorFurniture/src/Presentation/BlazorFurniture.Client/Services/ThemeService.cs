@@ -6,7 +6,7 @@ namespace BlazorFurniture.Client.Services;
 
 public sealed class ThemeService : IThemeService
 {
-    private bool _isDarkMode = true;
+    private bool _isDarkMode = false;
 
     public bool IsDarkMode
     {

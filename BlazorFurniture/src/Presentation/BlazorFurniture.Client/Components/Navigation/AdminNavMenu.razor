@@ -1,14 +1,20 @@
-﻿ 
-<MudNavMenu Color="Color.Info">
-	<MudNavLink Href="/admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-	<MudNavLink Href="/admin/group" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
-	<MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">Users</MudNavLink>
-	<MudNavGroup Title="Settings" Expanded="true">
-		<MudNavLink Href="/users">Users</MudNavLink>
-		<MudNavLink Href="/security">Security</MudNavLink>
-	</MudNavGroup>
-</MudNavMenu>
+﻿<div Class="d-flex flex-column" style="height: 100%">
+	<MudNavMenu Color="Color.Info">
+		<MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+		<MudNavLink Href="/admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+		<MudNavLink Href="/admin/group" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
+		<MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">Users</MudNavLink>
+		<MudNavGroup Title="Settings" Expanded="true">
+			<MudNavLink Href="/users">Users</MudNavLink>
+			<MudNavLink Href="/security">Security</MudNavLink>
+		</MudNavGroup>
+	</MudNavMenu>
 
-@code {
+	<MudSpacer />
 
-}
+	<MudNavMenu Color="Color.Info">
+		<MudNavLink Href="api/authentication/logout" Icon="@Icons.Material.Filled.Login">
+			<MudText>@CommonResource.button_logout</MudText>
+		</MudNavLink>
+	</MudNavMenu>
+</div>
