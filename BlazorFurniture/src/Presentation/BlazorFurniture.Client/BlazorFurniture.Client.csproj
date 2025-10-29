@@ -16,6 +16,7 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 		<PackageReference Include="Microsoft.Extensions.Localization" />
 		<PackageReference Include="MudBlazor" />
+		<PackageReference Include="Refit.HttpClientFactory" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -39,6 +40,11 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>Pages.Account.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="Resources\Pages\Admin\AdminResource.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>AdminResource.resx</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -53,6 +59,10 @@
 	  <EmbeddedResource Update="Resources\Pages\Account\Pages.Account.resx">
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Pages.Account.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Pages\Admin\AdminResource.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>AdminResource.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
 	</ItemGroup>
 

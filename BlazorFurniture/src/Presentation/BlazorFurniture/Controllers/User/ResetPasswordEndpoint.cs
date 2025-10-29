@@ -2,6 +2,7 @@
 using BlazorFurniture.Constants;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
+using BlazorFurniture.Shared.DTOs.Users.Responses;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

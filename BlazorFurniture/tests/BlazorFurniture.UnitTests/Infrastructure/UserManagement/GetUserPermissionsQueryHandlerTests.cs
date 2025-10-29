@@ -3,12 +3,12 @@ using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Core.Shared.Errors;
 using BlazorFurniture.Domain.Entities.Keycloak;
-using BlazorFurniture.Domain.Enums;
 using BlazorFurniture.Infrastructure.External.Interfaces;
 using BlazorFurniture.Infrastructure.External.Keycloak.Utils;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Queries;
 using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
 using NSubstitute;
+using PlatformRoles = BlazorFurniture.Domain.Enums.PlatformRoles;
 
 namespace BlazorFurniture.UnitTests.Infrastructure.UserManagement;
 

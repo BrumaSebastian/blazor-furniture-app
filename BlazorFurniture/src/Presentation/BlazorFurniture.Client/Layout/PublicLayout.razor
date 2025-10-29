@@ -1,0 +1,52 @@
+﻿@using BlazorFurniture.Client.Services
+@using BlazorFurniture.Client.Components.Navigation
+@inherits LayoutComponentBase
+@inject IThemeService ThemeService
+@implements IDisposable
+
+<MudThemeProvider Theme="@theme" IsDarkMode="@isDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+	<MudAppBar Elevation="1">
+		<MudText Typo="Typo.h6" Class="ml-3">Furniture Shop</MudText>
+		<MudSpacer />
+		<PublicNavMenu />
+		<MudIconButton Icon="@DarkModeIcon" Color="Color.Inherit" OnClick="@ToggleDarkMode" />
+	</MudAppBar>
+
+	<MudMainContent Class="pt-16 px-4">
+		@Body
+	</MudMainContent>
+</MudLayout>
+
+@code {
+	private MudTheme? theme;
+	private bool isDarkMode = false; // Public starts light
+
+	protected override void OnInitialized()
+	{
+		theme = ThemeService.GetTheme(ThemeType.Public);
+		isDarkMode = ThemeService.IsDarkMode;
+		ThemeService.OnThemeChanged += OnThemeChanged;
+	}
+
+	private void OnThemeChanged()
+	{
+		isDarkMode = ThemeService.IsDarkMode;
+		StateHasChanged();
+	}
+
+	private void ToggleDarkMode() => ThemeService.ToggleDarkMode();
+
+	private string DarkModeIcon => isDarkMode
+		? Icons.Material.Filled.LightMode
+		: Icons.Material.Filled.DarkMode;
+
+	public void Dispose()
+	{
+		ThemeService.OnThemeChanged -= OnThemeChanged;
+	}
+}

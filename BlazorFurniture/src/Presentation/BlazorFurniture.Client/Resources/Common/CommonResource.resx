@@ -132,6 +132,9 @@
   <data name="message.choose.language" xml:space="preserve">
     <value>Choose Language</value>
   </data>
+  <data name="message.welcome" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
   <data name="navigation.counter" xml:space="preserve">
     <value>Counter</value>
   </data>

@@ -249,5 +249,60 @@
     </MudItem>
 </MudGrid>
 
-@code {
-}
+@* @code {
+	private UserPermissions? permissions;
+	// private bool isLoading = false;
+	private string? errorMessage;
+
+	// private bool hasAdminPanel = false;
+	// private bool hasGroupView = false;
+	// private bool hasUserView = false;
+
+	// protected override async Task OnInitializedAsync()
+	// {
+	// 	await LoadPermissions();
+	// }
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await LoadPermissions();
+			StateHasChanged(); // Re-render with loaded permissions
+		}
+	}
+
+	private async Task LoadPermissions()
+	{
+		// isLoading = true;
+		errorMessage = null;
+
+		try
+		{
+			permissions = await PermissionsService.GetUserPermissions();
+
+			// if (permissions != null)
+			// {
+			// 	// Test specific permissions
+			// 	hasAdminPanel = await PermissionsService.HasPermission("view-admin-panel");
+			// 	hasGroupView = await PermissionsService.HasPermission("group-management#view");
+			// 	hasUserView = await PermissionsService.HasPermission("user-management#view");
+			// }
+		}
+		catch (Exception ex)
+		{
+			errorMessage = ex.Message;
+		}
+		finally
+		{
+			// isLoading = false;
+		}
+	}
+
+	private async Task RefreshPermissions()
+	{
+		PermissionsService.ClearCache();
+		await LoadPermissions();
+		StateHasChanged();
+	}
+} *@

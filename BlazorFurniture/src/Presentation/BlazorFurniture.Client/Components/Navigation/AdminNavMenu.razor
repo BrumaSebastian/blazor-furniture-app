@@ -1,0 +1,22 @@
+﻿@using BlazorFurniture.Client.Resources.Pages.Admin
+
+<div Class="d-flex flex-column" style="height: 100%">
+	<MudNavMenu Color="Color.Info">
+		<MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+		<MudNavLink Href="/admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">@AdminResource.nav_dashboard</MudNavLink>
+		<MudNavLink Href="/admin/group" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Group">@AdminResource.nav_groups</MudNavLink>
+		<MudNavLink Href="/admin/users" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">@AdminResource.nav_users</MudNavLink>
+		<MudNavGroup Title="Settings" Expanded="true">
+			<MudNavLink Href="/users">Users</MudNavLink>
+			<MudNavLink Href="/security">Security</MudNavLink>
+		</MudNavGroup>
+	</MudNavMenu>
+
+	<MudSpacer />
+
+	<MudNavMenu Color="Color.Info">
+		<MudNavLink Href="api/authentication/logout" Icon="@Icons.Material.Filled.Login">
+			<MudText>@CommonResource.button_logout</MudText>
+		</MudNavLink>
+	</MudNavMenu>
+</div>

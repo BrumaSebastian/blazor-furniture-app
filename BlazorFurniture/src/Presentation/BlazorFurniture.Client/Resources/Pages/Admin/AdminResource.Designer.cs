@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BlazorFurniture.Client.Resources.Common {
+namespace BlazorFurniture.Client.Resources.Pages.Admin {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace BlazorFurniture.Client.Resources.Common {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class CommonResource {
+    public class AdminResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CommonResource() {
+        internal AdminResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Client.Resources.Common.CommonResource", typeof(CommonResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Client.Resources.Pages.Admin.AdminResource", typeof(AdminResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,83 +61,29 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign in.
+        ///   Looks up a localized string similar to Dashboard.
         /// </summary>
-        public static string button_login {
+        public static string nav_dashboard {
             get {
-                return ResourceManager.GetString("button.login", resourceCulture);
+                return ResourceManager.GetString("nav.dashboard", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log out.
+        ///   Looks up a localized string similar to Groups.
         /// </summary>
-        public static string button_logout {
+        public static string nav_groups {
             get {
-                return ResourceManager.GetString("button.logout", resourceCulture);
+                return ResourceManager.GetString("nav.groups", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Account.
+        ///   Looks up a localized string similar to Users.
         /// </summary>
-        public static string button_profile {
+        public static string nav_users {
             get {
-                return ResourceManager.GetString("button.profile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sign up.
-        /// </summary>
-        public static string button_register {
-            get {
-                return ResourceManager.GetString("button.register", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Choose Language.
-        /// </summary>
-        public static string message_choose_language {
-            get {
-                return ResourceManager.GetString("message.choose.language", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Welcome.
-        /// </summary>
-        public static string message_welcome {
-            get {
-                return ResourceManager.GetString("message.welcome", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Counter.
-        /// </summary>
-        public static string navigation_counter {
-            get {
-                return ResourceManager.GetString("navigation.counter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Home.
-        /// </summary>
-        public static string navigation_home {
-            get {
-                return ResourceManager.GetString("navigation.home", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Weather.
-        /// </summary>
-        public static string navigation_weather {
-            get {
-                return ResourceManager.GetString("navigation.weather", resourceCulture);
+                return ResourceManager.GetString("nav.users", resourceCulture);
             }
         }
     }
