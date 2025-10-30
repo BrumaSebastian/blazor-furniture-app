@@ -18,6 +18,7 @@ builder.Services.AddLocalization();
 builder.Services.AddApiClients(builder.HostEnvironment.BaseAddress);
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 var host = builder.Build();
 

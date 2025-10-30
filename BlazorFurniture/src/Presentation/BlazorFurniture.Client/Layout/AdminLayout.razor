@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @rendermode InteractiveWebAssembly
 @inject IThemeService ThemeService
+@inject ISearchService SearchService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @implements IDisposable
 
@@ -18,15 +19,16 @@
 		<MudText Typo="Typo.h6">@CommonResource.message_welcome, @userFirstName</MudText>
 
 		<MudSpacer />
-
-		<MudTextField @bind-Value="Search" Label="Search" Variant="Variant.Text"></MudTextField>
-		<MudBadge Content="2" Color="Color.Primary" Overlap=true>
-			<MudIconButton Icon="@Icons.Material.Filled.CircleNotifications" Color="Color.Default" />
-		</MudBadge>
-		<MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-		<MudAvatar>
-			<MudImage Src="https://picsum.photos/200/300"></MudImage>
-		</MudAvatar>
+		<MudContainer Class="d-flex align-center gap-2" MaxWidth="MaxWidth.Small">
+			<MudTextField Class="flex-grow-1" @bind-Value=@SearchService.SearchTerm Label="Search" Immediate=true DebounceInterval="300" Variant="Variant.Text" Margin="Margin.Dense" FullWidth=false></MudTextField>
+			<MudBadge Content="2" Color="Color.Primary" Overlap=true>
+				<MudIconButton Icon="@Icons.Material.Filled.CircleNotifications" Color="Color.Default" />
+			</MudBadge>
+			<MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+			<MudAvatar>
+				<MudImage Src="https://picsum.photos/200/300"></MudImage>
+			</MudAvatar>
+		</MudContainer>
 	</MudAppBar>
 
 	<MudDrawer @bind-Open="drawerOpen"
@@ -35,12 +37,14 @@
 		<MudDrawerHeader>
 			<MudText Typo="Typo.h6">Management</MudText>
 		</MudDrawerHeader>
-		
+
 		<AdminNavMenu />
 	</MudDrawer>
 
 	<MudMainContent>
-		@Body
+		<CascadingValue Value="this">
+			@Body
+		</CascadingValue>
 	</MudMainContent>
 </MudLayout>
 
@@ -50,7 +54,21 @@
 	private bool drawerOpen = true;
 	private string? userFirstName;
 
-	public string Search { get; set; } = string.Empty;
+	// public event Action? OnSearchChanged;
+
+	// public string Search
+	// {
+	// 	get;
+	// 	set
+	// 	{
+	// 		if (field != value)
+	// 		{
+	// 			field = value;
+	// 			OnSearchChanged?.Invoke();
+	// 		}
+
+	// 	}
+	// } = string.Empty;
 
 	protected override async Task OnInitializedAsync()
 	{

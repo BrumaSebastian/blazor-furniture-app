@@ -2,10 +2,11 @@
 @rendermode InteractiveWebAssembly
 @layout AdminLayout
 @attribute [Authorize]
+@inject ISearchService SearchService
 @* @inject AuthenticationStateProvider AuthenticationStateProvider *@
 @* @inject IStringLocalizer<CommonResource> CommonLocalizer *@
 
-	<h1>asdf</h1>
+	<h1>@SearchService.SearchTerm</h1>
 @* <PermissionGuard RequiredRole="PlatformRoles.Admin" RedirectTo="/">
     <PageTitle>Admin Dashboard</PageTitle>
 
@@ -14,3 +15,21 @@
         <!-- Dashboard content -->
     </MudContainer>
 </PermissionGuard> *@
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Access the search value
+		SearchService.OnSearchChanged += HandleSearchChanged;
+    }
+
+	private void HandleSearchChanged()
+	{
+		StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		SearchService.OnSearchChanged -= HandleSearchChanged;
+	}
+}
