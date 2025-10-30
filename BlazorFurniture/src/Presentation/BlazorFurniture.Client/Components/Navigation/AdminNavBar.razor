@@ -1,34 +1,31 @@
-﻿@inherits LayoutComponentBase
-@inject IThemeService ThemeService
+﻿@inject IThemeService ThemeService
 @inject ISearchService SearchService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @implements IDisposable
 
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MudThemeProvider Theme="@theme" IsDarkMode="isDarkMode" />
 
-<MudLayout>
+<MudAppBar Dense=true Fixed=true Class="mt-2">
+	<MudIconButton Icon="@Icons.Material.Filled.Menu"
+				   Color="Color.Inherit"
+				   Edge="Edge.Start"
+				   OnClick="@DrawerToggle" />
+	<MudText Typo="Typo.h6">@CommonResource.message_welcome, @userFirstName</MudText>
 	@RendererInfo.IsInteractive
 	@RendererInfo.Name
-	<AdminNavBar @rendermode=InteractiveWebAssembly></AdminNavBar>
 
-	<MudDrawer @bind-Open="drawerOpen"
-			   Elevation="2"
-			   Variant="DrawerVariant.Persistent">
-		<MudDrawerHeader>
-			<MudText Typo="Typo.h6">Management</MudText>
-		</MudDrawerHeader>
-
-		<AdminNavMenu />
-	</MudDrawer>
-
-	<MudMainContent>
-		<CascadingValue Value="this">
-			@Body
-		</CascadingValue>
-	</MudMainContent>
-</MudLayout>
+	<MudSpacer />
+	<MudContainer Class="d-flex align-center gap-2" MaxWidth="MaxWidth.Small">
+		<MudTextField Class="flex-grow-1" @bind-Value=@SearchService.SearchTerm Label="Search" Immediate=true DebounceInterval="300" Variant="Variant.Text" Margin="Margin.Dense" FullWidth=false></MudTextField>
+		<MudBadge Content="2" Color="Color.Primary" Overlap=true>
+			<MudIconButton Icon="@Icons.Material.Filled.CircleNotifications" Color="Color.Default" />
+		</MudBadge>
+		<MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+		<MudAvatar>
+			<MudImage Src="https://picsum.photos/200/300"></MudImage>
+		</MudAvatar>
+	</MudContainer>
+</MudAppBar>
 
 @code {
 	private MudTheme? theme;
@@ -42,6 +39,7 @@
 		isDarkMode = ThemeService.IsDarkMode;
 		ThemeService.OnThemeChanged += OnThemeChanged;
 
+		// Get user info directly from AuthenticationStateProvider
 		await LoadUserInfo();
 	}
 
