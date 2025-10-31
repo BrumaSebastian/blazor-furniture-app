@@ -1,6 +1,6 @@
-﻿using BlazorFurniture.Client.Services.API;
-using BlazorFurniture.Client.Services.Interfaces;
+﻿using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Shared.DTOs.Users.Responses;
+using BlazorFurniture.Shared.Services.API;
 using Refit;
 
 namespace BlazorFurniture.Client.Services;

@@ -11,8 +11,10 @@ using System.Security.Claims;
 
 namespace BlazorFurniture.Authentication;
 
-internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> oidcOptionsMonitor)
+internal sealed class CookieOidcRefresher( IOptionsMonitor<OpenIdConnectOptions> oidcOptionsMonitor )
 {
+    private const int REFRESH_BEFORE_EXPIRY_MINUTES = 2;
+
     private readonly OpenIdConnectProtocolValidator oidcTokenValidator = new()
     {
         // We no longer have the original nonce cookie which is deleted at the end of the authorization code flow having served its purpose.
@@ -20,7 +22,7 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
         RequireNonce = false,
     };
 
-    public async Task ValidateOrRefreshCookieAsync(CookieValidatePrincipalContext validateContext, string oidcScheme)
+    public async Task ValidateOrRefreshCookieAsync( CookieValidatePrincipalContext validateContext, string oidcScheme )
     {
         var accessTokenExpirationText = validateContext.Properties.GetTokenValue("expires_at");
         if (!DateTimeOffset.TryParse(accessTokenExpirationText, out var accessTokenExpiration))
@@ -30,7 +32,8 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
 
         var oidcOptions = oidcOptionsMonitor.Get(oidcScheme);
         var now = oidcOptions.TimeProvider!.GetUtcNow();
-        if (now + TimeSpan.FromMinutes(5) < accessTokenExpiration)
+
+        if (now + TimeSpan.FromMinutes(REFRESH_BEFORE_EXPIRY_MINUTES) < accessTokenExpiration)
         {
             return;
         }
@@ -41,11 +44,12 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
         using var refreshResponse = await oidcOptions.Backchannel.PostAsync(tokenEndpoint,
             new FormUrlEncodedContent(new Dictionary<string, string?>()
             {
-                ["grant_type"] = "refresh_token",
-                ["client_id"] = oidcOptions.ClientId,
-                ["client_secret"] = oidcOptions.ClientSecret,
-                ["scope"] = string.Join(" ", oidcOptions.Scope),
-                ["refresh_token"] = validateContext.Properties.GetTokenValue("refresh_token"),
+
+                [OpenIdConnectParameterNames.GrantType] = OpenIdConnectParameterNames.RefreshToken,
+                [OpenIdConnectParameterNames.ClientId] = oidcOptions.ClientId,
+                [OpenIdConnectParameterNames.ClientSecret] = oidcOptions.ClientSecret,
+                [OpenIdConnectParameterNames.Scope] = string.Join(" ", oidcOptions.Scope),
+                [OpenIdConnectParameterNames.RefreshToken] = validateContext.Properties.GetTokenValue(OpenIdConnectParameterNames.RefreshToken),
             }));
 
         if (!refreshResponse.IsSuccessStatusCode)
@@ -58,6 +62,7 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
         var message = new OpenIdConnectMessage(refreshJson);
 
         var validationParameters = oidcOptions.TokenValidationParameters.Clone();
+
         if (oidcOptions.ConfigurationManager is BaseConfigurationManager baseConfigurationManager)
         {
             validationParameters.ConfigurationManager = baseConfigurationManager;
@@ -77,7 +82,7 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
         }
 
         var validatedIdToken = JwtSecurityTokenConverter.Convert(validationResult.SecurityToken as JsonWebToken);
-        validatedIdToken.Payload["nonce"] = null;
+        validatedIdToken.Payload[OpenIdConnectParameterNames.Nonce] = null;
         oidcTokenValidator.ValidateTokenResponse(new()
         {
             ProtocolMessage = message,
@@ -91,10 +96,10 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
         var expiresIn = int.Parse(message.ExpiresIn, NumberStyles.Integer, CultureInfo.InvariantCulture);
         var expiresAt = now + TimeSpan.FromSeconds(expiresIn);
         validateContext.Properties.StoreTokens([
-            new() { Name = "access_token", Value = message.AccessToken },
-            new() { Name = "id_token", Value = message.IdToken },
-            new() { Name = "refresh_token", Value = message.RefreshToken },
-            new() { Name = "token_type", Value = message.TokenType },
+            new() { Name = OpenIdConnectParameterNames.AccessToken, Value = message.AccessToken },
+            new() { Name = OpenIdConnectParameterNames.IdToken, Value = message.IdToken },
+            new() { Name = OpenIdConnectParameterNames.RefreshToken, Value = message.RefreshToken },
+            new() { Name = OpenIdConnectParameterNames.TokenType, Value = message.TokenType },
             new() { Name = "expires_at", Value = expiresAt.ToString("o", CultureInfo.InvariantCulture) },
         ]);
     }
