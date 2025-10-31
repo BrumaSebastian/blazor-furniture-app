@@ -30,7 +30,6 @@ builder.Host.UseDefaultServiceProvider(options =>
 // Add MudBlazor services
 builder.Services.AddMudServices();
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents()
@@ -38,7 +37,19 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
-builder.Services.AddApiClients("https://localhost:7128")
+
+builder.Services.AddApiClients()
+    .ConfigureHttpClient(( serviceProvider, c ) =>
+    {
+        // TODO: verify if this works correctly when calling different apis 
+        var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+
+        if (httpContextAccessor is not null)
+        {
+            var request = httpContextAccessor.HttpContext?.Request;
+            c.BaseAddress = new Uri($"{request?.Scheme}://{request?.Host}");
+        }
+    })
     .AddHttpMessageHandler<ForwardAuthHeaderHandler>();
 
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();

@@ -10,7 +10,7 @@ public static class ServiceCollectionExtensions
 {
     extension( IServiceCollection services )
     {
-        public IHttpClientBuilder AddApiClients( string baseAddress )
+        public IHttpClientBuilder AddApiClients( string? baseAddress = null )
         {
             var refitSettings = new RefitSettings
             {
@@ -23,10 +23,12 @@ public static class ServiceCollectionExtensions
                 })
             };
 
-            var uri = new Uri(baseAddress);
+            var builder = services.AddRefitClient<IUserApi>(refitSettings);
 
-            var builder = services.AddRefitClient<IUserApi>(refitSettings)
-                .ConfigureHttpClient(c => c.BaseAddress = uri);
+            if (baseAddress is not null)
+            {
+                builder.ConfigureHttpClient(c => c.BaseAddress = new Uri(baseAddress));
+            }
 
             return builder;
         }

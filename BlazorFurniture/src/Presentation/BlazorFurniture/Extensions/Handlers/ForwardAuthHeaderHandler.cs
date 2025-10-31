@@ -14,14 +14,9 @@ public class ForwardAuthHeaderHandler( IHttpContextAccessor httpContextAccessor 
             return base.SendAsync(request, cancellationToken);
         }
 
-        if (context.Request.Headers.TryGetValue(HeaderNames.Authorization, out var auth))
+        if (context.Request.Headers.TryGetValue(HeaderNames.Cookie, out StringValues cookie)
+            && !StringValues.IsNullOrEmpty(cookie))
         {
-            request.Headers.Remove(HeaderNames.Authorization);
-            request.Headers.TryAddWithoutValidation(HeaderNames.Authorization, auth[0]);
-        }
-        else if (context.Request.Headers.TryGetValue(HeaderNames.Cookie, out StringValues cookie) && !StringValues.IsNullOrEmpty(cookie))
-        {
-            // Join multiple cookie header values into a single header value
             var cookieHeader = string.Join("; ", cookie!);
             request.Headers.Remove(HeaderNames.Cookie);
             request.Headers.TryAddWithoutValidation(HeaderNames.Cookie, cookieHeader);
