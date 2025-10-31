@@ -1,21 +1,15 @@
 ﻿@inherits LayoutComponentBase
-@inject IThemeService ThemeService
-@inject ISearchService SearchService
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@implements IDisposable
 
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
-	@RendererInfo.IsInteractive
-	@RendererInfo.Name
-	<AdminNavBar @rendermode=InteractiveWebAssembly></AdminNavBar>
+<MudLayout>	
+	<AdminNavBar @bind-IsDrawerOpen="drawerOpen"></AdminNavBar>
 
 	<MudDrawer @bind-Open="drawerOpen"
-			   Elevation="2"
-			   Variant="DrawerVariant.Persistent">
+			 Elevation="2"
+			 Variant="DrawerVariant.Persistent">
 		<MudDrawerHeader>
 			<MudText Typo="Typo.h6">Management</MudText>
 		</MudDrawerHeader>
@@ -24,55 +18,12 @@
 	</MudDrawer>
 
 	<MudMainContent>
-		<CascadingValue Value="this">
+		<MudContainer Gutters=true Class="pt-4">
 			@Body
-		</CascadingValue>
+		</MudContainer>
 	</MudMainContent>
 </MudLayout>
 
 @code {
-	private MudTheme? theme;
-	private bool isDarkMode = false;
 	private bool drawerOpen = true;
-	private string? userFirstName;
-
-	protected override async Task OnInitializedAsync()
-	{
-		theme = ThemeService.GetTheme(ThemeType.Admin);
-		isDarkMode = ThemeService.IsDarkMode;
-		ThemeService.OnThemeChanged += OnThemeChanged;
-
-		await LoadUserInfo();
-	}
-
-	private async Task LoadUserInfo()
-	{
-		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-		var user = authState.User;
-
-		if (user.Identity?.IsAuthenticated is true)
-		{
-			userFirstName = user.Identity.Name;
-		}
-	}
-
-	private string DarkLightModeButtonIcon => isDarkMode switch
-	{
-		true => Icons.Material.Rounded.AutoMode,
-		false => Icons.Material.Outlined.DarkMode,
-	};
-
-	private void DrawerToggle() => drawerOpen = !drawerOpen;
-	private void DarkModeToggle() => ThemeService.ToggleDarkMode();
-
-	private void OnThemeChanged()
-	{
-		isDarkMode = ThemeService.IsDarkMode;
-		StateHasChanged();
-	}
-
-	public void Dispose()
-	{
-		ThemeService.OnThemeChanged -= OnThemeChanged;
-	}
 }

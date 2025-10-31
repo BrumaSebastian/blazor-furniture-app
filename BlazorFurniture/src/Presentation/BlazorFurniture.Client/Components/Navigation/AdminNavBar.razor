@@ -5,16 +5,15 @@
 
 <MudThemeProvider Theme="@theme" IsDarkMode="isDarkMode" />
 
-<MudAppBar Dense=true Fixed=true Class="mt-2">
+<MudAppBar Elevation=2>
 	<MudIconButton Icon="@Icons.Material.Filled.Menu"
 				   Color="Color.Inherit"
 				   Edge="Edge.Start"
 				   OnClick="@DrawerToggle" />
 	<MudText Typo="Typo.h6">@CommonResource.message_welcome, @userFirstName</MudText>
-	@RendererInfo.IsInteractive
-	@RendererInfo.Name
 
 	<MudSpacer />
+
 	<MudContainer Class="d-flex align-center gap-2" MaxWidth="MaxWidth.Small">
 		<MudTextField Class="flex-grow-1" @bind-Value=@SearchService.SearchTerm Label="Search" Immediate=true DebounceInterval="300" Variant="Variant.Text" Margin="Margin.Dense" FullWidth=false></MudTextField>
 		<MudBadge Content="2" Color="Color.Primary" Overlap=true>
@@ -30,8 +29,13 @@
 @code {
 	private MudTheme? theme;
 	private bool isDarkMode = false;
-	private bool drawerOpen = true;
 	private string? userFirstName;
+
+	[Parameter]
+	public bool IsDrawerOpen { get; set; }
+
+	[Parameter]
+	public EventCallback<bool> IsDrawerOpenChanged { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -60,7 +64,15 @@
 		false => Icons.Material.Outlined.DarkMode,
 	};
 
-	private void DrawerToggle() => drawerOpen = !drawerOpen;
+	private async Task DrawerToggle()
+	{
+		IsDrawerOpen = !IsDrawerOpen;
+
+		if (IsDrawerOpenChanged.HasDelegate)
+		{
+			await IsDrawerOpenChanged.InvokeAsync(IsDrawerOpen);
+		}
+	}
 	private void DarkModeToggle() => ThemeService.ToggleDarkMode();
 
 	private void OnThemeChanged()
