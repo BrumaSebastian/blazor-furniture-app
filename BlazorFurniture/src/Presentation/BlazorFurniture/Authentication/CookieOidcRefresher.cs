@@ -44,7 +44,6 @@ internal sealed class CookieOidcRefresher( IOptionsMonitor<OpenIdConnectOptions>
         using var refreshResponse = await oidcOptions.Backchannel.PostAsync(tokenEndpoint,
             new FormUrlEncodedContent(new Dictionary<string, string?>()
             {
-
                 [OpenIdConnectParameterNames.GrantType] = OpenIdConnectParameterNames.RefreshToken,
                 [OpenIdConnectParameterNames.ClientId] = oidcOptions.ClientId,
                 [OpenIdConnectParameterNames.ClientSecret] = oidcOptions.ClientSecret,

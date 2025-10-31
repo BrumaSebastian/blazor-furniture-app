@@ -1,12 +1,9 @@
 ﻿@page "/admin/dashboard"
+@using BlazorFurniture.Client.Components.Admin
 @using BlazorFurniture.Shared.Components.Admin.Groups
 @layout AdminLayout
-@* @rendermode InteractiveWebAssembly *@
 @attribute [Authorize]
-@inject ISearchService SearchService
-
 @* @inject AuthenticationStateProvider AuthenticationStateProvider *@
-
 
 @* <PermissionGuard RequiredRole="PlatformRoles.Admin" RedirectTo="/">
     <PageTitle>Admin Dashboard</PageTitle>
@@ -34,16 +31,22 @@
 					IconColor="Color.Info" />
 	</MudItem>
 </MudGrid> *@
-
-@* <ActivityTimeline Activities="@recentActivities" />
- *@
-@if (UserPermissions is not null)
-{
-	<UserGroups Groups=UserPermissions.Groups></UserGroups>
-}
+<MudGrid Justify="Justify.Center" Spacing="8">
+	<MudItem xs="12" md="6">
+		@if (UserPermissions is not null)
+		{
+			<UserGroups Groups=UserPermissions.Groups></UserGroups>
+		}
+	</MudItem>
+	
+	<MudItem xs="12" md="6">
+		<DashboardQuickActions></DashboardQuickActions>
+	</MudItem>
+</MudGrid>
 
 @code {
-	[Inject] public IPermissionsService PermissionsService { get; init; } = null!;
+	[Inject] public required IPermissionsService PermissionsService { get; init; }
+	[Inject] public required ISearchService SearchService { get; init; }
 
 	[PersistentState]
 	public UserPermissions? UserPermissions { get; set; }

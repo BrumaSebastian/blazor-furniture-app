@@ -1,6 +1,6 @@
 @using BlazorFurniture.Shared.DTOs.Users.Responses
 
-<MudPaper>
+<MudPaper Elevation="6">
 	<MudText Typo="Typo.h5" GutterBottom=true Class="ml-4 pt-4">My Groups</MudText>
 	<MudList T="GroupPermissions" Dense=true Gutters=true>
 		@foreach (var group in Groups)

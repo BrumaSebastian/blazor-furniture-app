@@ -1,0 +1,23 @@
+<MudButton onclick="OpenDialog" FullWidth="true" Style="height:100%">
+	<div class="d-flex flex-column justify-center">
+		<MudIcon Class="mx-auto" Icon="@Icon" Size="@IconSize"></MudIcon>
+		<MudText Typo="Typo.h6">@Text</MudText>
+	</div>
+</MudButton>
+
+@code {
+	[Inject] public required IDialogService DialogService { get; init; }
+
+	[Parameter] public Size IconSize { get; set; } = Size.Large;
+	[Parameter] public required string Icon { get; set; }
+	[Parameter] public required string Text { get; set; }
+	[Parameter] public required Type DialogComponent { get; set; }
+	[Parameter] public required string DialogTitle { get; set; }
+
+	private Task OpenDialog()
+	{
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+
+		return DialogService.ShowAsync(DialogComponent, DialogTitle, options);
+	}
+}
