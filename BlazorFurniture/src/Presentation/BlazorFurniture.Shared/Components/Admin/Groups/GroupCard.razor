@@ -1,0 +1,20 @@
+<MudContainer Class="d-flex flex-grow-1 align-center">
+	<MudAvatar>
+		<MudImage Src="https://picsum.photos/200/300"></MudImage>
+	</MudAvatar>
+
+	<MudContainer class="d-flex flex-column flex-grow-1">
+		<MudText Typo="Typo.h6">@GroupName</MudText>
+		<MudText Typo="Typo.subtitle2" Color="Color.Secondary">Role: @Role</MudText>
+	</MudContainer>
+
+	<MudLink Href="@($"/admin/groups/{Id}")" Style="white-space:nowrap;">
+		View Group
+	</MudLink>
+</MudContainer>
+
+@code {
+	[Parameter] public Guid Id { get; set; }
+	[Parameter] public string GroupName { get; set; } = string.Empty;
+	[Parameter] public string Role { get; set; } = string.Empty;
+}

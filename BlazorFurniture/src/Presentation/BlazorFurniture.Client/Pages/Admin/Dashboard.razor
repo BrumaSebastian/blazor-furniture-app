@@ -1,6 +1,7 @@
 ﻿@page "/admin/dashboard"
+@using BlazorFurniture.Shared.Components.Admin.Groups
 @layout AdminLayout
-@rendermode InteractiveWebAssembly
+@* @rendermode InteractiveWebAssembly *@
 @attribute [Authorize]
 @inject ISearchService SearchService
 
@@ -36,7 +37,15 @@
 
 <ActivityTimeline Activities="@recentActivities" />
 
+@if (UserPermissions is not null)
+{
+	<UserGroups Groups=UserPermissions.Groups></UserGroups>
+}
+
 @code {
+	[Inject] private IPermissionsService PermissionsService { get; init; } = null!;
+
+	public UserPermissions? UserPermissions { get; set; }
 	private List<ActivityTimeline.ActivityItem> recentActivities = new()
 	{
 		new() { Title = "User Login", Description = "John Doe logged in", Time = "2 min ago", Color = Color.Success },
@@ -48,6 +57,15 @@
         // Access the search value
 		SearchService.OnSearchChanged += HandleSearchChanged;
     }
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			UserPermissions = await PermissionsService.GetUserPermissions();
+			StateHasChanged();
+		}
+	}
 
 	private void HandleSearchChanged()
 	{

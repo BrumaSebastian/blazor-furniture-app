@@ -1,0 +1,16 @@
+@using BlazorFurniture.Shared.DTOs.Users.Responses
+
+<MudPaper Class="d-flex flex-column">
+	<MudText Typo="Typo.h5" Class="mb-4">My Groups</MudText>
+
+	<div Class="d-flex flex-column">
+		@foreach (var group in Groups)
+		{
+			<GroupCard Id="@group.Id" GroupName="@group.Name" Role="@group.Role.ToString()" />
+		}
+	</div>
+</MudPaper>
+
+@code{
+    [Parameter] public IReadOnlyList<GroupPermissions> Groups { get; set; } = [];
+}
