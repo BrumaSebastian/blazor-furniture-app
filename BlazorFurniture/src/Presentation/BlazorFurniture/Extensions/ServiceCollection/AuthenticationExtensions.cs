@@ -1,4 +1,5 @@
-﻿using BlazorFurniture.Constants;
+﻿using BlazorFurniture.Authentication;
+using BlazorFurniture.Constants;
 using BlazorFurniture.Core.Shared.Configurations;
 using FastEndpoints.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -50,7 +51,7 @@ public static class AuthenticationExtensions
                 options.RequireHttpsMetadata = false;
                 options.Scope.Add(OpenIdConnectScope.OpenIdProfile);
                 options.Scope.Add(OpenIdConnectScope.Email);
-                //options.Scope.Add(OpenIdConnectScope.OfflineAccess);
+                options.Scope.Add(OpenIdConnectScope.OfflineAccess);
                 options.MapInboundClaims = false;
                 options.TokenValidationParameters.NameClaimType = "name";
                 options.TokenValidationParameters.RoleClaimType = "role";
@@ -85,7 +86,7 @@ public static class AuthenticationExtensions
                 options.MapInboundClaims = false;
             });
 
-            //services.ConfigureCookieOidc(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
+            services.ConfigureCookieOidc(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
 
             return services;
         }
