@@ -1,7 +1,7 @@
-using BlazorFurniture.Client.Extensions;
 using BlazorFurniture.Client.Services;
 using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Core.Shared.Constants;
+using BlazorFurniture.Shared.Extensions;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
 using MudBlazor.Services;

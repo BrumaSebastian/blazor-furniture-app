@@ -1,7 +1,7 @@
 ﻿using BlazorFurniture.Shared.DTOs.Users.Responses;
 using Refit;
 
-namespace BlazorFurniture.Client.Services.API;
+namespace BlazorFurniture.Shared.Services.API;
 
 public interface IUserApi
 {

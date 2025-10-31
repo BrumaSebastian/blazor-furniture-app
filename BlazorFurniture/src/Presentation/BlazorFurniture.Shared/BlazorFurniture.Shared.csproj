@@ -12,6 +12,8 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 		<PackageReference Include="MudBlazor" />
+		<PackageReference Include="Refit" />
+		<PackageReference Include="Refit.HttpClientFactory" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,11 +1,12 @@
-using BlazorFurniture.Client.Extensions;
 using BlazorFurniture.Client.Services;
 using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Components;
 using BlazorFurniture.Core.Shared.Configurations;
 using BlazorFurniture.Extensions;
+using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
+using BlazorFurniture.Shared.Extensions;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,6 +17,7 @@ using NSwag;
 using Scalar.AspNetCore;
 using System.Globalization;
 using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
@@ -34,7 +36,11 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
-builder.Services.AddApiClients("https://localhost:7128");
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<ForwardAuthHeaderHandler>();
+builder.Services.AddApiClients("https://localhost:7128")
+    .AddHttpMessageHandler<ForwardAuthHeaderHandler>();
+
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();

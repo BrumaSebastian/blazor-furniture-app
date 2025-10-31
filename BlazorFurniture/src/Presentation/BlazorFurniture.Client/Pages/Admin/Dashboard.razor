@@ -43,8 +43,9 @@
 }
 
 @code {
-	[Inject] private IPermissionsService PermissionsService { get; init; } = null!;
+	[Inject] public IPermissionsService PermissionsService { get; init; } = null!;
 
+	[PersistentState]
 	public UserPermissions? UserPermissions { get; set; }
 	private List<ActivityTimeline.ActivityItem> recentActivities = new()
 	{
@@ -52,19 +53,20 @@
 		new() { Title = "Group Created", Description = "Admin group created", Time = "1 hour ago", Color = Color.Info }
 	};
 
-    protected override void OnInitialized()
-    {
-        // Access the search value
-		SearchService.OnSearchChanged += HandleSearchChanged;
-    }
+	// protected override void OnInitialized()
+	// {
+	// 	// Access the search value
+	// 	SearchService.OnSearchChanged += HandleSearchChanged;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
+	// }
+
+	protected override async Task OnInitializedAsync()
 	{
-		if (firstRender)
-		{
-			UserPermissions = await PermissionsService.GetUserPermissions();
-			StateHasChanged();
-		}
+		SearchService.OnSearchChanged += HandleSearchChanged;
+
+		// if (!OperatingSystem.IsBrowser())
+		// 	return;
+		UserPermissions = await PermissionsService.GetUserPermissions();
 	}
 
 	private void HandleSearchChanged()
