@@ -137,13 +137,15 @@ public sealed class ThemeService : IThemeService
     {
         PaletteLight = new PaletteLight()
         {
+            White = "#FFFFFF",
             Black = "#110e2d",
             AppbarText = "#424242",
-            AppbarBackground = "rgba(255,255,255,1)",
-            DrawerBackground = "#ffffff",
+            AppbarBackground = "#FFFFFF",
+            DrawerBackground = "#FFFFFF",
             GrayLight = "#e8e8e8",
             GrayLighter = "#f9f9f9",
-            Background = "#D6D6D6"
+            Background = "#F6F6F9",
+            Surface = "#FFFFFF"
         },
         PaletteDark = new PaletteDark()
         {
