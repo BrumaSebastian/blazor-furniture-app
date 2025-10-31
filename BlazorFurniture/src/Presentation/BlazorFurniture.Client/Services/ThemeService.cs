@@ -137,28 +137,41 @@ public sealed class ThemeService : IThemeService
     {
         PaletteLight = new PaletteLight()
         {
-            Primary = "#F44336", // Red for admin
+            Black = "#110e2d",
             AppbarText = "#424242",
             AppbarBackground = "rgba(255,255,255,1)",
             DrawerBackground = "#ffffff",
+            GrayLight = "#e8e8e8",
+            GrayLighter = "#f9f9f9",
+            Background = "#D6D6D6"
         },
         PaletteDark = new PaletteDark()
         {
-            Primary = "#EF5350", // Lighter red
-            Surface = "#1e1e2d",
-            Background = "#0d0d0d",
-            AppbarText = "#ffffff",
-            AppbarBackground = "rgba(13,13,13,1)",
-            DrawerBackground = "#0d0d0d",
+            Primary = "#EF5350",
+            Surface = "#2B2B40",
+            Background = "#1a1a27",
+            BackgroundGray = "#151521",
+            AppbarText = "#92929f",
+            AppbarBackground = "rgba(26,26,39,1)",
+            DrawerBackground = "#1a1a27",
             ActionDefault = "#74718e",
             ActionDisabled = "#9999994d",
             ActionDisabledBackground = "#605f6d4d",
-            TextPrimary = "#ffffff",
-            TextSecondary = "#b2b0bf",
-            Info = "#2196F3",
-            Success = "#4CAF50",
-            Warning = "#FF9800",
-            Error = "#F44336",
+            TextPrimary = "#b2b0bf",
+            TextSecondary = "#92929f",
+            TextDisabled = "#ffffff33",
+            DrawerIcon = "#92929f",
+            DrawerText = "#92929f",
+            GrayLight = "#2a2833",
+            GrayLighter = "#1e1e2d",
+            Info = "#4a86ff",
+            Success = "#3dcb6c",
+            Warning = "#ffb545",
+            Error = "#ff3f5f",
+            LinesDefault = "#33323e",
+            TableLines = "#33323e",
+            Divider = "#292838",
+            OverlayLight = "#1e1e2d80",
         }
     };
 

@@ -1,11 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+@* <MudPopoverProvider /> *@
+@* <MudDialogProvider /> *@
+@* <MudSnackbarProvider /> *@
 
 <MudLayout>	
-	<AdminNavBar @bind-IsDrawerOpen="drawerOpen"></AdminNavBar>
+	<MudAppBar Elevation=2>
+		<AdminNavBar @bind-IsDrawerOpen="drawerOpen"></AdminNavBar>
+	</MudAppBar>
 
 	<MudDrawer @bind-Open="drawerOpen"
 			 Elevation="2"
