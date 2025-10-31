@@ -23,7 +23,10 @@ public static class AuthenticationExtensions
                 ?? throw new Exception($"Missing {nameof(OpenIdConnectConfigOptions)} settings");
 
             services
-            .AddAuthenticationCookie(validFor: TimeSpan.FromMinutes(10))
+            .AddAuthenticationCookie(validFor: TimeSpan.FromHours(1), options =>
+            {
+                options.SlidingExpiration = true;
+            })
             .AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieOrBearer;
