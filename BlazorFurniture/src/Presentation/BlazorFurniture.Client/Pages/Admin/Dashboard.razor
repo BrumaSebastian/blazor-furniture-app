@@ -2,8 +2,14 @@
 @using BlazorFurniture.Client.Components.Admin
 @using BlazorFurniture.Shared.Components.Admin.Groups
 @using BlazorFurniture.Shared.Models.Users.Responses
+@rendermode InteractiveWebAssembly
+
 @layout AdminLayout
 @attribute [Authorize]
+
+<MudDialogProvider />
+<MudSnackbarProvider />
+
 @* @inject AuthenticationStateProvider AuthenticationStateProvider *@
 
 @* <PermissionGuard RequiredRole="PlatformRoles.Admin" RedirectTo="/">
@@ -16,22 +22,6 @@
 </PermissionGuard> *@
 <h1>@SearchService.SearchTerm</h1>
 
-@* <MudGrid>
-	<MudItem xs="12" sm="6" md="3">
-		<StatCard Title="Total Users"
-					Value="1,234"
-					Subtitle="+12% from last month"
-					SubtitleColor="Color.Success"
-					Icon="@Icons.Material.Filled.People"
-					IconColor="Color.Primary" />
-	</MudItem>
-	<MudItem xs="12" sm="6" md="3">
-		<StatCard Title="Active Sessions"
-					Value="89"
-					Icon="@Icons.Material.Filled.Wifi"
-					IconColor="Color.Info" />
-	</MudItem>
-</MudGrid> *@
 <MudGrid Justify="Justify.Center" Spacing="8">
 	<MudItem xs="12" md="6">
 		@if (UserPermissions is not null)

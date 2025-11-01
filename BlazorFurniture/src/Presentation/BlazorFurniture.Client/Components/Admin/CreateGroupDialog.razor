@@ -21,22 +21,26 @@
         </MudForm>
 	</DialogContent>
 	<DialogActions>
-		<MudButton OnClick="Cancel">@CommonResource.button_cancel</MudButton>
-        <MudButton Color="Color.Primary" ButtonType=ButtonType.Submit OnClick="@(async () => await Submit())">@CommonResource.button_submit</MudButton>
+        <MudButton Disabled="@submitting" OnClick="Cancel">@CommonResource.button_cancel</MudButton>
+        <MudButton Disabled="@submitting" Color="Color.Primary" ButtonType=ButtonType.Submit OnClick="@(async () => await Submit())">@CommonResource.button_submit</MudButton>
 	</DialogActions>
 </MudDialog>
 
 @code {
-    [Inject] public required IDialogService DialogService { get; init; }
-    [Inject] public required ISnackbar Snackbar { get; init; }
-    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] 
+    public required IDialogService DialogService { get; init; }
+    [Inject] 
+    public required ISnackbar Snackbar { get; init; }
+    [Inject] 
+    public required IGroupsApi GroupsApi { get; init; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; init; } = default!;
 
     private MudForm form = null!; 
     private readonly CreateGroupModel model = new();
     private readonly CreateGroupModelValidator createGroupValidator = new();
-
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; } = default!;
+    private bool submitting = false;
 
     private async Task Submit()
     {
@@ -44,21 +48,24 @@
 
         if (!form.IsValid) return;
 
+        submitting = true;
         var response = await GroupsApi.CreateGroup(model);
 
         switch (response.StatusCode)
         {
             case HttpStatusCode.Created:
-                Snackbar.Add(CommonResource.message_createdSuccessfully);
+                Snackbar.Add(CommonResource.message_createdSuccessfully, MudBlazor.Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
                 break;
             case HttpStatusCode.Conflict:
-                Snackbar.Add(CommonResource.errors_conflictError);
+                Snackbar.Add(CommonResource.errors_conflictError, MudBlazor.Severity.Error);
                 break;
             default:
-                Snackbar.Add(CommonResource.errors_unknownError);
+                Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
                 break;
         }
+
+        submitting = false;
     }
 
 	private void Cancel() => MudDialog.Cancel();
