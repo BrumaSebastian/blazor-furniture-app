@@ -1,5 +1,5 @@
 ﻿using BlazorFurniture.Client.Services.Interfaces;
-using BlazorFurniture.Shared.DTOs.Users.Responses;
+using BlazorFurniture.Shared.Models.Users.Responses;
 using BlazorFurniture.Shared.Services.API;
 using Refit;
 

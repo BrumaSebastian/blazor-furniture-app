@@ -1,7 +1,10 @@
-@using BlazorFurniture.Shared.DTOs.Users.Responses
+@using BlazorFurniture.Shared.Models.Users.Responses
+@using BlazorFurniture.Shared.Resources.Pages.Admin
+@using Microsoft.Extensions.Localization
+@using Microsoft.Extensions.Logging
 
-<MudPaper>
-	<MudText Typo="Typo.h5" GutterBottom=true Class="ml-4 pt-4">My Groups</MudText>
+<MudPaper Elevation="6">
+	<MudText Typo="Typo.h5" GutterBottom=true Class="ml-4 pt-4">@AdminResource.myGroups</MudText>
 	<MudList T="GroupPermissions" Dense=true Gutters=true>
 		@foreach (var group in Groups)
 		{
@@ -14,7 +17,7 @@
 				</AvatarContent>
 				<ChildContent>
 					<MudText Typo="Typo.h6">@group.Name</MudText>
-					<MudText Typo="Typo.subtitle2" Color="Color.Secondary">Role: @group.Role.ToString()</MudText>
+                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary">@CommonResource.role: @CommonLocalizer[$"roles.{group.Role}"]</MudText>
 				</ChildContent>
 			</MudListItem>
 		}
@@ -22,5 +25,7 @@
 </MudPaper>
 
 @code {
+    [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
+
 	[Parameter] public IReadOnlyList<GroupPermissions> Groups { get; set; } = [];
 }

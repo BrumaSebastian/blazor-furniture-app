@@ -1,7 +1,6 @@
 @using System.Globalization
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
-@using BlazorFurniture.Client.Resources.Common
 
 <MudMenu AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" Dense=true MaxHeight="200" FullWidth=true>
 	<ActivatorContent>
@@ -26,7 +25,7 @@
 
 @code
 {
-	private Dictionary<string, (string flag, string name)> cultureDict =
+	private readonly Dictionary<string, (string flag, string name)> cultureDict =
 		new()
 		{
 			{ Cultures.ENGLISH, ("https://upload.wikimedia.org/wikipedia/commons/b/be/Flag_of_England.svg", CulturesResource.en) },

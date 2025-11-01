@@ -1,4 +1,4 @@
-﻿using BlazorFurniture.Shared.DTOs.Users.Responses;
+﻿using BlazorFurniture.Shared.Models.Users.Responses;
 
 namespace BlazorFurniture.Client.Services.Interfaces;
 

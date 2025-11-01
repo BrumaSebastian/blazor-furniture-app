@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BlazorFurniture.Client.Resources.Common {
+namespace BlazorFurniture.Shared.Resources.Common {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Client.Resources.Common.CommonResource", typeof(CommonResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Shared.Resources.Common.CommonResource", typeof(CommonResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,15 @@ namespace BlazorFurniture.Client.Resources.Common {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string button_cancel {
+            get {
+                return ResourceManager.GetString("button.cancel", resourceCulture);
             }
         }
         
@@ -97,6 +106,42 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submit.
+        /// </summary>
+        public static string button_submit {
+            get {
+                return ResourceManager.GetString("button.submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Conflict Error.
+        /// </summary>
+        public static string errors_conflictError {
+            get {
+                return ResourceManager.GetString("errors.conflictError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Found Error.
+        /// </summary>
+        public static string errors_notFound {
+            get {
+                return ResourceManager.GetString("errors.notFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown Error Occured.
+        /// </summary>
+        public static string errors_unknownError {
+            get {
+                return ResourceManager.GetString("errors.unknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose Language.
         /// </summary>
         public static string message_choose_language {
@@ -106,11 +151,29 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Created successfully.
+        /// </summary>
+        public static string message_createdSuccessfully {
+            get {
+                return ResourceManager.GetString("message.createdSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome.
         /// </summary>
         public static string message_welcome {
             get {
                 return ResourceManager.GetString("message.welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string model_name {
+            get {
+                return ResourceManager.GetString("model.name", resourceCulture);
             }
         }
         
@@ -138,6 +201,33 @@ namespace BlazorFurniture.Client.Resources.Common {
         public static string navigation_weather {
             get {
                 return ResourceManager.GetString("navigation.weather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        public static string role {
+            get {
+                return ResourceManager.GetString("role", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Admin.
+        /// </summary>
+        public static string roles_GroupAdmin {
+            get {
+                return ResourceManager.GetString("roles.GroupAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member.
+        /// </summary>
+        public static string roles_GroupMember {
+            get {
+                return ResourceManager.GetString("roles.GroupMember", resourceCulture);
             }
         }
     }

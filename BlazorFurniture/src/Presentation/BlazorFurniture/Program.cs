@@ -37,21 +37,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
-
-builder.Services.AddApiClients()
-    .ConfigureHttpClient(( serviceProvider, c ) =>
-    {
-        // TODO: verify if this works correctly when calling different apis 
-        var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-
-        if (httpContextAccessor is not null)
-        {
-            var request = httpContextAccessor.HttpContext?.Request;
-            c.BaseAddress = new Uri($"{request?.Scheme}://{request?.Host}");
-        }
-    })
-    .AddHttpMessageHandler<ForwardAuthHeaderHandler>();
-
+builder.Services.AddLocalization();
+builder.Services.AddRefitServerApis();
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
@@ -129,6 +116,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("ro") };
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en"),
+    SupportedCultures = [.. supportedCultures],
+    SupportedUICultures = [.. supportedCultures]
+};
+app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

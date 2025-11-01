@@ -1,4 +1,4 @@
-﻿namespace BlazorFurniture.Shared.DTOs.Users.Responses;
+﻿namespace BlazorFurniture.Shared.Models.Users.Responses;
 
 public sealed class UserProfile
 {

@@ -1,28 +1,22 @@
-﻿namespace BlazorFurniture.Client.Extensions;
+﻿using BlazorFurniture.Client.Services.API;
+using BlazorFurniture.Shared.Extensions;
+using BlazorFurniture.Shared.Services.API;
+
+namespace BlazorFurniture.Client.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    //extension( IServiceCollection services )
-    //{
-    //    public IServiceCollection AddApiClients( string baseAddress )
-    //    {
-    //        var refitSettings = new RefitSettings
-    //        {
-    //            ContentSerializer = new SystemTextJsonContentSerializer(
-    //            new JsonSerializerOptions
-    //            {
-    //                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    //                Converters = { new JsonStringEnumConverter() },
-    //                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    //            })
-    //        };
+    extension(IServiceCollection services )
+    {
+        public IServiceCollection AddServerApis( string baseAddress )
+        {
+            services.AddApiClient<IUserApi>(baseAddress)
+                .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
-    //        var uri = new Uri(baseAddress);
+            services.AddApiClient<IGroupsApi>(baseAddress)
+                .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
-    //        services.AddRefitClient<IUserApi>(refitSettings)
-    //            .ConfigureHttpClient(c => c.BaseAddress = uri);
-
-    //        return services;
-    //    }
-    //}
+            return services;
+        }
+    }
 }

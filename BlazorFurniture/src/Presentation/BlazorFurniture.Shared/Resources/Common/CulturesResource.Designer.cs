@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BlazorFurniture.Client.Resources.Common {
+namespace BlazorFurniture.Shared.Resources.Common {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Client.Resources.Common.CulturesResource", typeof(CulturesResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Shared.Resources.Common.CulturesResource", typeof(CulturesResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

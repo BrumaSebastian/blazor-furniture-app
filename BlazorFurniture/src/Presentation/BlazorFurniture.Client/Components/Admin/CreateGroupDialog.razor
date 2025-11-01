@@ -1,0 +1,65 @@
+﻿@using BlazorFurniture.Shared.Models.Groups
+@using BlazorFurniture.Shared.Resources.Pages.Admin
+@using BlazorFurniture.Shared.Services.API
+@using BlazorFurniture.Shared.Validators.Groups
+@using BlazorFurniture.Shared.Validators;
+@using FluentValidation
+@using System.Net
+
+<MudDialog>
+	<TitleContent>
+        <MudText Typo="Typo.subtitle1" GutterBottom="true">@AdminResource.createGroup_title</MudText>
+	</TitleContent>
+	<DialogContent>
+        <MudForm Model="@model" @ref="@form" Validation="@(createGroupValidator.AsPropertyValidator())">
+            <MudCardContent>
+                <MudTextField @bind-Value="model.Name"
+                              For="@(() => model.Name)"
+                              Immediate="true"
+                              Label="@CommonResource.model_name" />
+            </MudCardContent>
+        </MudForm>
+	</DialogContent>
+	<DialogActions>
+		<MudButton OnClick="Cancel">@CommonResource.button_cancel</MudButton>
+        <MudButton Color="Color.Primary" ButtonType=ButtonType.Submit OnClick="@(async () => await Submit())">@CommonResource.button_submit</MudButton>
+	</DialogActions>
+</MudDialog>
+
+@code {
+    [Inject] public required IDialogService DialogService { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
+
+    private MudForm form = null!; 
+    private readonly CreateGroupModel model = new();
+    private readonly CreateGroupModelValidator createGroupValidator = new();
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (!form.IsValid) return;
+
+        var response = await GroupsApi.CreateGroup(model);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.Created:
+                Snackbar.Add(CommonResource.message_createdSuccessfully);
+                MudDialog.Close(DialogResult.Ok(true));
+                break;
+            case HttpStatusCode.Conflict:
+                Snackbar.Add(CommonResource.errors_conflictError);
+                break;
+            default:
+                Snackbar.Add(CommonResource.errors_unknownError);
+                break;
+        }
+    }
+
+	private void Cancel() => MudDialog.Cancel();
+}

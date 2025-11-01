@@ -3,7 +3,6 @@ using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
-using BlazorFurniture.Shared.DTOs.Users.Responses;
 using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.User;

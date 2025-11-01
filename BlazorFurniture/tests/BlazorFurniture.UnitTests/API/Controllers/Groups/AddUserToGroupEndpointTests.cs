@@ -36,7 +36,7 @@ public sealed class AddUserToGroupEndpointTests
             .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
 
         // Act
-        await endpoint.HandleAsync(request, default);
+        await endpoint.HandleAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         await VerifyDispatcherCalled();
@@ -57,7 +57,7 @@ public sealed class AddUserToGroupEndpointTests
             .Returns(Result<EmptyResult>.Failed(notFoundError));
 
         // Act
-        await endpoint.HandleAsync(request, default);
+        await endpoint.HandleAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         await VerifyDispatcherCalled();
@@ -78,7 +78,7 @@ public sealed class AddUserToGroupEndpointTests
             .Returns(Result<EmptyResult>.Failed(notFoundError));
 
         // Act
-        await endpoint.HandleAsync(request, default);
+        await endpoint.HandleAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         await VerifyDispatcherCalled();

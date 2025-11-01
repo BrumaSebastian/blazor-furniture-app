@@ -40,7 +40,7 @@ public sealed class UpdateGroupEndpointTests
         SetupSuccessfulDispatch();
 
         // Act
-        await endpoint.HandleAsync(request, default);
+        await endpoint.HandleAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         await VerifyDispatcherCalled();
@@ -55,7 +55,7 @@ public sealed class UpdateGroupEndpointTests
         SetupSuccessfulDispatch();
 
         // Act
-        await endpoint.HandleAsync(request, default);
+        await endpoint.HandleAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(StatusCodes.Status204NoContent, httpContext.Response.StatusCode);
@@ -75,7 +75,7 @@ public sealed class UpdateGroupEndpointTests
             .Returns(Result<EmptyResult>.Failed(notFoundError));
 
         // Act
-        await endpoint.HandleAsync(request, default);
+        await endpoint.HandleAsync(request, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(StatusCodes.Status404NotFound, httpContext.Response.StatusCode);
