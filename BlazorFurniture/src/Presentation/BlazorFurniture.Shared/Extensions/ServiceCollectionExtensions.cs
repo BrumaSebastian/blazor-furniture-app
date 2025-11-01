@@ -1,5 +1,4 @@
-﻿using BlazorFurniture.Shared.Services.API;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,7 +9,7 @@ public static class ServiceCollectionExtensions
 {
     extension( IServiceCollection services )
     {
-        public IHttpClientBuilder AddApiClients( string? baseAddress = null )
+        public IHttpClientBuilder AddApiClient<T>( string? baseAddress = null ) where T : class
         {
             var refitSettings = new RefitSettings
             {
@@ -23,7 +22,7 @@ public static class ServiceCollectionExtensions
                 })
             };
 
-            var builder = services.AddRefitClient<IUserApi>(refitSettings);
+            var builder = services.AddRefitClient<T>(refitSettings);
 
             if (baseAddress is not null)
             {

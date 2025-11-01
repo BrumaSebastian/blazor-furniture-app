@@ -37,23 +37,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
-
 builder.Services.AddLocalization();
-
-builder.Services.AddApiClients()
-    .ConfigureHttpClient(( serviceProvider, c ) =>
-    {
-        // TODO: verify if this works correctly when calling different apis 
-        var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-
-        if (httpContextAccessor is not null)
-        {
-            var request = httpContextAccessor.HttpContext?.Request;
-            c.BaseAddress = new Uri($"{request?.Scheme}://{request?.Host}");
-        }
-    })
-    .AddHttpMessageHandler<ForwardAuthHeaderHandler>();
-
+builder.Services.AddRefitServerApis();
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();

@@ -1,3 +1,4 @@
+using BlazorFurniture.Client.Extensions;
 using BlazorFurniture.Client.Services;
 using BlazorFurniture.Client.Services.API;
 using BlazorFurniture.Client.Services.Interfaces;
@@ -17,8 +18,7 @@ builder.Services.AddAuthenticationStateDeserialization();
 
 builder.Services.AddLocalization();
 builder.Services.AddTransient<AuthenticatedHttpClientHandler>();
-builder.Services.AddApiClients(builder.HostEnvironment.BaseAddress)
-    .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
+builder.Services.AddServerApis(builder.HostEnvironment.BaseAddress);
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
