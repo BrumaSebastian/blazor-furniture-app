@@ -135,8 +135,20 @@
   <data name="button.submit" xml:space="preserve">
     <value>Submit</value>
   </data>
+  <data name="errors.conflictError" xml:space="preserve">
+    <value>Conflict Error</value>
+  </data>
+  <data name="errors.notFound" xml:space="preserve">
+    <value>Not Found Error</value>
+  </data>
+  <data name="errors.unknownError" xml:space="preserve">
+    <value>Unknown Error Occured</value>
+  </data>
   <data name="message.choose.language" xml:space="preserve">
     <value>Choose Language</value>
+  </data>
+  <data name="message.createdSuccessfully" xml:space="preserve">
+    <value>Created successfully</value>
   </data>
   <data name="message.welcome" xml:space="preserve">
     <value>Welcome</value>

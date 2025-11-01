@@ -135,8 +135,20 @@
   <data name="button.submit" xml:space="preserve">
     <value>Depunde</value>
   </data>
+  <data name="errors.conflictError" xml:space="preserve">
+    <value>Conflict</value>
+  </data>
+  <data name="errors.notFound" xml:space="preserve">
+    <value>Nu a fost gasit</value>
+  </data>
+  <data name="errors.unknownError" xml:space="preserve">
+    <value>Eroare necunoscuta</value>
+  </data>
   <data name="message.choose.language" xml:space="preserve">
     <value>Alege limba</value>
+  </data>
+  <data name="message.createdSuccessfully" xml:space="preserve">
+    <value>Create cu succes</value>
   </data>
   <data name="message.welcome" xml:space="preserve">
     <value>Bine ai venit</value>

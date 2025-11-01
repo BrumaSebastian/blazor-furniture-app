@@ -115,11 +115,47 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Conflict Error.
+        /// </summary>
+        public static string errors_conflictError {
+            get {
+                return ResourceManager.GetString("errors.conflictError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Found Error.
+        /// </summary>
+        public static string errors_notFound {
+            get {
+                return ResourceManager.GetString("errors.notFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown Error Occured.
+        /// </summary>
+        public static string errors_unknownError {
+            get {
+                return ResourceManager.GetString("errors.unknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose Language.
         /// </summary>
         public static string message_choose_language {
             get {
                 return ResourceManager.GetString("message.choose.language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created successfully.
+        /// </summary>
+        public static string message_createdSuccessfully {
+            get {
+                return ResourceManager.GetString("message.createdSuccessfully", resourceCulture);
             }
         }
         

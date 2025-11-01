@@ -1,8 +1,12 @@
 ﻿@using BlazorFurniture.Shared.Models.Groups
 @using BlazorFurniture.Shared.Resources.Pages.Admin
+@using BlazorFurniture.Shared.Services.API
 @using BlazorFurniture.Shared.Validators.Groups
 @using BlazorFurniture.Shared.Validators;
 @using FluentValidation
+@using System.Net
+
+@rendermode InteractiveWebAssembly
 
 <MudDialog>
 	<TitleContent>
@@ -27,6 +31,7 @@
 @code {
     [Inject] public required IDialogService DialogService { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
 
     private MudForm form = null!; 
     private readonly CreateGroupModel model = new();
@@ -39,10 +44,22 @@
     {
         await form.Validate();
 
-        if(form.IsValid)
+        if (!form.IsValid) return;
+
+        var response = await GroupsApi.CreateGroup(model);
+
+        switch (response.StatusCode)
         {
-            Snackbar.Add("Created!");
-            MudDialog.Close(DialogResult.Ok(true));
+            case HttpStatusCode.Created:
+                Snackbar.Add(CommonResource.message_createdSuccessfully);
+                MudDialog.Close(DialogResult.Ok(true));
+                break;
+            case HttpStatusCode.Conflict:
+                Snackbar.Add(CommonResource.errors_conflictError);
+                break;
+            default:
+                Snackbar.Add(CommonResource.errors_unknownError);
+                break;
         }
     }
 

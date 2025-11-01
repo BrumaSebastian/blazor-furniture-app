@@ -6,5 +6,5 @@ namespace BlazorFurniture.Shared.Services.API;
 public interface IGroupsApi
 {
     [Post("/api/groups")]
-    Task CreateGroup(CreateGroupModel model);
+    Task<IApiResponse> CreateGroup(CreateGroupModel model);
 }
