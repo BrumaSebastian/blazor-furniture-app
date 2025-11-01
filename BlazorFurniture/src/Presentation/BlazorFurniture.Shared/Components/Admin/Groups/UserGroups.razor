@@ -26,20 +26,6 @@
 
 @code {
     [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
-    [Inject] public required ILogger<UserGroups> Logger { get; set; }
 
 	[Parameter] public IReadOnlyList<GroupPermissions> Groups { get; set; } = [];
-
-    protected override void OnParametersSet()
-    {
-        if (Groups is null) return;
-
-        foreach (var g in Groups)
-        {
-            var key = $"roles.{g.Role}";
-            var localized = CommonLocalizer[key]; // IStringLocalizer returns a LocalizedString
-            Logger.LogInformation("Prerender: computed localization key for GroupId={GroupId} Name={GroupName}: Key={Key} -> Value={Value}",
-                g.Id, g.Name, key, localized.Value);
-        }
-    }
 }
