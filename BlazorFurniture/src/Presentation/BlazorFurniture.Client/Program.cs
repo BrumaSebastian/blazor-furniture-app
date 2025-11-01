@@ -1,4 +1,5 @@
 using BlazorFurniture.Client.Services;
+using BlazorFurniture.Client.Services.API;
 using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Core.Shared.Constants;
 using BlazorFurniture.Shared.Extensions;
@@ -15,7 +16,9 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthenticationStateDeserialization();
 
 builder.Services.AddLocalization();
-builder.Services.AddApiClients(builder.HostEnvironment.BaseAddress);
+builder.Services.AddTransient<AuthenticatedHttpClientHandler>();
+builder.Services.AddApiClients(builder.HostEnvironment.BaseAddress)
+    .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
@@ -23,6 +26,9 @@ builder.Services.AddScoped<ISearchService, SearchService>();
 var host = builder.Build();
 
 const string defaultCulture = Cultures.ENGLISH;
+var defaultCultureInfo = new CultureInfo("en");
+CultureInfo.DefaultThreadCurrentCulture = defaultCultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = defaultCultureInfo;
 
 var js = host.Services.GetRequiredService<IJSRuntime>();
 var result = await js.InvokeAsync<string>("blazorCulture.get");

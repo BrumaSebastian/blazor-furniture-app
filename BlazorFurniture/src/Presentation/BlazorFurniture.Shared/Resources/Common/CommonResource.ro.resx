@@ -144,4 +144,13 @@
   <data name="navigation.weather" xml:space="preserve">
     <value>Vremea</value>
   </data>
+  <data name="role" xml:space="preserve">
+    <value>Rol</value>
+  </data>
+  <data name="roles.GroupAdmin" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
+  <data name="roles.GroupMember" xml:space="preserve">
+    <value>Membru</value>
+  </data>
 </root>

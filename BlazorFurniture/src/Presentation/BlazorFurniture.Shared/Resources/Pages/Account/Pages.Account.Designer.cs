@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BlazorFurniture.Client.Resources.Pages.Account {
+namespace BlazorFurniture.Shared.Resources.Pages.Account {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace BlazorFurniture.Client.Resources.Pages.Account {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Pages_Account {
+    public class Pages_Account {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace BlazorFurniture.Client.Resources.Pages.Account {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Client.Resources.Pages.Account.Pages.Account", typeof(Pages_Account).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Shared.Resources.Pages.Account.Pages.Account", typeof(Pages_Account).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace BlazorFurniture.Client.Resources.Pages.Account {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace BlazorFurniture.Client.Resources.Pages.Account {
         /// <summary>
         ///   Looks up a localized string similar to Profile.
         /// </summary>
-        internal static string profile {
+        public static string profile {
             get {
                 return ResourceManager.GetString("profile", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace BlazorFurniture.Client.Resources.Pages.Account {
         /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
-        internal static string settings {
+        public static string settings {
             get {
                 return ResourceManager.GetString("settings", resourceCulture);
             }

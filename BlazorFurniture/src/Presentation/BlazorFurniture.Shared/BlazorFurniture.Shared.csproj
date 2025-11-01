@@ -25,6 +25,48 @@
 		<Folder Include="wwwroot\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Resources\Common\CommonResource.Designer.cs">
+	    <DependentUpon>CommonResource.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
+	  <Compile Update="Resources\Common\CulturesResource.Designer.cs">
+	    <DependentUpon>CulturesResource.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
+	  <Compile Update="Resources\Pages\Account\Pages.Account.Designer.cs">
+	    <DependentUpon>Pages.Account.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
+	  <Compile Update="Resources\Pages\Admin\AdminResource.Designer.cs">
+	    <DependentUpon>AdminResource.resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Common\CommonResource.resx">
+	    <LastGenOutput>CommonResource.Designer.cs</LastGenOutput>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Common\CulturesResource.resx">
+	    <LastGenOutput>CulturesResource.Designer.cs</LastGenOutput>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Pages\Account\Pages.Account.resx">
+	    <LastGenOutput>Pages.Account.Designer.cs</LastGenOutput>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Pages\Admin\AdminResource.resx">
+	    <LastGenOutput>AdminResource.Designer.cs</LastGenOutput>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	</ItemGroup>
+
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<MudAllowedAttributePattern>LowerCase</MudAllowedAttributePattern>
 	</PropertyGroup>

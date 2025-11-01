@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BlazorFurniture.Client.Resources.Common {
+namespace BlazorFurniture.Shared.Resources.Common {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Client.Resources.Common.CommonResource", typeof(CommonResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Shared.Resources.Common.CommonResource", typeof(CommonResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -138,6 +138,33 @@ namespace BlazorFurniture.Client.Resources.Common {
         public static string navigation_weather {
             get {
                 return ResourceManager.GetString("navigation.weather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        public static string role {
+            get {
+                return ResourceManager.GetString("role", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Admin.
+        /// </summary>
+        public static string roles_GroupAdmin {
+            get {
+                return ResourceManager.GetString("roles.GroupAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member.
+        /// </summary>
+        public static string roles_GroupMember {
+            get {
+                return ResourceManager.GetString("roles.GroupMember", resourceCulture);
             }
         }
     }

@@ -38,6 +38,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
 builder.Services.AddApiClients()
     .ConfigureHttpClient(( serviceProvider, c ) =>
     {
@@ -129,6 +131,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("ro") };
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en"),
+    SupportedCultures = [.. supportedCultures],
+    SupportedUICultures = [.. supportedCultures]
+};
+app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

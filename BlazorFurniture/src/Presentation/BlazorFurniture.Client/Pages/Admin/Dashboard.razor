@@ -50,25 +50,16 @@
 
 	[PersistentState]
 	public UserPermissions? UserPermissions { get; set; }
-	private List<ActivityTimeline.ActivityItem> recentActivities = new()
+	private readonly List<ActivityTimeline.ActivityItem> recentActivities = new()
 	{
 		new() { Title = "User Login", Description = "John Doe logged in", Time = "2 min ago", Color = Color.Success },
 		new() { Title = "Group Created", Description = "Admin group created", Time = "1 hour ago", Color = Color.Info }
 	};
 
-	// protected override void OnInitialized()
-	// {
-	// 	// Access the search value
-	// 	SearchService.OnSearchChanged += HandleSearchChanged;
-
-	// }
-
 	protected override async Task OnInitializedAsync()
 	{
 		SearchService.OnSearchChanged += HandleSearchChanged;
 
-		// if (!OperatingSystem.IsBrowser())
-		// 	return;
 		UserPermissions = await PermissionsService.GetUserPermissions();
 	}
 

@@ -117,31 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="button.login" xml:space="preserve">
-    <value>Sign in</value>
+  <data name="myGroups" xml:space="preserve">
+    <value>My Groups</value>
   </data>
-  <data name="button.logout" xml:space="preserve">
-    <value>Log out</value>
+  <data name="nav.dashboard" xml:space="preserve">
+    <value>Dashboard</value>
   </data>
-  <data name="button.profile" xml:space="preserve">
-    <value>My Account</value>
+  <data name="nav.groups" xml:space="preserve">
+    <value>Groups</value>
   </data>
-  <data name="button.register" xml:space="preserve">
-    <value>Sign up</value>
-  </data>
-  <data name="message.choose.language" xml:space="preserve">
-    <value>Choose Language</value>
-  </data>
-  <data name="message.welcome" xml:space="preserve">
-    <value>Welcome</value>
-  </data>
-  <data name="navigation.counter" xml:space="preserve">
-    <value>Counter</value>
-  </data>
-  <data name="navigation.home" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="navigation.weather" xml:space="preserve">
-    <value>Weather</value>
+  <data name="nav.users" xml:space="preserve">
+    <value>Users</value>
   </data>
 </root>

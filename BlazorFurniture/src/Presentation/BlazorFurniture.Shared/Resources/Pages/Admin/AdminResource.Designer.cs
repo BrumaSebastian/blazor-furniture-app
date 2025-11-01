@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BlazorFurniture.Client.Resources.Common {
+namespace BlazorFurniture.Shared.Resources.Pages.Admin {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace BlazorFurniture.Client.Resources.Common {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class CulturesResource {
+    public class AdminResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CulturesResource() {
+        internal AdminResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace BlazorFurniture.Client.Resources.Common {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Client.Resources.Common.CulturesResource", typeof(CulturesResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Shared.Resources.Pages.Admin.AdminResource", typeof(AdminResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,38 @@ namespace BlazorFurniture.Client.Resources.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to en-US.
+        ///   Looks up a localized string similar to My Groups.
         /// </summary>
-        public static string en {
+        public static string myGroups {
             get {
-                return ResourceManager.GetString("en", resourceCulture);
+                return ResourceManager.GetString("myGroups", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ro-RO.
+        ///   Looks up a localized string similar to Dashboard.
         /// </summary>
-        public static string ro {
+        public static string nav_dashboard {
             get {
-                return ResourceManager.GetString("ro", resourceCulture);
+                return ResourceManager.GetString("nav.dashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Groups.
+        /// </summary>
+        public static string nav_groups {
+            get {
+                return ResourceManager.GetString("nav.groups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        public static string nav_users {
+            get {
+                return ResourceManager.GetString("nav.users", resourceCulture);
             }
         }
     }
