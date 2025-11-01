@@ -1,23 +1,50 @@
-﻿<MudDialog>
+﻿@using BlazorFurniture.Shared.Models.Groups
+@using BlazorFurniture.Shared.Resources.Pages.Admin
+@using BlazorFurniture.Shared.Validators.Groups
+@using BlazorFurniture.Shared.Validators;
+@using FluentValidation
+
+<MudDialog>
 	<TitleContent>
-		Dialog Title
+		@AdminResource.createGroup_title
 	</TitleContent>
 	<DialogContent>
-		Dialog Content
+        <MudForm Model="@model" @ref="@form" Validation="@(createGroupValidator.AsPropertyValidator())">
+            <MudCardContent>
+                <MudTextField @bind-Value="model.Name"
+                              For="@(() => model.Name)"
+                              Immediate="true"
+                              Label="Name" />
+            </MudCardContent>
+        </MudForm>
 	</DialogContent>
 	<DialogActions>
 		<MudButton OnClick="Cancel">Cancel</MudButton>
-		<MudButton Color="Color.Primary" OnClick="Submit">OK</MudButton>
+        <MudButton Color="Color.Primary" ButtonType=ButtonType.Submit OnClick="@(async () => await Submit())">Submit</MudButton>
 	</DialogActions>
 </MudDialog>
 
 @code {
-	[Inject] public required IDialogService DialogService { get; init; }
+    [Inject] public required IDialogService DialogService { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
 
-	[CascadingParameter]
-	private IMudDialogInstance MudDialog { get; set; } = default!;
+    private MudForm form = null!; 
+    private readonly CreateGroupModel model = new();
+    private readonly CreateGroupModelValidator createGroupValidator = new();
 
-	private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if(form.IsValid)
+        {
+            Snackbar.Add("Created!");
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+    }
 
 	private void Cancel() => MudDialog.Cancel();
 }

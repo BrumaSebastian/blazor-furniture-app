@@ -117,16 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="nav.groups" xml:space="preserve">
-    <value>Grupe</value>
+  <data name="createGroup.title" xml:space="preserve">
+    <value>Creeaza Grup</value>
+  </data>
+  <data name="myGroups" xml:space="preserve">
+    <value>Grupurile mele</value>
   </data>
   <data name="nav.dashboard" xml:space="preserve">
     <value>Bord</value>
   </data>
+  <data name="nav.groups" xml:space="preserve">
+    <value>Grupe</value>
+  </data>
   <data name="nav.users" xml:space="preserve">
     <value>Utilizatori</value>
-  </data>
-  <data name="myGroups" xml:space="preserve">
-    <value>Grupurile mele</value>
   </data>
 </root>

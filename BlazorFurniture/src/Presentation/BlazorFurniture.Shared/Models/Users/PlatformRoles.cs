@@ -1,4 +1,4 @@
-﻿namespace BlazorFurniture.Shared.DTOs.Users;
+﻿namespace BlazorFurniture.Shared.Models.Users;
 
 public enum PlatformRoles
 {

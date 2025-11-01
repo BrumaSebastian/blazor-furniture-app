@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BlazorFurniture.Shared.Resources.Pages.Admin {
+namespace BlazorFurniture.Shared.Resources.Validations {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace BlazorFurniture.Shared.Resources.Pages.Admin {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class AdminResource {
+    public class ValidationsResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal AdminResource() {
+        internal ValidationsResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace BlazorFurniture.Shared.Resources.Pages.Admin {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Shared.Resources.Pages.Admin.AdminResource", typeof(AdminResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BlazorFurniture.Shared.Resources.Validations.ValidationsResource", typeof(ValidationsResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,47 +61,20 @@ namespace BlazorFurniture.Shared.Resources.Pages.Admin {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create Group.
+        ///   Looks up a localized string similar to Name should not exceed 100 characters.
         /// </summary>
-        public static string createGroup_title {
+        public static string group_name_maxLength {
             get {
-                return ResourceManager.GetString("createGroup.title", resourceCulture);
+                return ResourceManager.GetString("group.name.maxLength", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My Groups.
+        ///   Looks up a localized string similar to Name is required.
         /// </summary>
-        public static string myGroups {
+        public static string group_name_notEmpty {
             get {
-                return ResourceManager.GetString("myGroups", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dashboard.
-        /// </summary>
-        public static string nav_dashboard {
-            get {
-                return ResourceManager.GetString("nav.dashboard", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Groups.
-        /// </summary>
-        public static string nav_groups {
-            get {
-                return ResourceManager.GetString("nav.groups", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Users.
-        /// </summary>
-        public static string nav_users {
-            get {
-                return ResourceManager.GetString("nav.users", resourceCulture);
+                return ResourceManager.GetString("group.name.notEmpty", resourceCulture);
             }
         }
     }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,19 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="createGroup.title" xml:space="preserve">
-    <value>Create Group</value>
+  <data name="group.name.maxLength" xml:space="preserve">
+    <value>Name should not exceed 100 characters</value>
   </data>
-  <data name="myGroups" xml:space="preserve">
-    <value>My Groups</value>
-  </data>
-  <data name="nav.dashboard" xml:space="preserve">
-    <value>Dashboard</value>
-  </data>
-  <data name="nav.groups" xml:space="preserve">
-    <value>Groups</value>
-  </data>
-  <data name="nav.users" xml:space="preserve">
-    <value>Users</value>
+  <data name="group.name.notEmpty" xml:space="preserve">
+    <value>Name is required</value>
   </data>
 </root>
