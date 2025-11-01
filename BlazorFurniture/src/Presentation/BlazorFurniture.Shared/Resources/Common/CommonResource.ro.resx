@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="button.cancel" xml:space="preserve">
+    <value>Anuleaza</value>
+  </data>
   <data name="button.login" xml:space="preserve">
     <value>Autentificare</value>
   </data>
@@ -129,11 +132,17 @@
   <data name="button.register" xml:space="preserve">
     <value>Înregistrare</value>
   </data>
+  <data name="button.submit" xml:space="preserve">
+    <value>Depunde</value>
+  </data>
   <data name="message.choose.language" xml:space="preserve">
     <value>Alege limba</value>
   </data>
   <data name="message.welcome" xml:space="preserve">
     <value>Bine ai venit</value>
+  </data>
+  <data name="model.name" xml:space="preserve">
+    <value>Nume</value>
   </data>
   <data name="navigation.counter" xml:space="preserve">
     <value>Numarator</value>

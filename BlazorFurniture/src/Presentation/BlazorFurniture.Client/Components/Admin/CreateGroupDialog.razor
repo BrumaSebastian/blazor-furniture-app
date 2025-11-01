@@ -6,7 +6,7 @@
 
 <MudDialog>
 	<TitleContent>
-		@AdminResource.createGroup_title
+        <MudText Typo="Typo.subtitle1" GutterBottom="true">@AdminResource.createGroup_title</MudText>
 	</TitleContent>
 	<DialogContent>
         <MudForm Model="@model" @ref="@form" Validation="@(createGroupValidator.AsPropertyValidator())">
@@ -14,13 +14,13 @@
                 <MudTextField @bind-Value="model.Name"
                               For="@(() => model.Name)"
                               Immediate="true"
-                              Label="Name" />
+                              Label="@CommonResource.model_name" />
             </MudCardContent>
         </MudForm>
 	</DialogContent>
 	<DialogActions>
-		<MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" ButtonType=ButtonType.Submit OnClick="@(async () => await Submit())">Submit</MudButton>
+		<MudButton OnClick="Cancel">@CommonResource.button_cancel</MudButton>
+        <MudButton Color="Color.Primary" ButtonType=ButtonType.Submit OnClick="@(async () => await Submit())">@CommonResource.button_submit</MudButton>
 	</DialogActions>
 </MudDialog>
 

@@ -61,6 +61,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string button_cancel {
+            get {
+                return ResourceManager.GetString("button.cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign in.
         /// </summary>
         public static string button_login {
@@ -97,6 +106,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submit.
+        /// </summary>
+        public static string button_submit {
+            get {
+                return ResourceManager.GetString("button.submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose Language.
         /// </summary>
         public static string message_choose_language {
@@ -111,6 +129,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         public static string message_welcome {
             get {
                 return ResourceManager.GetString("message.welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string model_name {
+            get {
+                return ResourceManager.GetString("model.name", resourceCulture);
             }
         }
         
