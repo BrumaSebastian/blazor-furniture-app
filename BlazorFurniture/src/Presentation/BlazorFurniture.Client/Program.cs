@@ -26,7 +26,7 @@ builder.Services.AddScoped<ISearchService, SearchService>();
 var host = builder.Build();
 
 const string defaultCulture = Cultures.ENGLISH;
-var defaultCultureInfo = new CultureInfo("en");
+var defaultCultureInfo = new CultureInfo(defaultCulture);
 CultureInfo.DefaultThreadCurrentCulture = defaultCultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = defaultCultureInfo;
 

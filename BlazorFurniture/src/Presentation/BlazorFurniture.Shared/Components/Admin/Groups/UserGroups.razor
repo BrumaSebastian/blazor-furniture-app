@@ -1,7 +1,6 @@
 @using BlazorFurniture.Shared.Resources.Pages.Admin
 @using Microsoft.Extensions.Localization
-
-@inject IStringLocalizer<CommonResource> CommonLocalizer;
+@using Microsoft.Extensions.Logging
 
 <MudPaper Elevation="6">
 	<MudText Typo="Typo.h5" GutterBottom=true Class="ml-4 pt-4">@AdminResource.myGroups</MudText>
@@ -17,7 +16,7 @@
 				</AvatarContent>
 				<ChildContent>
 					<MudText Typo="Typo.h6">@group.Name</MudText>
-                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary">@CommonResource.role: @CommonLocalizer[$"roles.{@group.Role}"]</MudText>
+                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary">@CommonResource.role: @CommonLocalizer[$"roles.{group.Role}"]</MudText>
 				</ChildContent>
 			</MudListItem>
 		}
@@ -25,5 +24,21 @@
 </MudPaper>
 
 @code {
+    [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
+    [Inject] public required ILogger<UserGroups> Logger { get; set; }
+
 	[Parameter] public IReadOnlyList<GroupPermissions> Groups { get; set; } = [];
+
+    protected override void OnParametersSet()
+    {
+        if (Groups is null) return;
+
+        foreach (var g in Groups)
+        {
+            var key = $"roles.{g.Role}";
+            var localized = CommonLocalizer[key]; // IStringLocalizer returns a LocalizedString
+            Logger.LogInformation("Prerender: computed localization key for GroupId={GroupId} Name={GroupName}: Key={Key} -> Value={Value}",
+                g.Id, g.Name, key, localized.Value);
+        }
+    }
 }
