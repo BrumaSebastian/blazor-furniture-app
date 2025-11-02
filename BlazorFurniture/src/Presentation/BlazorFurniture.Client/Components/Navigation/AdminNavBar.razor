@@ -2,6 +2,7 @@
 @inject ISearchService SearchService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @implements IDisposable
+@rendermode InteractiveAuto
 
 <MudThemeProvider Theme="@theme" IsDarkMode="isDarkMode" />
 
@@ -30,10 +31,10 @@
 	private bool isDarkMode = false;
 	private string? userFirstName;
 
-	[Parameter]
+    [Parameter, EditorRequired]
 	public bool IsDrawerOpen { get; set; }
 
-	[Parameter]
+    [Parameter, EditorRequired]
 	public EventCallback<bool> IsDrawerOpenChanged { get; set; }
 
 	protected override async Task OnInitializedAsync()

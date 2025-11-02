@@ -2,75 +2,47 @@
 @using BlazorFurniture.Client.Components.Admin
 @using BlazorFurniture.Shared.Components.Admin.Groups
 @using BlazorFurniture.Shared.Models.Users.Responses
+@using BlazorFurniture.Shared.Services.Security.Interfaces
+@rendermode InteractiveWebAssembly
+
 @layout AdminLayout
 @attribute [Authorize]
-@* @inject AuthenticationStateProvider AuthenticationStateProvider *@
 
-@* <PermissionGuard RequiredRole="PlatformRoles.Admin" RedirectTo="/">
-    <PageTitle>Admin Dashboard</PageTitle>
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
-        
-        <!-- Dashboard content -->
-    </MudContainer>
-</PermissionGuard> *@
 <h1>@SearchService.SearchTerm</h1>
-
-@* <MudGrid>
-	<MudItem xs="12" sm="6" md="3">
-		<StatCard Title="Total Users"
-					Value="1,234"
-					Subtitle="+12% from last month"
-					SubtitleColor="Color.Success"
-					Icon="@Icons.Material.Filled.People"
-					IconColor="Color.Primary" />
-	</MudItem>
-	<MudItem xs="12" sm="6" md="3">
-		<StatCard Title="Active Sessions"
-					Value="89"
-					Icon="@Icons.Material.Filled.Wifi"
-					IconColor="Color.Info" />
-	</MudItem>
-</MudGrid> *@
 <MudGrid Justify="Justify.Center" Spacing="8">
-	<MudItem xs="12" md="6">
-		@if (UserPermissions is not null)
-		{
-			<UserGroups Groups=UserPermissions.Groups></UserGroups>
-		}
-	</MudItem>
-	
-	<MudItem xs="12" md="6">
-		<DashboardQuickActions></DashboardQuickActions>
-	</MudItem>
+    <MudItem xs="12" md="6">
+        <UserGroups/>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <DashboardQuickActions/>
+    </MudItem>
 </MudGrid>
 
 @code {
-	[Inject] public required IPermissionsService PermissionsService { get; init; }
-	[Inject] public required ISearchService SearchService { get; init; }
+    [Inject] public required ISearchService SearchService { get; init; }
 
-	[PersistentState]
-	public UserPermissions? UserPermissions { get; set; }
-	private readonly List<ActivityTimeline.ActivityItem> recentActivities = new()
-	{
-		new() { Title = "User Login", Description = "John Doe logged in", Time = "2 min ago", Color = Color.Success },
-		new() { Title = "Group Created", Description = "Admin group created", Time = "1 hour ago", Color = Color.Info }
-	};
+    private readonly List<ActivityTimeline.ActivityItem> recentActivities = new()
+    {
+        new() { Title = "User Login", Description = "John Doe logged in", Time = "2 min ago", Color = Color.Success },
+        new() { Title = "Group Created", Description = "Admin group created", Time = "1 hour ago", Color = Color.Info }
+    };
 
-	protected override async Task OnInitializedAsync()
-	{
-		SearchService.OnSearchChanged += HandleSearchChanged;
+    protected override async Task OnInitializedAsync()
+    {
+        SearchService.OnSearchChanged += HandleSearchChanged;
+    }
 
-		UserPermissions = await PermissionsService.GetUserPermissions();
-	}
+    private void HandleSearchChanged()
+    {
+        StateHasChanged();
+    }
 
-	private void HandleSearchChanged()
-	{
-		StateHasChanged();
-	}
-
-	public void Dispose()
-	{
-		SearchService.OnSearchChanged -= HandleSearchChanged;
-	}
+    public void Dispose()
+    {
+        SearchService.OnSearchChanged -= HandleSearchChanged;
+    }
 }

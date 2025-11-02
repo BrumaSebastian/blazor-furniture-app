@@ -4,6 +4,10 @@ using BlazorFurniture.Client.Services.API;
 using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Core.Shared.Constants;
 using BlazorFurniture.Shared.Extensions;
+using BlazorFurniture.Shared.Security.Authorization;
+using BlazorFurniture.Shared.Services.Security;
+using BlazorFurniture.Shared.Services.Security.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
 using MudBlazor.Services;
@@ -13,6 +17,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Services.AddMudServices();
 builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthenticationStateDeserialization();
 

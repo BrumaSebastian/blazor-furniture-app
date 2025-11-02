@@ -1,10 +1,11 @@
-﻿@using BlazorFurniture.Shared.Models.Groups
+﻿@using System.Net
+@using BlazorFurniture.Shared.Models.Groups
 @using BlazorFurniture.Shared.Resources.Pages.Admin
 @using BlazorFurniture.Shared.Services.API
-@using BlazorFurniture.Shared.Validators.Groups
+@using BlazorFurniture.Shared.Services.API.Interfaces
 @using BlazorFurniture.Shared.Validators;
+@using BlazorFurniture.Shared.Validators.Groups
 @using FluentValidation
-@using System.Net
 
 <MudDialog>
 	<TitleContent>
@@ -21,22 +22,27 @@
         </MudForm>
 	</DialogContent>
 	<DialogActions>
-		<MudButton OnClick="Cancel">@CommonResource.button_cancel</MudButton>
-        <MudButton Color="Color.Primary" ButtonType=ButtonType.Submit OnClick="@(async () => await Submit())">@CommonResource.button_submit</MudButton>
+        <MudButton Disabled="@submitting" OnClick="Cancel">@CommonResource.button_cancel</MudButton>
+        <MudButton Disabled="@submitting" Color="Color.Primary" ButtonType=ButtonType.Submit OnClick="@(async () => await Submit())">@CommonResource.button_submit</MudButton>
 	</DialogActions>
 </MudDialog>
 
 @code {
-    [Inject] public required IDialogService DialogService { get; init; }
-    [Inject] public required ISnackbar Snackbar { get; init; }
-    [Inject] public required IGroupsApi GroupsApi { get; init; }
-
-    private MudForm form = null!; 
-    private readonly CreateGroupModel model = new();
-    private readonly CreateGroupModelValidator createGroupValidator = new();
+    [Inject] 
+    public required IDialogService DialogService { get; init; }
+    [Inject] 
+    public required ISnackbar Snackbar { get; init; }
+    [Inject] 
+    public required IGroupsApi GroupsApi { get; init; }
 
     [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; } = default!;
+    private IMudDialogInstance MudDialog { get; init; } = default!;
+
+    private MudForm form = null!; 
+    private bool submitting = false;
+    private readonly CreateGroupModel model = new();
+    private readonly CreateGroupModelValidator createGroupValidator = new();
+    private readonly CancellationTokenSource cancellationTokenSource = new();
 
     private async Task Submit()
     {
@@ -44,22 +50,35 @@
 
         if (!form.IsValid) return;
 
-        var response = await GroupsApi.CreateGroup(model);
+        submitting = true;
+        var response = await GroupsApi.CreateGroup(model, cancellationTokenSource.Token);
 
         switch (response.StatusCode)
         {
             case HttpStatusCode.Created:
-                Snackbar.Add(CommonResource.message_createdSuccessfully);
+                Snackbar.Add(CommonResource.message_createdSuccessfully, MudBlazor.Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
                 break;
             case HttpStatusCode.Conflict:
-                Snackbar.Add(CommonResource.errors_conflictError);
+                Snackbar.Add(CommonResource.errors_conflictError, MudBlazor.Severity.Error);
                 break;
             default:
-                Snackbar.Add(CommonResource.errors_unknownError);
+                Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
                 break;
         }
+
+        submitting = false;
     }
 
-	private void Cancel() => MudDialog.Cancel();
+    private void Cancel()
+    {
+        cancellationTokenSource.Cancel();
+        MudDialog.Cancel();
+    }
+
+    public void Dispose()
+    {
+        cancellationTokenSource.Cancel();
+        cancellationTokenSource.Dispose();
+    }
 }

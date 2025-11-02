@@ -6,13 +6,19 @@
 </MudButton>
 
 @code {
-	[Inject] public required IDialogService DialogService { get; init; }
+	[Inject] 
+    public required IDialogService DialogService { get; init; }
 
-	[Parameter] public Size IconSize { get; set; } = Size.Large;
-	[Parameter] public required string Icon { get; set; }
-	[Parameter] public required string Text { get; set; }
-	[Parameter] public required Type DialogComponent { get; set; }
-	[Parameter] public required string DialogTitle { get; set; }
+	[Parameter] 
+    public Size IconSize { get; set; } = Size.Large;
+    [Parameter, EditorRequired]
+    public required string Icon { get; set; }
+    [Parameter, EditorRequired]
+    public required string Text { get; set; }
+    [Parameter, EditorRequired]
+    public required Type DialogComponent { get; set; }
+    [Parameter, EditorRequired]
+    public required string DialogTitle { get; set; }
 
 	private Task OpenDialog()
 	{
