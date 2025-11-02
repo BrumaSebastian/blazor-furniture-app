@@ -6,16 +6,16 @@ namespace BlazorFurniture.Client.Services;
 
 public sealed class ThemeService : IThemeService
 {
-    private bool _isDarkMode = false;
+    private bool isDarkMode = false;
 
     public bool IsDarkMode
     {
-        get => _isDarkMode;
+        get => isDarkMode;
         set
         {
-            if (_isDarkMode != value)
+            if (isDarkMode != value)
             {
-                _isDarkMode = value;
+                isDarkMode = value;
                 OnThemeChanged?.Invoke();
             }
         }

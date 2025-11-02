@@ -1,45 +1,97 @@
-﻿using BlazorFurniture.Client.Services.Interfaces;
-using BlazorFurniture.Shared.Models.Users.Responses;
+﻿using BlazorFurniture.Shared.Models.Users.Responses;
 using BlazorFurniture.Shared.Services.API;
+using BlazorFurniture.Shared.Services.Security.Interfaces;
+using Microsoft.AspNetCore.Components.Authorization;
 using Refit;
 
 namespace BlazorFurniture.Client.Services;
 
-public class PermissionsService( IUserApi userApi ) : IPermissionsService
+public class PermissionsService( IUserApi userApi, AuthenticationStateProvider authStateProvider ) : IPermissionsService
 {
     private UserPermissions? userPermissions;
+    private DateTimeOffset expiresAt = DateTimeOffset.MinValue;
+    private static readonly TimeSpan Ttl = TimeSpan.FromMinutes(2); // shorter TTL for quicker updates
+
+    private bool subscribed;
+
+    public event Action? Changed;
+
+    public async Task<UserPermissions?> GetUserPermissions( bool force = false, CancellationToken ct = default )
+    {
+        EnsureSubscribedToAuthChanges();
+
+        if (!force && userPermissions is not null && DateTimeOffset.UtcNow < expiresAt)
+            return userPermissions;
+
+        // No cache or force: fetch now
+        return await FetchAndUpdateAsync(ct);
+    }
+
+    public async Task<bool> HasPermission( string permission, CancellationToken ct = default )
+    {
+        var permissions = await GetUserPermissions(ct: ct);
+        return permissions?.Permissions?.Contains(permission) ?? false;
+    }
+
+    public Task Refresh( CancellationToken ct = default )
+    {
+        return GetUserPermissions(force: true, ct);
+    }
 
     public void ClearCache()
     {
         userPermissions = null;
+        expiresAt = DateTimeOffset.MinValue;
+        Changed?.Invoke();
     }
 
-    public async Task<UserPermissions?> GetUserPermissions()
+    public void Dispose()
     {
-        if (userPermissions is not null)
-            return userPermissions;
+        if (subscribed)
+            authStateProvider.AuthenticationStateChanged -= OnAuthChanged;
+    }
 
+    private void EnsureSubscribedToAuthChanges()
+    {
+        if (subscribed) return;
+
+        authStateProvider.AuthenticationStateChanged += OnAuthChanged;
+
+        subscribed = true;
+    }
+
+    private async Task<UserPermissions?> FetchAndUpdateAsync( CancellationToken ct )
+    {
         try
         {
-            userPermissions = await userApi.GetUserPermissions();
+            userPermissions ??= await userApi.GetUserPermissions(ct);
+            expiresAt = DateTimeOffset.UtcNow.Add(Ttl);
+            Changed?.Invoke();
+
             return userPermissions;
         }
         catch (ApiException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized
                                    || ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            // User is not authenticated or lacks permissions
+            SetNullAndNotify();
             return null;
         }
         catch (HttpRequestException)
         {
-            // Network error or server unavailable
-            return null;
+            // Keep old cache if available (stale)
+            return userPermissions;
         }
     }
 
-    public async Task<bool> HasPermission( string permission )
+    private void SetNullAndNotify()
     {
-        var permissions = await GetUserPermissions();
-        return permissions?.Permissions?.Contains(permission) ?? false;
+        userPermissions = null;
+        expiresAt = DateTimeOffset.MinValue;
+        Changed?.Invoke();
+    }
+    private async void OnAuthChanged( Task<AuthenticationState> _ )
+    {
+        ClearCache();
+        await Refresh(); // optional: prefetch after login/refresh
     }
 }

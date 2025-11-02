@@ -1,6 +1,4 @@
-﻿using BlazorFurniture.Shared.Models.Users;
-
-namespace BlazorFurniture.Shared.Models.Users.Responses;
+﻿namespace BlazorFurniture.Shared.Models.Users.Responses;
 
 public sealed class UserPermissions
 {

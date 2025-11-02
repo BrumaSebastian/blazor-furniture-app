@@ -38,9 +38,10 @@
     private IMudDialogInstance MudDialog { get; init; } = default!;
 
     private MudForm form = null!; 
+    private bool submitting = false;
     private readonly CreateGroupModel model = new();
     private readonly CreateGroupModelValidator createGroupValidator = new();
-    private bool submitting = false;
+    private readonly CancellationTokenSource cancellationTokenSource = new();
 
     private async Task Submit()
     {
@@ -49,7 +50,7 @@
         if (!form.IsValid) return;
 
         submitting = true;
-        var response = await GroupsApi.CreateGroup(model);
+        var response = await GroupsApi.CreateGroup(model, cancellationTokenSource.Token);
 
         switch (response.StatusCode)
         {
@@ -68,5 +69,15 @@
         submitting = false;
     }
 
-	private void Cancel() => MudDialog.Cancel();
+    private void Cancel()
+    {
+        cancellationTokenSource.Cancel();
+        MudDialog.Cancel();
+    }
+
+    public void Dispose()
+    {
+        cancellationTokenSource.Cancel();
+        cancellationTokenSource.Dispose();
+    }
 }

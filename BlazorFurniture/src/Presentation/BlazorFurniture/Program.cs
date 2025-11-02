@@ -7,6 +7,7 @@ using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
 using BlazorFurniture.Shared.Extensions;
+using BlazorFurniture.Shared.Services.Security.Interfaces;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

@@ -1,0 +1,86 @@
+@using BlazorFurniture.Shared.Services.Security.Interfaces
+@implements IDisposable
+
+@if (allowed)
+{
+    @ChildContent
+}
+else
+{
+    @NotAuthorized
+}
+
+@code {
+    [Inject]
+    public required IPermissionsService PermissionsService { get; init; }
+
+    [Parameter]
+    public string? Require { get; set; }
+    [Parameter]
+    public IEnumerable<string> AnyOf { get; set; } = [];
+    [Parameter]
+    public IEnumerable<string> AllOf { get; set; } = [];
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public RenderFragment? NotAuthorized { get; set; }
+
+    private bool allowed;
+
+    protected override async Task OnInitializedAsync()
+    {
+        PermissionsService.Changed += OnChanged;
+        await RecomputeAsync();
+    }
+
+    private async Task RecomputeAsync()
+    {
+        if (AllOf.Any())
+        {
+            foreach (var permission in AllOf)
+            {
+                if (!await PermissionsService.HasPermission(permission))
+                {
+                    allowed = false;
+                    StateHasChanged();
+                    return;
+                }
+            }
+
+            allowed = true;
+        }
+        else if (AnyOf.Any())
+        {
+            allowed = false;
+
+            foreach (var permission in AnyOf)
+            {
+                if (await PermissionsService.HasPermission(permission))
+                {
+                    allowed = true;
+                    break;
+                }
+            }
+        }
+        else if (!string.IsNullOrWhiteSpace(Require))
+        {
+            allowed = await PermissionsService.HasPermission(Require!);
+        }
+        else
+        {
+            allowed = true;
+        }
+
+        StateHasChanged();
+    }
+
+    private async void OnChanged()
+    {
+        await RecomputeAsync();
+    }
+
+    public void Dispose()
+    {
+        PermissionsService.Changed -= OnChanged;
+    }
+}

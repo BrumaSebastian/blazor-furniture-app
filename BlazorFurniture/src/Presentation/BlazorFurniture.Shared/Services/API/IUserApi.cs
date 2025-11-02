@@ -6,8 +6,8 @@ namespace BlazorFurniture.Shared.Services.API;
 public interface IUserApi
 {
     [Get("/api/user/permissions")]
-    Task<UserPermissions> GetUserPermissions();
+    Task<UserPermissions> GetUserPermissions(CancellationToken ct);
 
     [Get("/api/users/{userId}")]
-    Task<UserProfile> GetUserProfile( Guid userId );
+    Task<UserProfile> GetUserProfile( Guid userId, CancellationToken ct );
 }
