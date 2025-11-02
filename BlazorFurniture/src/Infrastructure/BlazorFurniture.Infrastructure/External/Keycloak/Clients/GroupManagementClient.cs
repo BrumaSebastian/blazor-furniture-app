@@ -59,7 +59,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         var requestMessage = HttpRequestMessageBuilder
             .Create(HttpClient, HttpMethod.Get)
             .WithPath(Endpoints.GroupsExtension())
-            .AddQueryParam(KeycloakQueryParams.PAGE, filters.Page)
+            .AddQueryParam(KeycloakQueryParams.FIRST, filters.Page * filters.PageSize)
             .AddQueryParam(KeycloakQueryParams.PAGE_SIZE, filters.PageSize)
             .AddQueryParam(KeycloakQueryParams.SEARCH, filters.Search)
             .AddQueryParam(GROUP_TOP_LEVEL_ONLY_QUERY_PARAM, true)
@@ -86,7 +86,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .WithPath(Endpoints.GroupMembersExtension(groupId))
             .AddQueryParam(KeycloakQueryParams.SEARCH, filters.Search)
             .AddQueryParam(KeycloakQueryParams.EXACT, false)
-            .AddQueryParam(KeycloakQueryParams.PAGE, filters.Page)
+            .AddQueryParam(KeycloakQueryParams.FIRST, filters.Page)
             .AddQueryParam(KeycloakQueryParams.PAGE_SIZE, filters.PageSize)
             .Build();
 

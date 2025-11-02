@@ -1,0 +1,7 @@
+﻿namespace BlazorFurniture.Shared.Models.Groups;
+
+public sealed class GroupModel
+{
+    public required Guid Id { get; set; }
+    public required string Name { get; set; }
+}
