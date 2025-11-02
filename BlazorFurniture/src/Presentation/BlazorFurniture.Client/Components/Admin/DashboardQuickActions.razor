@@ -3,16 +3,15 @@
 <MudPaper Style="height:100%" Elevation="6">
     <MudText Typo="Typo.h5" GutterBottom="true" Class="ml-4 pt-4">Quick Actions</MudText>
     <MudDivider />
-    <MudGrid Justify="Justify.Center">
-        <MudItem xs="6">
-            <PermissionView Require="@Permissions.CREATE_GROUP">
+    <MudGrid Justify="Justify.Center" >
+        <PermissionView Require="@Permissions.CREATE_GROUP">
+            <MudItem xs="6">
                 <ActionButton Icon="@Icons.Material.Filled.Add"
                               Text="New Group"
                               DialogComponent="typeof(CreateGroupDialog)"
                               DialogTitle="Create New Group"></ActionButton>
-            </PermissionView>
-
-        </MudItem>
+            </MudItem>
+        </PermissionView>
         <MudItem xs="6">
             <MudButton FullWidth="true" Style="height:100%">
                 <div class="d-flex flex-column justify-center">

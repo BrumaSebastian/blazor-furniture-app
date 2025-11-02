@@ -1,7 +1,7 @@
 @using BlazorFurniture.Shared.Services.Security.Interfaces
 @implements IDisposable
 
-@if (allowed)
+@if (Allowed)
 {
     @ChildContent
 }
@@ -25,7 +25,8 @@ else
     [Parameter]
     public RenderFragment? NotAuthorized { get; set; }
 
-    private bool allowed;
+    [PersistentState]
+    public bool Allowed { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,34 +42,34 @@ else
             {
                 if (!await PermissionsService.HasPermission(permission))
                 {
-                    allowed = false;
+                    Allowed = false;
                     StateHasChanged();
                     return;
                 }
             }
 
-            allowed = true;
+            Allowed = true;
         }
         else if (AnyOf.Any())
         {
-            allowed = false;
+            Allowed = false;
 
             foreach (var permission in AnyOf)
             {
                 if (await PermissionsService.HasPermission(permission))
                 {
-                    allowed = true;
+                    Allowed = true;
                     break;
                 }
             }
         }
         else if (!string.IsNullOrWhiteSpace(Require))
         {
-            allowed = await PermissionsService.HasPermission(Require!);
+            Allowed = await PermissionsService.HasPermission(Require!);
         }
         else
         {
-            allowed = true;
+            Allowed = true;
         }
 
         StateHasChanged();

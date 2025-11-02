@@ -8,13 +8,11 @@ namespace BlazorFurniture.Client.Services;
 
 public class PermissionsService( IUserApi userApi, AuthenticationStateProvider authStateProvider ) : IPermissionsService
 {
+    private static readonly TimeSpan TimeToLive = TimeSpan.FromSeconds(30);
     private UserPermissions? userPermissions;
     private DateTimeOffset expiresAt = DateTimeOffset.MinValue;
-    private static readonly TimeSpan Ttl = TimeSpan.FromMinutes(2); // shorter TTL for quicker updates
-
-    private bool subscribed;
-
     public event Action? Changed;
+    private bool subscribed;
 
     public async Task<UserPermissions?> GetUserPermissions( bool force = false, CancellationToken ct = default )
     {
@@ -64,8 +62,8 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
     {
         try
         {
-            userPermissions ??= await userApi.GetUserPermissions(ct);
-            expiresAt = DateTimeOffset.UtcNow.Add(Ttl);
+            userPermissions = await userApi.GetUserPermissions(ct);
+            expiresAt = DateTimeOffset.UtcNow.Add(TimeToLive);
             Changed?.Invoke();
 
             return userPermissions;
