@@ -1,10 +1,10 @@
 ﻿using BlazorFurniture.Shared.Models.Users.Responses;
-using BlazorFurniture.Shared.Services.API;
+using BlazorFurniture.Shared.Services.API.Interfaces;
 using BlazorFurniture.Shared.Services.Security.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using Refit;
 
-namespace BlazorFurniture.Client.Services;
+namespace BlazorFurniture.Shared.Services.Security;
 
 public class PermissionsService( IUserApi userApi, AuthenticationStateProvider authStateProvider ) : IPermissionsService
 {

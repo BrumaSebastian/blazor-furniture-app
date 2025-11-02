@@ -3,7 +3,7 @@ using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Infrastructure.Extensions;
 using BlazorFurniture.Middlewares;
 using BlazorFurniture.Shared.Extensions;
-using BlazorFurniture.Shared.Services.API;
+using BlazorFurniture.Shared.Services.API.Interfaces;
 
 namespace BlazorFurniture.Extensions.ServiceCollection;
 

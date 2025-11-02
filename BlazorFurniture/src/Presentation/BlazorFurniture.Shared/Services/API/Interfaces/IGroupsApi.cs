@@ -1,7 +1,7 @@
 ﻿using BlazorFurniture.Shared.Models.Groups;
 using Refit;
 
-namespace BlazorFurniture.Shared.Services.API;
+namespace BlazorFurniture.Shared.Services.API.Interfaces;
 
 public interface IGroupsApi
 {
