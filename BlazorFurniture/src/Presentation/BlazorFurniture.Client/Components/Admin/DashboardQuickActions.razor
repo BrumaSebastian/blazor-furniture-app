@@ -1,16 +1,16 @@
-﻿@rendermode InteractiveWebAssembly
-
-<MudPaper Style="height:100%" Elevation="6">
+﻿<MudPaper Style="height:100%" Elevation="6">
     <MudText Typo="Typo.h5" GutterBottom="true" Class="ml-4 pt-4">Quick Actions</MudText>
     <MudDivider />
-    <MudGrid Justify="Justify.Center" >
+    <MudGrid Justify="Justify.Center">
         <AuthorizeView Policy="@Permissions.WithPrefix(Permissions.CREATE_GROUP)">
-            <MudItem xs="6">
-                <ActionButton Icon="@Icons.Material.Filled.Add"
-                              Text="New Group"
-                              DialogComponent="typeof(CreateGroupDialog)"
-                              DialogTitle="Create New Group"></ActionButton>
-            </MudItem>
+            <Authorized>
+                <MudItem xs="6">
+                    <ActionButton Icon="@Icons.Material.Filled.Add"
+                                  Text="New Group"
+                                  DialogComponent="typeof(CreateGroupDialog)"
+                                  DialogTitle="Create New Group"></ActionButton>
+                </MudItem>
+            </Authorized>
         </AuthorizeView>
         <MudItem xs="6">
             <MudButton FullWidth="true" Style="height:100%">
