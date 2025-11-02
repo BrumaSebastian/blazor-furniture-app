@@ -1,14 +1,15 @@
-﻿<MudPaper Style="height:100%" Elevation="6">
-    <MudText Typo="Typo.h5" GutterBottom="true" Class="ml-4 pt-4">Quick Actions</MudText>
+﻿@using BlazorFurniture.Shared.Resources.Pages.Admin
+<MudPaper Style="height:100%" Elevation="6">
+    <MudText Typo="Typo.h5" GutterBottom="true" Class="ml-4 pt-4">@CommonResource.section_quickActions</MudText>
     <MudDivider />
     <MudGrid Justify="Justify.Center">
         <AuthorizeView Policy="@Permissions.WithPrefix(Permissions.CREATE_GROUP)">
             <Authorized>
                 <MudItem xs="6">
                     <ActionButton Icon="@Icons.Material.Filled.Add"
-                                  Text="New Group"
+                                  Text="@AdminResource.createGroup_title"
                                   DialogComponent="typeof(CreateGroupDialog)"
-                                  DialogTitle="Create New Group"></ActionButton>
+                                  DialogTitle="@AdminResource.createGroup_title" />
                 </MudItem>
             </Authorized>
         </AuthorizeView>

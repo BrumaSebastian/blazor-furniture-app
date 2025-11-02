@@ -1,12 +1,14 @@
 ﻿<CascadingAuthenticationState>
-    <Router AppAssembly="typeof(Program).Assembly">
+    <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
                 <NotAuthorized>
                     <RedirectToLogin />
                 </NotAuthorized>
+                <Authorizing>
+                    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" Class="my-6 mx-auto" />
+                </Authorizing>
             </AuthorizeRouteView>
-            @* <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" /> *@
             <FocusOnNavigate RouteData="routeData" Selector="h1" />
         </Found>
 		<NotFound>

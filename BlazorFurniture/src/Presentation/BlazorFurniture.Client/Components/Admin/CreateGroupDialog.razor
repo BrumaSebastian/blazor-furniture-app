@@ -52,7 +52,7 @@
         if (!form.IsValid) return;
 
         submitting = true;
-        var response = await GroupsApi.CreateGroup(model, cancellationTokenSource.Token);
+        var response = await GroupsApi.Create(model, cancellationTokenSource.Token);
 
         switch (response.StatusCode)
         {

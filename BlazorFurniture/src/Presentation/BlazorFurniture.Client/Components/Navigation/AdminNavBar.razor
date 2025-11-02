@@ -16,11 +16,12 @@
 <MudSpacer />
 
 <MudContainer Class="d-flex align-center gap-2" MaxWidth="MaxWidth.Small">
-	<MudTextField Class="flex-grow-1" @bind-Value=@SearchService.SearchTerm Label="Search" Immediate=true DebounceInterval="300" Variant="Variant.Text" Margin="Margin.Dense" FullWidth=false></MudTextField>
+	<MudTextField Class="flex-grow-1" @bind-Value=@SearchService.SearchTerm Label="@CommonResource.search" Immediate=true DebounceInterval="300" Variant="Variant.Text" Margin="Margin.Dense" FullWidth=false></MudTextField>
 	<MudBadge Content="2" Color="Color.Primary" Overlap=true>
 		<MudIconButton Icon="@Icons.Material.Filled.CircleNotifications" Color="Color.Default" />
 	</MudBadge>
 	<MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+    <CultureSelector/>
 	<MudAvatar>
 		<MudImage Src="https://picsum.photos/200/300"></MudImage>
 	</MudAvatar>

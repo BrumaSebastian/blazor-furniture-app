@@ -160,6 +160,24 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading.
+        /// </summary>
+        public static string message_loading {
+            get {
+                return ResourceManager.GetString("message.loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No records found.
+        /// </summary>
+        public static string message_noRecordsFound {
+            get {
+                return ResourceManager.GetString("message.noRecordsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome.
         /// </summary>
         public static string message_welcome {
@@ -228,6 +246,24 @@ namespace BlazorFurniture.Shared.Resources.Common {
         public static string roles_GroupMember {
             get {
                 return ResourceManager.GetString("roles.GroupMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string search {
+            get {
+                return ResourceManager.GetString("search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quick Actions.
+        /// </summary>
+        public static string section_quickActions {
+            get {
+                return ResourceManager.GetString("section.quickActions", resourceCulture);
             }
         }
     }

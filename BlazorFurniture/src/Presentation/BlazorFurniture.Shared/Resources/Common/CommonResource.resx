@@ -174,4 +174,16 @@
   <data name="roles.GroupMember" xml:space="preserve">
     <value>Member</value>
   </data>
+  <data name="search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="message.noRecordsFound" xml:space="preserve">
+    <value>No records found</value>
+  </data>
+  <data name="message.loading" xml:space="preserve">
+    <value>Loading</value>
+  </data>
+  <data name="section.quickActions" xml:space="preserve">
+    <value>Quick Actions</value>
+  </data>
 </root>

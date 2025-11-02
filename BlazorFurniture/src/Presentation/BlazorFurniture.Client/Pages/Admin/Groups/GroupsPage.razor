@@ -1,0 +1,103 @@
+﻿@page "/admin/groups"
+@using BlazorFurniture.Client.Components.Admin
+@using BlazorFurniture.Shared.Models.Groups
+@using BlazorFurniture.Shared.Resources.Pages.Admin
+@using BlazorFurniture.Shared.Services.API.Interfaces
+@using System.Net
+@layout AdminLayout
+@rendermode InteractiveWebAssembly
+
+<MudSnackbarProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+
+<MudContainer Class="d-flex flex-grow-1 mb-2">
+    <MudText Typo="Typo.h4" Class="mb-4">@AdminResource.groups_title_groupManagement</MudText>
+    <MudSpacer />
+    <MudButton OnClick="CreateGroupDialog" Color="Color.Primary" Variant="Variant.Filled">
+        <MudText Typo="Typo.subtitle1">@AdminResource.createGroup_title</MudText>
+    </MudButton>
+</MudContainer>
+<MudTable T="GroupModel" @ref="table" ServerData="ServerReload"
+          Hover="true" OnRowClick="NavigateToGroupEvent"
+          RowClass="cursor-pointer" Breakpoint="Breakpoint.Sm">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">@AdminResource.nav_groups</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="@CommonResource.search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Small" DebounceInterval="300" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>@CommonResource.model_name</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@CommonResource.model_name">@context.Name</MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@CommonResource.message_noRecordsFound</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>@CommonResource.message_loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Inject]
+    public required IDialogService DialogService { get; init; }
+    [Inject]
+    public required ISnackbar Snackbar { get; init; }
+    [Inject]
+    public required IGroupsApi GroupsApi { get; init; }
+    [Inject]
+    public required NavigationManager NavigationManager { get; init; }
+
+    private MudTable<GroupModel> table = default!;
+    private string? searchString;
+
+    private async Task<TableData<GroupModel>> ServerReload(TableState state, CancellationToken token)
+    {
+        var response = await GroupsApi.Get(state.Page, state.PageSize, searchString, token);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                return new TableData<GroupModel>()
+                {
+                    TotalItems = response.Content!.Total,
+                    Items = response.Content!.Results
+                };
+            default:
+                Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
+                break;
+        }
+
+        return new();
+    }
+
+    private void NavigateToGroupEvent(TableRowClickEventArgs<GroupModel> e)
+    {
+        NavigationManager.NavigateTo($"/admin/groups/{e.Item!.Id}");
+    }
+
+    private async Task CreateGroupDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialogRef = await DialogService.ShowAsync<CreateGroupDialog>("Create Group", options);
+        var result = await dialogRef.Result;
+
+        if (result?.Data is bool created && created)
+        {
+            await table.ReloadServerData();
+        }
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+}
