@@ -67,9 +67,9 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
         return permissions?.Permissions?.Contains(permission) ?? false;
     }
 
-    public Task Refresh( CancellationToken ct = default )
+    public async Task Refresh( CancellationToken ct = default )
     {
-        return GetUserPermissions(force: true, ct);
+        await GetUserPermissions(force: true, ct);
     }
 
     public void ClearCache()
@@ -129,6 +129,5 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
     private async void OnAuthChanged( Task<AuthenticationState> _ )
     {
         ClearCache();
-        await Refresh();
     }
 }
