@@ -4,14 +4,14 @@
     <MudText Typo="Typo.h5" GutterBottom="true" Class="ml-4 pt-4">Quick Actions</MudText>
     <MudDivider />
     <MudGrid Justify="Justify.Center" >
-        <PermissionView Require="@Permissions.CREATE_GROUP">
+        <AuthorizeView Policy="@Permissions.WithPrefix(Permissions.CREATE_GROUP)">
             <MudItem xs="6">
                 <ActionButton Icon="@Icons.Material.Filled.Add"
                               Text="New Group"
                               DialogComponent="typeof(CreateGroupDialog)"
                               DialogTitle="Create New Group"></ActionButton>
             </MudItem>
-        </PermissionView>
+        </AuthorizeView>
         <MudItem xs="6">
             <MudButton FullWidth="true" Style="height:100%">
                 <div class="d-flex flex-column justify-center">

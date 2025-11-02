@@ -14,6 +14,9 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
     public event Action? Changed;
     private bool subscribed;
 
+    private Task<UserPermissions?>? inflight;
+    private readonly SemaphoreSlim gate = new(1, 1);
+
     public async Task<UserPermissions?> GetUserPermissions( bool force = false, CancellationToken ct = default )
     {
         EnsureSubscribedToAuthChanges();
@@ -21,8 +24,40 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
         if (!force && userPermissions is not null && DateTimeOffset.UtcNow < expiresAt)
             return userPermissions;
 
-        // No cache or force: fetch now
-        return await FetchAndUpdateAsync(ct);
+        await gate.WaitAsync(ct);
+
+        try
+        {
+            // Re-check under lock
+            if (!force && userPermissions is not null && DateTimeOffset.UtcNow < expiresAt)
+                return userPermissions;
+
+            // Reuse existing in-flight fetch if present
+            inflight ??= FetchAndUpdateAsync(ct);
+        }
+        finally
+        {
+            gate.Release();
+        }
+
+        try
+        {
+            return await inflight;
+        }
+        finally
+        {
+            // Clear in-flight after completion so future calls can refetch when needed
+            await gate.WaitAsync(ct);
+
+            try
+            {
+                inflight = null;
+            }
+            finally
+            {
+                gate.Release();
+            }
+        }
     }
 
     public async Task<bool> HasPermission( string permission, CancellationToken ct = default )
@@ -47,6 +82,8 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
     {
         if (subscribed)
             authStateProvider.AuthenticationStateChanged -= OnAuthChanged;
+
+        gate.Dispose();
     }
 
     private void EnsureSubscribedToAuthChanges()
@@ -87,9 +124,10 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
         expiresAt = DateTimeOffset.MinValue;
         Changed?.Invoke();
     }
+
     private async void OnAuthChanged( Task<AuthenticationState> _ )
     {
         ClearCache();
-        await Refresh(); // optional: prefetch after login/refresh
+        await Refresh();
     }
 }
