@@ -21,7 +21,7 @@
     </MudContainer>
 </PermissionGuard> *@
 <h1>@SearchService.SearchTerm</h1>
-
+<MudText Typo="Typo.caption">@UserPermissions?.Role ?? whgut</MudText>
 <MudGrid Justify="Justify.Center" Spacing="8">
 	<MudItem xs="12" md="6">
 		@if (UserPermissions is not null)
@@ -50,8 +50,7 @@
 	protected override async Task OnInitializedAsync()
 	{
 		SearchService.OnSearchChanged += HandleSearchChanged;
-
-		UserPermissions = await PermissionsService.GetUserPermissions();
+		UserPermissions ??= await PermissionsService.GetUserPermissions();
 	}
 
 	private void HandleSearchChanged()
