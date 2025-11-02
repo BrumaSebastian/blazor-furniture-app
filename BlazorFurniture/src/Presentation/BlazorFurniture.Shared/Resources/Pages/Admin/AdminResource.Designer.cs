@@ -70,6 +70,15 @@ namespace BlazorFurniture.Shared.Resources.Pages.Admin {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Management.
+        /// </summary>
+        public static string groups_title_groupManagement {
+            get {
+                return ResourceManager.GetString("groups.title.groupManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to My Groups.
         /// </summary>
         public static string myGroups {

@@ -132,4 +132,7 @@
   <data name="nav.users" xml:space="preserve">
     <value>Users</value>
   </data>
+  <data name="groups.title.groupManagement" xml:space="preserve">
+    <value>Group Management</value>
+  </data>
 </root>

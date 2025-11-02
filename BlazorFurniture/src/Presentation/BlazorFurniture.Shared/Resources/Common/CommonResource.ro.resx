@@ -174,4 +174,16 @@
   <data name="roles.GroupMember" xml:space="preserve">
     <value>Membru</value>
   </data>
+  <data name="search" xml:space="preserve">
+    <value>Caută</value>
+  </data>
+  <data name="message.noRecordsFound" xml:space="preserve">
+    <value>Nu au fost găsite date</value>
+  </data>
+  <data name="message.loading" xml:space="preserve">
+    <value>Se încarcă</value>
+  </data>
+  <data name="section.quickActions" xml:space="preserve">
+    <value>Acțiuni Rapide</value>
+  </data>
 </root>
