@@ -6,7 +6,8 @@ using Refit;
 
 namespace BlazorFurniture.Shared.Services.Security;
 
-public class PermissionsService( IUserApi userApi, AuthenticationStateProvider authStateProvider ) : IPermissionsService
+public class PermissionsService( IUserApi userApi, AuthenticationStateProvider authStateProvider ) 
+    : IPermissionsService, IDisposable
 {
     private static readonly TimeSpan TimeToLive = TimeSpan.FromSeconds(30);
     private UserPermissions? userPermissions;
