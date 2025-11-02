@@ -86,7 +86,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .WithPath(Endpoints.GroupMembersExtension(groupId))
             .AddQueryParam(KeycloakQueryParams.SEARCH, filters.Search)
             .AddQueryParam(KeycloakQueryParams.EXACT, false)
-            .AddQueryParam(KeycloakQueryParams.FIRST, filters.Page)
+            .AddQueryParam(KeycloakQueryParams.FIRST, filters.Page * filters.PageSize)
             .AddQueryParam(KeycloakQueryParams.PAGE_SIZE, filters.PageSize)
             .Build();
 
