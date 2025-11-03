@@ -1,5 +1,6 @@
 ﻿@page "/admin/groups"
 @layout AdminLayout
+@inherits AdminPageBase
 
 <MudContainer Class="d-flex flex-grow-1 mb-2">
     <MudText Typo="Typo.h4" Class="mb-4">@AdminResource.groups_title_groupManagement</MudText>
@@ -35,17 +36,18 @@
 </MudTable>
 
 @code {
-    [Inject]
-    public required IDialogService DialogService { get; init; }
-    [Inject]
-    public required ISnackbar Snackbar { get; init; }
-    [Inject]
-    public required IGroupsApi GroupsApi { get; init; }
-    [Inject]
-    public required NavigationManager NavigationManager { get; init; }
+    [Inject] public required IDialogService DialogService { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required NavigationManager NavigationManager { get; init; }
 
     private MudTable<GroupModel> table = default!;
     private string? searchString;
+
+    protected override void OnParametersSet()
+    {
+        Breadcrumbs.Set(new BreadcrumbItem(AdminResource.nav_groups, href: "/admin/groups"));
+    }
 
     private async Task<TableData<GroupModel>> ServerReload(TableState state, CancellationToken token)
     {
@@ -69,7 +71,9 @@
 
     private void NavigateToGroupEvent(TableRowClickEventArgs<GroupModel> e)
     {
-        NavigationManager.NavigateTo($"/admin/groups/{e.Item!.Id}");
+        var href = $"/admin/groups/{e.Item!.Id}";
+        Breadcrumbs.Add(new BreadcrumbItem(e.Item!.Name, href: href));
+        NavigationManager.NavigateTo(href);
     }
 
     private async Task CreateGroupDialog()

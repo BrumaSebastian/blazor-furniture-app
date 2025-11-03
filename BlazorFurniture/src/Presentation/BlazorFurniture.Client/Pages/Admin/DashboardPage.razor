@@ -1,6 +1,7 @@
 ﻿@page "/admin/dashboard"
 
 @layout AdminLayout
+@inherits AdminPageBase
 @attribute [Authorize]
 
 <h1>@SearchService.SearchTerm</h1>
@@ -22,6 +23,11 @@
         new() { Title = "User Login", Description = "John Doe logged in", Time = "2 min ago", Color = Color.Success },
         new() { Title = "Group Created", Description = "Admin group created", Time = "1 hour ago", Color = Color.Info }
     };
+
+    protected override void OnParametersSet()
+    {
+        Breadcrumbs.Clear();
+    }
 
     protected override async Task OnInitializedAsync()
     {
