@@ -1,9 +1,102 @@
 ﻿@page "/admin/groups/{groupId:guid}"
 @layout AdminLayout
+@inherits AdminPageBase
+@attribute [Authorize]
 
-<h3>Group Id: @GroupId</h3>
+<MudStack Row="true" AlignItems="AlignItems.Center">
+    <MudStack>
+        <MudText Typo="Typo.h4">Group Name</MudText>
+        <MudText Typo="Typo.subtitle1">@AdminResource.groups_groupSubtitle</MudText>
+    </MudStack>
+    <MudSpacer />
+    <MudButton StartIcon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+        <MudText Typo="Typo.subtitle1">@AdminResource.add_member</MudText>
+    </MudButton>
+</MudStack>
+<MudTabs Outlined="true" @bind-ActivePanelIndex="@tabIndex">
+    <MudTabPanel Text="@AdminResource.groups_users" Icon="@Icons.Material.Filled.Groups" />
+    <MudTabPanel Text="@AdminResource.groups_roles" />
+</MudTabs>
+
+@if (tabIndex is 0)
+{
+    <MudTable T="GroupUserModel" @ref="usersTable" ServerData="GetUsers"
+              Hover="true" OnRowClick="NavigateToUserEvent"
+              RowClass="cursor-pointer" Breakpoint="Breakpoint.Sm">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">@AdminResource.nav_groups</MudText>
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="@CommonResource.search" Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Small" DebounceInterval="300" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>@CommonResource.model_name</MudTh>
+            <MudTh>@CommonResource.email</MudTh>
+            <MudTh>@CommonResource.role</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="@CommonResource.model_name">@($"{context.FirstName} {@context.LastName}")</MudTd>
+            <MudTd DataLabel="@CommonResource.email">@context.Email</MudTd>
+            <MudTd DataLabel="@CommonResource.role">@CommonLocalizer[$"roles.{context.Role}"]</MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>@CommonResource.message_noRecordsFound</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>@CommonResource.message_loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+
+@if (tabIndex is 1)
+{
+    <MudText Typo="Typo.h2">Not implemented</MudText>
+}
 
 @code {
-    [Parameter]
-    public Guid GroupId { get; init; }
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required NavigationManager NavigationManager { get; init; }
+    [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
+
+    [Parameter] public Guid GroupId { get; init; }
+
+    private MudTable<GroupUserModel> usersTable = default!;
+    private int tabIndex;
+    private string? searchString;
+
+    private async Task<TableData<GroupUserModel>> GetUsers(TableState state, CancellationToken token)
+    {
+        var response = await GroupsApi.GetUsers(GroupId, state.Page, state.PageSize, searchString, token);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                return new TableData<GroupUserModel>()
+                {
+                    TotalItems = response.Content!.Total,
+                    Items = response.Content!.Results
+                };
+            default:
+                // Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
+                break;
+        }
+
+        return new();
+    }
+
+    private void NavigateToUserEvent(TableRowClickEventArgs<GroupUserModel> e)
+    {
+        var href = $"/admin/groups/{GroupId}/users/{e.Item!.Id}";
+        Breadcrumbs.Add(new BreadcrumbItem(e.Item!.Email, href: href));
+        NavigationManager.NavigateTo(href);
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        usersTable.ReloadServerData();
+    }
 }

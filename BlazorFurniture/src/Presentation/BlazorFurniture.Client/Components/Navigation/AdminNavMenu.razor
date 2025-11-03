@@ -1,6 +1,6 @@
 ﻿@using BlazorFurniture.Shared.Resources.Pages.Admin
 
-<div Class="d-flex flex-column" style="height:100%">
+<MudStack Style="height:100%">
 	<MudNavMenu Color="Color.Info">
 		<MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
         <MudNavLink Href="/admin/dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">@AdminResource.nav_dashboard</MudNavLink>
@@ -26,4 +26,4 @@
 			<MudText>@CommonResource.button_logout</MudText>
 		</MudNavLink>
 	</MudNavMenu>
-</div> 
+</MudStack> 

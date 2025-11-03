@@ -115,6 +115,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string email {
+            get {
+                return ResourceManager.GetString("email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Conflict Error.
         /// </summary>
         public static string errors_conflictError {

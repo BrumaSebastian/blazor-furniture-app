@@ -186,4 +186,7 @@
   <data name="section.quickActions" xml:space="preserve">
     <value>Acțiuni Rapide</value>
   </data>
+  <data name="email" xml:space="preserve">
+    <value>Email</value>
+  </data>
 </root>

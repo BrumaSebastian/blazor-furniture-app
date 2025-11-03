@@ -63,9 +63,36 @@ namespace BlazorFurniture.Shared.Resources.Pages.Admin {
         /// <summary>
         ///   Looks up a localized string similar to Create Group.
         /// </summary>
-        public static string createGroup_title {
+        public static string add_group {
             get {
-                return ResourceManager.GetString("createGroup.title", resourceCulture);
+                return ResourceManager.GetString("add.group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Member.
+        /// </summary>
+        public static string add_member {
+            get {
+                return ResourceManager.GetString("add.member", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage members, roles and permissions for this group..
+        /// </summary>
+        public static string groups_groupSubtitle {
+            get {
+                return ResourceManager.GetString("groups.groupSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roles.
+        /// </summary>
+        public static string groups_roles {
+            get {
+                return ResourceManager.GetString("groups.roles", resourceCulture);
             }
         }
         
@@ -75,6 +102,15 @@ namespace BlazorFurniture.Shared.Resources.Pages.Admin {
         public static string groups_title_groupManagement {
             get {
                 return ResourceManager.GetString("groups.title.groupManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        public static string groups_users {
+            get {
+                return ResourceManager.GetString("groups.users", resourceCulture);
             }
         }
         
