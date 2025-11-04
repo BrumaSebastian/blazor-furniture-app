@@ -41,7 +41,7 @@
             <MudTh>@CommonResource.role</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="@CommonResource.model_name">@($"{context.FirstName} {@context.LastName}")</MudTd>
+            <MudTd DataLabel="@CommonResource.model_name">@($"{context.FirstName} {context.LastName}")</MudTd>
             <MudTd DataLabel="@CommonResource.email">@context.Email</MudTd>
             <MudTd DataLabel="@CommonResource.role">@CommonLocalizer[$"roles.{context.Role}"]</MudTd>
         </RowTemplate>
