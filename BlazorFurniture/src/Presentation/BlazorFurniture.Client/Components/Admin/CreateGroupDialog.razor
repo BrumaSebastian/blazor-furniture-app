@@ -29,12 +29,9 @@
 </MudDialog>
 
 @code {
-    [Inject] 
-    public required IDialogService DialogService { get; init; }
-    [Inject] 
-    public required ISnackbar Snackbar { get; init; }
-    [Inject] 
-    public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required IDialogService DialogService { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; init; } = default!;
