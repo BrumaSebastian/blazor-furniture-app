@@ -44,7 +44,10 @@ internal sealed class CreateGroupEndpoint( ICommandDispatcher commandDispatcher 
         var result = await commandDispatcher.Dispatch<CreateGroupCommand, Result<HttpHeaderLocationResult>>(new CreateGroupCommand(req), ct);
 
         await result.Match(
-            response => Send.CreatedAtAsync(response.Location?.ToString() ?? string.Empty),
+            response => Send.CreatedAtAsync(nameof(GetGroupEndpoint), routeValues: new GetGroupRequest
+            {
+                GroupId = Guid.Parse(response.Location!.Segments[^1])
+            }),
             error => Send.SendErrorAsync(error));
     }
 }
