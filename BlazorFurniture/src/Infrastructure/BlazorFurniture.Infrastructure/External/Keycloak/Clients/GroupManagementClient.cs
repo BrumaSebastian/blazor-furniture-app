@@ -79,6 +79,16 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         return await SendRequest<CountRepresentation, ErrorRepresentation>(requestMessage, ct);
     }
 
+    public async Task<HttpResult<List<GroupRoleRepresentation>, ErrorRepresentation>> GetRoles( Guid groupId, CancellationToken ct )
+    {
+        var requestMessage = HttpRequestMessageBuilder
+            .Create(HttpClient, HttpMethod.Get)
+            .WithPath(Endpoints.GroupRoles(groupId))
+            .Build();
+
+        return await SendRequest<List<GroupRoleRepresentation>, ErrorRepresentation>(requestMessage, ct);
+    }
+
     public async Task<HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, GroupUsersQueryFilter filters, CancellationToken ct )
     {
         var requestMessage = HttpRequestMessageBuilder
