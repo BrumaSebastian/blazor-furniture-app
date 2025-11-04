@@ -61,6 +61,15 @@ namespace BlazorFurniture.Shared.Resources.Validations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group description should not exceed {0} characters.
+        /// </summary>
+        public static string group_description_maxLength {
+            get {
+                return ResourceManager.GetString("group.description.maxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name should not exceed 100 characters.
         /// </summary>
         public static string group_name_maxLength {

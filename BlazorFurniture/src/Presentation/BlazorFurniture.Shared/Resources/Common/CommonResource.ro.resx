@@ -186,4 +186,10 @@
   <data name="section.quickActions" xml:space="preserve">
     <value>Acțiuni Rapide</value>
   </data>
+  <data name="email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="model.description" xml:space="preserve">
+    <value>Descriere</value>
+  </data>
 </root>

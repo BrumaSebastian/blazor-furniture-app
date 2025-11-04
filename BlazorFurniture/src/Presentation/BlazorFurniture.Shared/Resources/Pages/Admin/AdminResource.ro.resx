@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="createGroup.title" xml:space="preserve">
+  <data name="add.group" xml:space="preserve">
     <value>Creeaza Grup</value>
   </data>
   <data name="myGroups" xml:space="preserve">
@@ -134,5 +134,17 @@
   </data>
   <data name="groups.title.groupManagement" xml:space="preserve">
     <value>Administrează Grupuri</value>
+  </data>
+  <data name="add.member" xml:space="preserve">
+    <value>Adauga membru</value>
+  </data>
+  <data name="groups.groupSubtitle" xml:space="preserve">
+    <value>Administrează membrii, rolurile si permisiunile pentru acest grup.</value>
+  </data>
+  <data name="groups.users" xml:space="preserve">
+    <value>Utilizatori</value>
+  </data>
+  <data name="groups.roles" xml:space="preserve">
+    <value>Roluri</value>
   </data>
 </root>

@@ -28,6 +28,7 @@ builder.Services.AddServerApis(builder.HostEnvironment.BaseAddress);
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<IBreadCrumbsService, BreadcrumbsService>();
 
 var host = builder.Build();
 

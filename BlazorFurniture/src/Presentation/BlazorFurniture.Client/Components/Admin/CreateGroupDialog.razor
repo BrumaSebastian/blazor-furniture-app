@@ -10,7 +10,7 @@
 
 <MudDialog>
 	<TitleContent>
-        <MudText Typo="Typo.subtitle1" GutterBottom="true">@AdminResource.createGroup_title</MudText>
+        <MudText Typo="Typo.subtitle1" GutterBottom="true">@AdminResource.add_group</MudText>
 	</TitleContent>
 	<DialogContent>
         <MudForm Model="@model" @ref="@form" Validation="@(createGroupValidator.AsPropertyValidator())">
@@ -18,7 +18,13 @@
                 <MudTextField @bind-Value="model.Name"
                               For="@(() => model.Name)"
                               Immediate="true"
+                              Required="true"
                               Label="@CommonResource.model_name" />
+
+                <MudTextField @bind-Value="model.Description"
+                              For="@(() => model.Description)"
+                              Immediate="true"
+                              Label="@CommonResource.model_description" />
             </MudCardContent>
         </MudForm>
 	</DialogContent>
@@ -29,12 +35,9 @@
 </MudDialog>
 
 @code {
-    [Inject] 
-    public required IDialogService DialogService { get; init; }
-    [Inject] 
-    public required ISnackbar Snackbar { get; init; }
-    [Inject] 
-    public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required IDialogService DialogService { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; init; } = default!;

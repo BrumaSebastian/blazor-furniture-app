@@ -115,6 +115,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string email {
+            get {
+                return ResourceManager.GetString("email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Conflict Error.
         /// </summary>
         public static string errors_conflictError {
@@ -183,6 +192,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         public static string message_welcome {
             get {
                 return ResourceManager.GetString("message.welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string model_description {
+            get {
+                return ResourceManager.GetString("model.description", resourceCulture);
             }
         }
         

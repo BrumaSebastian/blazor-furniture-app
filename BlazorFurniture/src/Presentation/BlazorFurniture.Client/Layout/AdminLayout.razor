@@ -1,5 +1,18 @@
 ﻿@using BlazorFurniture.Shared.Services.Security.Interfaces
 @inherits LayoutComponentBase
+@implements IDisposable
+
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+<MudOverlay Visible="@(!RendererInfo.IsInteractive)" DarkBackground="true" ZIndex="9999">
+    <MudImage Src="/media/adminLoadingOverlay.png"
+              Alt="Loading..."
+              ObjectFit="ObjectFit.Cover"
+              Style="height:100vh; width:100vw;">
+    </MudImage>
+</MudOverlay>
 
 <MudLayout>
     <MudAppBar Elevation=2>
@@ -17,11 +30,24 @@
 
     <MudMainContent>
         <MudContainer Gutters=true Class="pt-4">
+            <MudBreadcrumbs Items="Breadcrumbs.Items" Class="mx-2" />
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
+    [Inject] public required IBreadCrumbsService Breadcrumbs { get; init; }
+
     private bool drawerOpen = true;
+
+    protected override void OnInitialized()
+    {
+        Breadcrumbs.Changed += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        Breadcrumbs.Changed -= StateHasChanged;
+    }
 }

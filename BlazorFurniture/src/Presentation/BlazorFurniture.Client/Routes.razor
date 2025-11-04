@@ -11,19 +11,19 @@
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="routeData" Selector="h1" />
         </Found>
-		<NotFound>
-			<PageTitle>Not found</PageTitle>
-			<LayoutView Layout="typeof(Layout.MainLayout)">
-				<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
-					<MudAlert Severity="Severity.Warning">
-						<MudText Typo="Typo.h5">404 - Page Not Found</MudText>
-						<MudText>The page you're looking for doesn't exist.</MudText>
-						<MudButton Href="/" Color="Color.Primary" Variant="Variant.Filled" Class="mt-4">
-							Go Home
-						</MudButton>
-					</MudAlert>
-				</MudContainer>
-			</LayoutView>
-		</NotFound>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="typeof(Layout.MainLayout)">
+                <MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+                    <MudAlert Severity="Severity.Warning">
+                        <MudText Typo="Typo.h5">404 - Page Not Found</MudText>
+                        <MudText>The page you're looking for doesn't exist.</MudText>
+                        <MudButton Href="/" Color="Color.Primary" Variant="Variant.Filled" Class="mt-4">
+                            Go Home
+                        </MudButton>
+                    </MudAlert>
+                </MudContainer>
+            </LayoutView>
+        </NotFound>
     </Router>
 </CascadingAuthenticationState>

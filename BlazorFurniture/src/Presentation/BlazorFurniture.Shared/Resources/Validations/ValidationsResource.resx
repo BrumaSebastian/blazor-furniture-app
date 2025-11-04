@@ -123,4 +123,7 @@
   <data name="group.name.notEmpty" xml:space="preserve">
     <value>Name is required</value>
   </data>
+  <data name="group.description.maxLength" xml:space="preserve">
+    <value>Group description should not exceed {0} characters</value>
+  </data>
 </root>

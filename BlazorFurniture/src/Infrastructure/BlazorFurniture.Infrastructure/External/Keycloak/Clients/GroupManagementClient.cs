@@ -28,11 +28,15 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
         return await SendRequest<EmptyResult, ErrorRepresentation>(requestMessage, ct);
     }
 
-    public async Task<HttpResult<HttpHeaderLocationResult, ErrorRepresentation>> Create( string groupName, CancellationToken ct )
+    public async Task<HttpResult<HttpHeaderLocationResult, ErrorRepresentation>> Create( string groupName, string description, CancellationToken ct )
     {
         var groupRepresentation = new GroupRepresentation
         {
-            Name = groupName
+            Name = groupName,
+            Attributes = new Dictionary<string, IEnumerable<string>>
+            {
+                { GroupRepresentation.DESCRIPTION_ATTRIBUTE, new[] { description } }
+            }
         };
 
         var requestMessage = HttpRequestMessageBuilder
@@ -77,6 +81,16 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .Build();
 
         return await SendRequest<CountRepresentation, ErrorRepresentation>(requestMessage, ct);
+    }
+
+    public async Task<HttpResult<List<GroupRoleRepresentation>, ErrorRepresentation>> GetRoles( Guid groupId, CancellationToken ct )
+    {
+        var requestMessage = HttpRequestMessageBuilder
+            .Create(HttpClient, HttpMethod.Get)
+            .WithPath(Endpoints.GroupRoles(groupId))
+            .Build();
+
+        return await SendRequest<List<GroupRoleRepresentation>, ErrorRepresentation>(requestMessage, ct);
     }
 
     public async Task<HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, GroupUsersQueryFilter filters, CancellationToken ct )

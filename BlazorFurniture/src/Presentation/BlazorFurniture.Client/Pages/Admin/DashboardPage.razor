@@ -1,16 +1,8 @@
 ﻿@page "/admin/dashboard"
-@using BlazorFurniture.Client.Components.Admin
-@using BlazorFurniture.Shared.Components.Admin.Groups
-@using BlazorFurniture.Shared.Models.Users.Responses
-@using BlazorFurniture.Shared.Services.Security.Interfaces
-@rendermode InteractiveWebAssembly
 
 @layout AdminLayout
+@inherits AdminPageBase
 @attribute [Authorize]
-
-<MudDialogProvider />
-<MudSnackbarProvider />
-<MudPopoverProvider />
 
 <h1>@SearchService.SearchTerm</h1>
 <MudGrid Justify="Justify.Center" Spacing="8">
@@ -31,6 +23,11 @@
         new() { Title = "User Login", Description = "John Doe logged in", Time = "2 min ago", Color = Color.Success },
         new() { Title = "Group Created", Description = "Admin group created", Time = "1 hour ago", Color = Color.Info }
     };
+
+    protected override void OnParametersSet()
+    {
+        Breadcrumbs.Clear();
+    }
 
     protected override async Task OnInitializedAsync()
     {

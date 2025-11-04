@@ -2,5 +2,5 @@
 
 public sealed class CountRepresentation
 {
-    public int Count { get; set; }
+    public uint Count { get; set; }
 }

@@ -16,7 +16,7 @@ internal sealed class CreateGroupCommandHandler(
 {
     public async Task<Result<HttpHeaderLocationResult>> HandleAsync( CreateGroupCommand command, CancellationToken ct = default )
     {
-        var createGroupResult = await groupManagementClient.Create(command.Request.Name, ct)
+        var createGroupResult = await groupManagementClient.Create(command.Request.Name, command.Request.Description, ct)
             .ToDomainResult(errorMapper);
 
         return createGroupResult;
