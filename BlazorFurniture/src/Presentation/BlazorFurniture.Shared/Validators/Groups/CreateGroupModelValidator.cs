@@ -12,6 +12,10 @@ public sealed class CreateGroupModelValidator : AbstractValidator<CreateGroupMod
             .NotEmpty()
             .WithMessage(ValidationsResource.group_name_notEmpty)
             .MaximumLength(100)
-            .WithMessage(ValidationsResource.group_name_maxLength);
+            .WithMessage(string.Format(ValidationsResource.group_name_maxLength, 100));
+
+        RuleFor(x => x.Description)
+            .MaximumLength(250)
+            .WithMessage(string.Format(ValidationsResource.group_description_maxLength, 250));
     }
 }

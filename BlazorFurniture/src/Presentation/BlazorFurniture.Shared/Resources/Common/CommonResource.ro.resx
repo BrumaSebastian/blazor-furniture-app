@@ -189,4 +189,7 @@
   <data name="email" xml:space="preserve">
     <value>Email</value>
   </data>
+  <data name="model.description" xml:space="preserve">
+    <value>Descriere</value>
+  </data>
 </root>

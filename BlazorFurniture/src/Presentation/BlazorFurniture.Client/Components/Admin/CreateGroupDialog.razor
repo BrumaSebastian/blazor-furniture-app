@@ -18,7 +18,13 @@
                 <MudTextField @bind-Value="model.Name"
                               For="@(() => model.Name)"
                               Immediate="true"
+                              Required="true"
                               Label="@CommonResource.model_name" />
+
+                <MudTextField @bind-Value="model.Description"
+                              For="@(() => model.Description)"
+                              Immediate="true"
+                              Label="@CommonResource.model_description" />
             </MudCardContent>
         </MudForm>
 	</DialogContent>
