@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="group.description.maxLength" xml:space="preserve">
-    <value>Descrierea grupei nu trebuie sa depaseasca {0} caractere</value>
+    <value>Descrierea grupei nu trebuie să depășească {0} caractere</value>
   </data>
   <data name="group.name.notEmpty" xml:space="preserve">
     <value>Numele este obligatoriu</value>
   </data>
   <data name="group.name.maxLength" xml:space="preserve">
-    <value>Numele nu trebui sa depaseasca {0} caractere</value>
+    <value>Numele nu trebuie să depășească {0} caractere</value>
   </data>
 </root>
