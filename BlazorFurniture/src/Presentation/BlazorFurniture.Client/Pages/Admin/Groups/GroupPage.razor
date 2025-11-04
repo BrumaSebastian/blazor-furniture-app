@@ -3,20 +3,26 @@
 @inherits AdminPageBase
 @attribute [Authorize]
 
-<MudStack Row="true" AlignItems="AlignItems.Center">
-    <MudStack>
-        <MudText Typo="Typo.h4">Group Name</MudText>
-        <MudText Typo="Typo.subtitle1">@AdminResource.groups_groupSubtitle</MudText>
+<MudOverlay Visible="@(groupDetails is null)" DarkBackground="true"></MudOverlay>
+
+@if (groupDetails is not null)
+{
+    <MudStack Row="true" AlignItems="AlignItems.Center">
+        <MudStack>
+            <MudText Typo="Typo.h4">@groupDetails.Name</MudText>
+            <MudText Typo="Typo.subtitle1">@groupDetails.Description</MudText>
+            <MudText Typo="Typo.subtitle2">@AdminResource.groups_groupSubtitle</MudText>
+        </MudStack>
+        <MudSpacer />
+        <MudButton StartIcon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+            <MudText Typo="Typo.subtitle1">@AdminResource.add_member</MudText>
+        </MudButton>
     </MudStack>
-    <MudSpacer />
-    <MudButton StartIcon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
-        <MudText Typo="Typo.subtitle1">@AdminResource.add_member</MudText>
-    </MudButton>
-</MudStack>
-<MudTabs Outlined="true" @bind-ActivePanelIndex="@tabIndex">
-    <MudTabPanel Text="@AdminResource.groups_users" Icon="@Icons.Material.Filled.Groups" />
-    <MudTabPanel Text="@AdminResource.groups_roles" />
-</MudTabs>
+    <MudTabs Outlined="true" @bind-ActivePanelIndex="@tabIndex">
+        <MudTabPanel Text="@AdminResource.groups_users" Icon="@Icons.Material.Filled.Groups" />
+        <MudTabPanel Text="@AdminResource.groups_roles" />
+    </MudTabs>
+}
 
 @if (tabIndex is 0)
 {
@@ -24,9 +30,9 @@
               Hover="true" OnRowClick="NavigateToUserEvent"
               RowClass="cursor-pointer" Breakpoint="Breakpoint.Sm">
         <ToolBarContent>
-            <MudText Typo="Typo.h6">@AdminResource.nav_groups</MudText>
+            <MudText Typo="Typo.h6">@AdminResource.nav_users</MudText>
             <MudSpacer />
-            <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="@CommonResource.search" Adornment="Adornment.Start"
+            <MudTextField T="string" ValueChanged="@(async s => await OnSearch(s))" Placeholder="@CommonResource.search" Adornment="Adornment.Start"
                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Small" DebounceInterval="300" />
         </ToolBarContent>
         <HeaderContent>
@@ -53,7 +59,30 @@
 
 @if (tabIndex is 1)
 {
-    <MudText Typo="Typo.h2">Not implemented</MudText>
+    <MudTable T="GroupRoleModel" @ref="rolesTable" ServerData="GetRoles"
+              Hover="true"
+              RowClass="cursor-pointer"
+              Breakpoint="Breakpoint.Sm">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">@AdminResource.groups_roles</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>@CommonResource.role</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="@CommonResource.role">@CommonLocalizer[$"roles.{context.Role}"]</MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>@CommonResource.message_noRecordsFound</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>@CommonResource.message_loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
 }
 
 @code {
@@ -64,8 +93,25 @@
     [Parameter] public Guid GroupId { get; init; }
 
     private MudTable<GroupUserModel> usersTable = default!;
+    private MudTable<GroupRoleModel> rolesTable = default!;
     private int tabIndex;
     private string? searchString;
+    private DetailedGroupModel? groupDetails;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await GroupsApi.Get(GroupId, default);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                groupDetails = response.Content!;
+                break;
+            default:
+                // Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
+                break;
+        }
+    }
 
     private async Task<TableData<GroupUserModel>> GetUsers(TableState state, CancellationToken token)
     {
@@ -87,6 +133,14 @@
         return new();
     }
 
+    private async Task<TableData<GroupRoleModel>> GetRoles(TableState state, CancellationToken token)
+    {
+        return new()
+        {
+            Items = groupDetails?.Roles ?? Array.Empty<GroupRoleModel>(),   
+        };
+    }
+
     private void NavigateToUserEvent(TableRowClickEventArgs<GroupUserModel> e)
     {
         var href = $"/admin/groups/{GroupId}/users/{e.Item!.Id}";
@@ -94,9 +148,9 @@
         NavigationManager.NavigateTo(href);
     }
 
-    private void OnSearch(string text)
+    private async Task OnSearch(string text)
     {
         searchString = text;
-        usersTable.ReloadServerData();
+        await usersTable.ReloadServerData();
     }
 }

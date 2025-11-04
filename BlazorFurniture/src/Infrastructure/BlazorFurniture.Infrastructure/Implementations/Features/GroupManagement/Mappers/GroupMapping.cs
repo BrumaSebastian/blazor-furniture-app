@@ -18,7 +18,7 @@ internal static class GroupMapping
         {
             Id = source.Id,
             Name = source.Name,
-            Descrription = KeycloakAttributesHelper.GetAttributeValue(source.Attributes, GroupRepresentation.DESCRIPTION_ATTRIBUTE)
+            Description = KeycloakAttributesHelper.GetAttributeValue(source.Attributes, GroupRepresentation.DESCRIPTION_ATTRIBUTE)
         };
     }
 
