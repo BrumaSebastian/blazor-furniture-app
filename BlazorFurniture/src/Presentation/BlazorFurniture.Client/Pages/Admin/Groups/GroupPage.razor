@@ -137,7 +137,8 @@
     {
         return new()
         {
-            Items = groupDetails?.Roles ?? Array.Empty<GroupRoleModel>(),   
+            Items = groupDetails?.Roles ?? Array.Empty<GroupRoleModel>(),
+            TotalItems = groupDetails?.Roles?.Count() ?? 0
         };
     }
 
