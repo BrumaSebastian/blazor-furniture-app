@@ -10,7 +10,8 @@ public class LogOutEndpoint : Endpoint<LogOutRequest>
 {
     public override void Configure()
     {
-        Get("/authentication/logout");
+        Get("authentication/logout");
+        RoutePrefixOverride(string.Empty);
         AllowAnonymous();
 
         Description(options =>
