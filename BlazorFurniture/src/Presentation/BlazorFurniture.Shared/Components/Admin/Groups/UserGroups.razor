@@ -6,7 +6,7 @@
 
 <MudPaper Elevation="6">
     <MudText Typo="Typo.h5" GutterBottom=true Class="ml-4 pt-4">@AdminResource.myGroups</MudText>
-    <MudList T="GroupPermissions" Dense=true Gutters=true>
+    <MudList T="GroupPermissions" Dense=true Gutters=true Style="height:300px; overflow-y:auto;">
         @foreach (var group in Groups ?? [])
         {
             <MudDivider DividerType="DividerType.FullWidth" />
@@ -26,11 +26,9 @@
 </MudPaper>
 
 @code {
-    [Inject]
-    public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
+    [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
     //TODO: Create specific get groups for user endpoint
-    [Inject]
-    public required IPermissionsService PermissionsService { get; set; }
+    [Inject] public required IPermissionsService PermissionsService { get; set; }
 
     [PersistentState]
     public IEnumerable<GroupPermissions>? Groups { get; set; }

@@ -2,6 +2,7 @@
 using BlazorFurniture.Shared.Services.API.Interfaces;
 using BlazorFurniture.Shared.Services.Security.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
+using Polly.Timeout;
 using Refit;
 
 namespace BlazorFurniture.Shared.Services.Security;
@@ -111,6 +112,11 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
         {
             SetNullAndNotify();
             return null;
+        }
+        catch (TimeoutRejectedException)
+        {
+            // Serve stale permissions instead of failing the page render/AuthorizeView.
+            return userPermissions;
         }
         catch (HttpRequestException)
         {
