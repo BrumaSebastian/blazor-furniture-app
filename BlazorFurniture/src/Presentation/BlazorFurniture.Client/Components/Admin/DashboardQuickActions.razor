@@ -1,8 +1,7 @@
 ﻿@using BlazorFurniture.Shared.Resources.Pages.Admin
-<MudPaper Height="100%" Elevation="6" Style="@Style">
-    <MudStack StretchItems="StretchItems.End" Style="height:inherit;">
-        <MudText Typo="Typo.h5" GutterBottom="true" Class="ml-4 pt-4">@CommonResource.section_quickActions</MudText>
-        <MudDivider Class="flex-grow-0"/>
+
+<ContentWithHeader Title="@CommonResource.section_quickActions" Class="h-full" Style="@Style">
+    <ChildContent>
         <MudGrid Justify="Justify.Center">
             <AuthorizeView Policy="@Permissions.WithPrefix(Permissions.CREATE_GROUP)">
                 <Authorized>
@@ -39,8 +38,8 @@
                 </MudButton>
             </MudItem>
         </MudGrid>
-    </MudStack>
-</MudPaper>
+    </ChildContent>
+</ContentWithHeader>
 
 @code {
     [Parameter]

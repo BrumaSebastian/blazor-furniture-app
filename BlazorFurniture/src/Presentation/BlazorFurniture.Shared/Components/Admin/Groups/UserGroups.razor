@@ -4,10 +4,8 @@
 @using Microsoft.Extensions.Localization
 @using Microsoft.Extensions.Logging
 
-<MudPaper Elevation="6" Style="@Style">
-    <MudStack>
-        <MudText Typo="Typo.h5" GutterBottom=true Class="ml-4 pt-4">@AdminResource.myGroups</MudText>
-        <MudDivider Class="flex-grow-0"/>
+<ContentWithHeader Title="@AdminResource.myGroups" Class="h-full" Style="@Style">
+    <ChildContent>
         <MudList T="GroupPermissions" Dense=true Gutters=true Class="overflow-y-scroll" Style="min-height:300px;">
             @foreach (var group in Groups ?? [])
             {
@@ -25,8 +23,8 @@
                 </MudListItem>
             }
         </MudList>
-    </MudStack>
-</MudPaper>
+    </ChildContent>
+</ContentWithHeader>
 
 @code {
     [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
