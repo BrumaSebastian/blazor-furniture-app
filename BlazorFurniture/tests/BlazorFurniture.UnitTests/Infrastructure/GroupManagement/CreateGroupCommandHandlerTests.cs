@@ -30,10 +30,10 @@ public class CreateGroupCommandHandlerTests
         // Arrange
         var groupName = "TestGroup";
         var id = Guid.NewGuid();
-        var command = new CreateGroupCommand(new CreateGroupRequest(groupName));
+        var command = new CreateGroupCommand(new CreateGroupRequest(groupName, string.Empty));
         var location = new Uri($"https://example.com/groups/{id}");
 
-        clientMock.Create(groupName, Arg.Any<CancellationToken>())
+        clientMock.Create(groupName, string.Empty, Arg.Any<CancellationToken>())
             .Returns(HttpResult<HttpHeaderLocationResult, ErrorRepresentation>
                 .Succeeded(new HttpHeaderLocationResult { Location = location }));
 
@@ -43,7 +43,7 @@ public class CreateGroupCommandHandlerTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Equal(location, result.Value.Location);
-        await clientMock.Received(1).Create(groupName, Arg.Any<CancellationToken>());
+        await clientMock.Received(1).Create(groupName, string.Empty, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -51,9 +51,9 @@ public class CreateGroupCommandHandlerTests
     {
         // Arrange
         var groupName = "TestGroup";
-        var command = new CreateGroupCommand(new CreateGroupRequest(groupName));
+        var command = new CreateGroupCommand(new CreateGroupRequest(groupName, string.Empty));
 
-        clientMock.Create(groupName, Arg.Any<CancellationToken>())
+        clientMock.Create(groupName, string.Empty, Arg.Any<CancellationToken>())
             .Returns(HttpResult<HttpHeaderLocationResult, ErrorRepresentation>
                 .Failed(new ErrorRepresentation { Error = "name already registered" }, HttpStatusCode.Conflict));
 
@@ -63,6 +63,6 @@ public class CreateGroupCommandHandlerTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(typeof(ConflictError), result.Error!.GetType());
-        await clientMock.Received(1).Create(groupName, Arg.Any<CancellationToken>());
+        await clientMock.Received(1).Create(groupName, string.Empty, Arg.Any<CancellationToken>());
     }
 }

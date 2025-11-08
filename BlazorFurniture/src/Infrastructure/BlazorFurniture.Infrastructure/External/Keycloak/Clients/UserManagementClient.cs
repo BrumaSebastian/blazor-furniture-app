@@ -16,7 +16,7 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
             .WithPath(Endpoints.UserById(userId))
             .Build();
 
-        return await SendRequest<UserRepresentation, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<UserRepresentation>(requestMessage, ct);
     }
 
     public Task<HttpResult<GroupRepresentation, ErrorRepresentation>> GetGroups( Guid userId, CancellationToken ct )
@@ -31,7 +31,7 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
            .WithPath(Endpoints.UserPermissions(userId))
            .Build();
 
-        return await SendRequest<UserPermissionsRepresentation, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<UserPermissionsRepresentation>(requestMessage, ct);
     }
 
     public Task<HttpResult<EmptyResult, ErrorRepresentation>> UpdateCredentials( UserRepresentation userRepresentation, CancellationToken ct )
@@ -47,6 +47,6 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
             .WithContent(userRepresentation)
             .Build();
 
-        return await SendRequest<EmptyResult, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<EmptyResult>(requestMessage, ct);
     }
 }

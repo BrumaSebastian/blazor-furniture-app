@@ -39,7 +39,7 @@ public class UpdateProfileEndpoint( ICommandDispatcher commandDispatcher ) : End
     public override async Task HandleAsync( UpdateUserProfileRequest req, CancellationToken ct )
     {
         var userId = HttpContext.GetUserIdFromClaims();
-        var result = await commandDispatcher.Dispatch<UpdateUserProfileCommand, Result<EmptyResult>>(new UpdateUserProfileCommand(userId, req), ct);
+        var result = await commandDispatcher.DispatchCommand<UpdateUserProfileCommand, Result<EmptyResult>>(new UpdateUserProfileCommand(userId, req), ct);
 
         await result.Match(
             response => Send.NoContentAsync(),

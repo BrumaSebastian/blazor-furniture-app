@@ -41,12 +41,12 @@ internal sealed class CreateGroupEndpoint( ICommandDispatcher commandDispatcher 
 
     public async override Task HandleAsync( CreateGroupRequest req, CancellationToken ct )
     {
-        var result = await commandDispatcher.Dispatch<CreateGroupCommand, Result<HttpHeaderLocationResult>>(new CreateGroupCommand(req), ct);
+        var result = await commandDispatcher.DispatchCommand<CreateGroupCommand, Result<HttpHeaderLocationResult>>(new CreateGroupCommand(req), ct);
 
         await result.Match(
             response => Send.CreatedAtAsync(nameof(GetGroupEndpoint), routeValues: new GetGroupRequest
             {
-                GroupId = Guid.Parse(response.Location!.Segments[^1])
+                GroupId = Guid.Parse(response.Value.Location!.Segments[^1])
             }),
             error => Send.SendErrorAsync(error));
     }

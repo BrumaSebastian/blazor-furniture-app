@@ -34,7 +34,7 @@ internal sealed class UpdateGroupEndpoint( ICommandDispatcher commandDispatcher 
 
     public override async Task HandleAsync( UpdateGroupRequest req, CancellationToken ct )
     {
-        var result = await commandDispatcher.Dispatch<UpdateGroupCommand, Result<EmptyResult>>(new UpdateGroupCommand(req), ct);
+        var result = await commandDispatcher.DispatchCommand<UpdateGroupCommand, Result<EmptyResult>>(new UpdateGroupCommand(req), ct);
 
         await result.Match(
             response => Send.NoContentAsync(),

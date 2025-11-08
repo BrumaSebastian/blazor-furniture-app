@@ -29,7 +29,7 @@ internal sealed class AddUserToGroupEndpoint( ICommandDispatcher commandDispatch
 
     public override async Task HandleAsync( AddUserToGroupRequest req, CancellationToken ct )
     {
-        var result = await commandDispatcher.Dispatch<AddUserToGroupCommand, Result<EmptyResult>>(new AddUserToGroupCommand(req), ct);
+        var result = await commandDispatcher.DispatchCommand<AddUserToGroupCommand, Result<EmptyResult>>(new AddUserToGroupCommand(req), ct);
 
         await result.Match(
             response => Send.NoContentAsync(),

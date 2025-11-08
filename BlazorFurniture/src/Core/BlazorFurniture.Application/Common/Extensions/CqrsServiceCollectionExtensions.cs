@@ -50,7 +50,7 @@ public static class CqrsServiceCollectionExtensions
             //        sp.GetRequiredService<ILogger<CachingDispatcherDecorator>>());
             //});
 
-            var assembly = typeof(CqrsServiceCollectionExtensions).Assembly;
+            //var assembly = typeof(CqrsServiceCollectionExtensions).Assembly;
 
             return services;
         }

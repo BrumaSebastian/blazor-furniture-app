@@ -30,7 +30,7 @@ public sealed class AddUserToGroupEndpointTests
         var (request, httpContext, endpoint) = CreateTestContext();
 
         commandDispatcher
-            .Dispatch<AddUserToGroupCommand, Result<EmptyResult>>(
+            .DispatchCommand<AddUserToGroupCommand, Result<EmptyResult>>(
                 Arg.Any<AddUserToGroupCommand>(),
                 Arg.Any<CancellationToken>())
             .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
@@ -51,7 +51,7 @@ public sealed class AddUserToGroupEndpointTests
         var notFoundError = new NotFoundError(request.UserId, typeof(UserRepresentation));
 
         commandDispatcher
-            .Dispatch<AddUserToGroupCommand, Result<EmptyResult>>(
+            .DispatchCommand<AddUserToGroupCommand, Result<EmptyResult>>(
                 Arg.Any<AddUserToGroupCommand>(),
                 Arg.Any<CancellationToken>())
             .Returns(Result<EmptyResult>.Failed(notFoundError));
@@ -72,7 +72,7 @@ public sealed class AddUserToGroupEndpointTests
         var notFoundError = new NotFoundError(request.GroupId, typeof(GroupRepresentation));
 
         commandDispatcher
-            .Dispatch<AddUserToGroupCommand, Result<EmptyResult>>(
+            .DispatchCommand<AddUserToGroupCommand, Result<EmptyResult>>(
                 Arg.Any<AddUserToGroupCommand>(),
                 Arg.Any<CancellationToken>())
             .Returns(Result<EmptyResult>.Failed(notFoundError));
@@ -96,7 +96,7 @@ public sealed class AddUserToGroupEndpointTests
     private async Task VerifyDispatcherCalled()
     {
         await commandDispatcher.Received(1)
-            .Dispatch<AddUserToGroupCommand, Result<EmptyResult>>(
+            .DispatchCommand<AddUserToGroupCommand, Result<EmptyResult>>(
                 Arg.Any<AddUserToGroupCommand>(),
                 Arg.Any<CancellationToken>());
     }

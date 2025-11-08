@@ -24,7 +24,7 @@ internal sealed class RemoveUserFromGroupEndpoint( ICommandDispatcher commandDis
 
     public override async Task HandleAsync( RemoveUserFromGroupRequest req, CancellationToken ct )
     {
-        var result = await commandDispatcher.Dispatch<RemoveUserFromGroupCommand, Result<EmptyResult>>(new RemoveUserFromGroupCommand(req), ct);
+        var result = await commandDispatcher.DispatchCommand<RemoveUserFromGroupCommand, Result<EmptyResult>>(new RemoveUserFromGroupCommand(req), ct);
 
         await result.Match(
             response => Send.NoContentAsync(),

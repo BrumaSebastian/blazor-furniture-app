@@ -25,7 +25,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
            .WithPath(Endpoints.GroupMemberByIdExtension(groupId, userId))
            .Build();
 
-        return await SendRequest<EmptyResult, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<EmptyResult>(requestMessage, ct);
     }
 
     public async Task<HttpResult<HttpHeaderLocationResult, ErrorRepresentation>> Create( string groupName, string description, CancellationToken ct )
@@ -45,7 +45,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .WithContent(groupRepresentation)
             .Build();
 
-        return await SendRequest<HttpHeaderLocationResult, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<HttpHeaderLocationResult>(requestMessage, ct);
     }
 
     public async Task<HttpResult<GroupRepresentation, ErrorRepresentation>> Get( Guid groupId, CancellationToken ct )
@@ -55,7 +55,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
            .WithPath(Endpoints.GroupById(groupId))
            .Build();
 
-        return await SendRequest<GroupRepresentation, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<GroupRepresentation>(requestMessage, ct);
     }
 
     public async Task<HttpResult<List<GroupRepresentation>, ErrorRepresentation>> Get( GroupQueryFilters filters, CancellationToken ct )
@@ -69,7 +69,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .AddQueryParam(GROUP_TOP_LEVEL_ONLY_QUERY_PARAM, true)
             .Build();
 
-        return await SendRequest<List<GroupRepresentation>, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<List<GroupRepresentation>>(requestMessage, ct);
     }
 
     public async Task<HttpResult<CountRepresentation, ErrorRepresentation>> GetGroupsCount( string? search, CancellationToken ct )
@@ -80,7 +80,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .AddQueryParam(KeycloakQueryParams.SEARCH, search)
             .Build();
 
-        return await SendRequest<CountRepresentation, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<CountRepresentation>(requestMessage, ct);
     }
 
     public async Task<HttpResult<List<GroupRoleRepresentation>, ErrorRepresentation>> GetRoles( Guid groupId, CancellationToken ct )
@@ -90,7 +90,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .WithPath(Endpoints.GroupRoles(groupId))
             .Build();
 
-        return await SendRequest<List<GroupRoleRepresentation>, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<List<GroupRoleRepresentation>>(requestMessage, ct);
     }
 
     public async Task<HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, GroupUsersQueryFilter filters, CancellationToken ct )
@@ -104,7 +104,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .AddQueryParam(KeycloakQueryParams.PAGE_SIZE, filters.PageSize)
             .Build();
 
-        return await SendRequest<List<GroupUserRepresentation>, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<List<GroupUserRepresentation>>(requestMessage, ct);
     }
 
     public async Task<HttpResult<CountRepresentation, ErrorRepresentation>> GetUsersCount( Guid groupId, string? search, CancellationToken ct )
@@ -116,7 +116,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
             .AddQueryParam(KeycloakQueryParams.EXACT, false)
             .Build();
 
-        return await SendRequest<CountRepresentation, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<CountRepresentation>(requestMessage, ct);
     }
 
     public async Task<HttpResult<EmptyResult, ErrorRepresentation>> RemoveUser( Guid groupId, Guid userId, CancellationToken ct )
@@ -126,7 +126,7 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
            .WithPath(Endpoints.GroupMemberByIdExtension(groupId, userId))
            .Build();
 
-        return await SendRequest<EmptyResult, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<EmptyResult>(requestMessage, ct);
     }
 
     public async Task<HttpResult<EmptyResult, ErrorRepresentation>> Update( Guid groupId, GroupRepresentation groupRepresentation, CancellationToken ct )
@@ -137,6 +137,6 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
            .WithContent(groupRepresentation)
            .Build();
 
-        return await SendRequest<EmptyResult, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<EmptyResult>(requestMessage, ct);
     }
 }

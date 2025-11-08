@@ -215,7 +215,7 @@ if (app.Environment.IsDevelopment())
         options.DefaultOpenAllTags = true;
     });
 }
-app.UseAntiforgery();
+
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

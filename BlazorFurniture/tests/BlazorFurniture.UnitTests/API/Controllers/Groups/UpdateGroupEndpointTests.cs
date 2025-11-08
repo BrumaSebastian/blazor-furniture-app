@@ -69,7 +69,7 @@ public sealed class UpdateGroupEndpointTests
         var notFoundError = new NotFoundError(request.GroupId, typeof(UpdateGroupRequest));
 
         commandDispatcher
-            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+            .DispatchCommand<UpdateGroupCommand, Result<EmptyResult>>(
                 Arg.Any<UpdateGroupCommand>(),
                 Arg.Any<CancellationToken>())
             .Returns(Result<EmptyResult>.Failed(notFoundError));
@@ -92,7 +92,7 @@ public sealed class UpdateGroupEndpointTests
     private void SetupSuccessfulDispatch()
     {
         commandDispatcher
-            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+            .DispatchCommand<UpdateGroupCommand, Result<EmptyResult>>(
                 Arg.Any<UpdateGroupCommand>(),
                 Arg.Any<CancellationToken>())
             .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
@@ -101,7 +101,7 @@ public sealed class UpdateGroupEndpointTests
     private async Task VerifyDispatcherCalled()
     {
         await commandDispatcher.Received(1)
-            .Dispatch<UpdateGroupCommand, Result<EmptyResult>>(
+            .DispatchCommand<UpdateGroupCommand, Result<EmptyResult>>(
                 Arg.Any<UpdateGroupCommand>(),
                 Arg.Any<CancellationToken>());
     }
