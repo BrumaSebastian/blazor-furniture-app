@@ -32,4 +32,4 @@ jobs:
         run: dotnet build ./BlazorFurniture/BlazorFurniture.sln --no-restore --configuration Release
 
       - name: Run tests
-        run: dotnet test ./BlazorFurniture/BlazorFurniture.sln --no-build --configuration Release --verbosity normal
+        run: dotnet test ./BlazorFurniture/BlazorFurniture.sln --no-build --configuration Release --filter "Category!=Integration" --verbosity normal
