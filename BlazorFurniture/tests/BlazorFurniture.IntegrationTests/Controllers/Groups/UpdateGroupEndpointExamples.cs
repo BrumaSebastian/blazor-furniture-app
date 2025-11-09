@@ -11,6 +11,7 @@ namespace BlazorFurniture.IntegrationTests.Controllers.Groups;
 /// Example integration tests showing best practices for testing FastEndpoints
 /// with proper data setup and cleanup.
 /// </summary>
+[Trait("Category", "Integration")]
 public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut>
 {
     /// <summary>
