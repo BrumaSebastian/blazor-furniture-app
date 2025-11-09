@@ -12,7 +12,7 @@ namespace BlazorFurniture.Infrastructure.Implementations.Features.GroupManagemen
 internal sealed class CreateGroupCommandHandler(
     IGroupManagementClient groupManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
-    : ICommandHandler<CreateGroupCommand, Result<HttpHeaderLocationResult>>
+    : ICommandHandler<CreateGroupCommand, HttpHeaderLocationResult>
 {
     public async Task<Result<HttpHeaderLocationResult>> HandleAsync( CreateGroupCommand command, CancellationToken ct = default )
     {

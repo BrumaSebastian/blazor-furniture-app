@@ -14,12 +14,12 @@ namespace BlazorFurniture.UnitTests.API.Controllers.Groups;
 
 public sealed class AddUserToGroupEndpointTests
 {
-    private readonly ICommandDispatcher commandDispatcher;
+    private readonly ICommandDispatcher commandDispatcherMock;
     private readonly Fixture fixture;
 
     public AddUserToGroupEndpointTests()
     {
-        commandDispatcher = Substitute.For<ICommandDispatcher>();
+        commandDispatcherMock = Substitute.For<ICommandDispatcher>();
         fixture = new Fixture();
     }
 
@@ -29,8 +29,8 @@ public sealed class AddUserToGroupEndpointTests
         // Arrange
         var (request, httpContext, endpoint) = CreateTestContext();
 
-        commandDispatcher
-            .DispatchCommand<AddUserToGroupCommand, Result<EmptyResult>>(
+        commandDispatcherMock
+            .DispatchCommand<AddUserToGroupCommand, EmptyResult>(
                 Arg.Any<AddUserToGroupCommand>(),
                 Arg.Any<CancellationToken>())
             .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
@@ -50,8 +50,8 @@ public sealed class AddUserToGroupEndpointTests
         var (request, httpContext, endpoint) = CreateTestContext();
         var notFoundError = new NotFoundError(request.UserId, typeof(UserRepresentation));
 
-        commandDispatcher
-            .DispatchCommand<AddUserToGroupCommand, Result<EmptyResult>>(
+        commandDispatcherMock
+            .DispatchCommand<AddUserToGroupCommand, EmptyResult>(
                 Arg.Any<AddUserToGroupCommand>(),
                 Arg.Any<CancellationToken>())
             .Returns(Result<EmptyResult>.Failed(notFoundError));
@@ -71,8 +71,8 @@ public sealed class AddUserToGroupEndpointTests
         var (request, httpContext, endpoint) = CreateTestContext();
         var notFoundError = new NotFoundError(request.GroupId, typeof(GroupRepresentation));
 
-        commandDispatcher
-            .DispatchCommand<AddUserToGroupCommand, Result<EmptyResult>>(
+        commandDispatcherMock
+            .DispatchCommand<AddUserToGroupCommand, EmptyResult>(
                 Arg.Any<AddUserToGroupCommand>(),
                 Arg.Any<CancellationToken>())
             .Returns(Result<EmptyResult>.Failed(notFoundError));
@@ -89,14 +89,14 @@ public sealed class AddUserToGroupEndpointTests
     {
         var request = fixture.Create<AddUserToGroupRequest>();
         var httpContext = new DefaultHttpContext();
-        var endpoint = Factory.Create<AddUserToGroupEndpoint>(httpContext, commandDispatcher);
+        var endpoint = Factory.Create<AddUserToGroupEndpoint>(httpContext, commandDispatcherMock);
         return (request, httpContext, endpoint);
     }
 
     private async Task VerifyDispatcherCalled()
     {
-        await commandDispatcher.Received(1)
-            .DispatchCommand<AddUserToGroupCommand, Result<EmptyResult>>(
+        await commandDispatcherMock.Received(1)
+            .DispatchCommand<AddUserToGroupCommand, EmptyResult>(
                 Arg.Any<AddUserToGroupCommand>(),
                 Arg.Any<CancellationToken>());
     }

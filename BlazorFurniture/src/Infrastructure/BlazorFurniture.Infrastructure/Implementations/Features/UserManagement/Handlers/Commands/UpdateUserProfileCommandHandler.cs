@@ -13,7 +13,7 @@ namespace BlazorFurniture.Infrastructure.Implementations.Features.UserManagement
 internal sealed class UpdateUserProfileCommandHandler(
     IUserManagementClient userManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
-    : ICommandHandler<UpdateUserProfileCommand, Result<EmptyResult>>
+    : ICommandHandler<UpdateUserProfileCommand, EmptyResult>
 {
     public async Task<Result<EmptyResult>> HandleAsync( UpdateUserProfileCommand command, CancellationToken ct = default )
     {

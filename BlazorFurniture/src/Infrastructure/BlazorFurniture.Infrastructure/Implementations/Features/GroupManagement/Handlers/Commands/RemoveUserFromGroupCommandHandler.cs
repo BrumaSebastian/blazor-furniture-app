@@ -11,7 +11,7 @@ namespace BlazorFurniture.Infrastructure.Implementations.Features.GroupManagemen
 internal sealed class RemoveUserFromGroupCommandHandler(
     IGroupManagementClient groupManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
-    : ICommandHandler<RemoveUserFromGroupCommand, Result<EmptyResult>>
+    : ICommandHandler<RemoveUserFromGroupCommand, EmptyResult>
 {
     public async Task<Result<EmptyResult>> HandleAsync( RemoveUserFromGroupCommand command, CancellationToken ct = default )
     {

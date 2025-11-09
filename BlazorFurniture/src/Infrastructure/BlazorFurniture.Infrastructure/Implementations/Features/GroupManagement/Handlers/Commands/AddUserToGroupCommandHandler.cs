@@ -11,7 +11,7 @@ namespace BlazorFurniture.Infrastructure.Implementations.Features.GroupManagemen
 internal sealed class AddUserToGroupCommandHandler(
     IGroupManagementClient groupManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
-    : ICommandHandler<AddUserToGroupCommand, Result<EmptyResult>>
+    : ICommandHandler<AddUserToGroupCommand, EmptyResult>
 {
     public async Task<Result<EmptyResult>> HandleAsync( AddUserToGroupCommand command, CancellationToken ct = default )
     {
