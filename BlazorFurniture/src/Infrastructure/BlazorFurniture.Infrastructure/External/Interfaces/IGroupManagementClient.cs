@@ -1,7 +1,6 @@
 ﻿using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Requests.Filters;
 using BlazorFurniture.Domain.Entities.Keycloak;
-using BlazorFurniture.Domain.Enums;
 
 namespace BlazorFurniture.Infrastructure.External.Interfaces;
 

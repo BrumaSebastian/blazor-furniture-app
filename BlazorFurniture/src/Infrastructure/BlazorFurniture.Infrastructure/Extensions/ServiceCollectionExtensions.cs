@@ -48,9 +48,11 @@ public static class ServiceCollectionExtensions
             services.AddScoped<LoggingDelegatingHandler>();
             
             services.AddHttpClientWithBaseUrl<IUserManagementClient, UserManagementClient>(keycloakConfig.Url)
+                .ConfigureHttpClient(c => c.Timeout = Timeout.InfiniteTimeSpan)
                 .AddHttpMessageHandler<LoggingDelegatingHandler>();
                 
             services.AddHttpClientWithBaseUrl<IGroupManagementClient, GroupManagementClient>(keycloakConfig.Url)
+                .ConfigureHttpClient(c => c.Timeout = Timeout.InfiniteTimeSpan)
                 .AddHttpMessageHandler<LoggingDelegatingHandler>();
 
             return services;

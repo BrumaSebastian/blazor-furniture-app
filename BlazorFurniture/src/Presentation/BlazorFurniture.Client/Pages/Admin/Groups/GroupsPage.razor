@@ -11,7 +11,7 @@
         <MudText Typo="Typo.subtitle1">@AdminResource.add_group</MudText>
     </MudButton>
 </MudStack>
-<MudTable T="GroupModel" @ref="table" ServerData="ServerReload"
+<MudTable T="GroupModel" @ref="groupsTable" ServerData="ServerReload"
           Hover="true" OnRowClick="NavigateToGroupEvent"
           RowClass="cursor-pointer" Breakpoint="Breakpoint.Sm"
           Height="80%">
@@ -30,9 +30,9 @@
     <NoRecordsContent>
         <MudText>@CommonResource.message_noRecordsFound</MudText>
     </NoRecordsContent>
-    <LoadingContent>
-        <TableLoadingComponent RowCount="10"/>
-    </LoadingContent>
+    <LoadingContentBody>
+        <TableLoadingComponent RowCount="10" />
+    </LoadingContentBody>
     <PagerContent>
         <MudTablePager />
     </PagerContent>
@@ -44,7 +44,7 @@
     [Inject] public required IGroupsApi GroupsApi { get; init; }
     [Inject] public required NavigationManager NavigationManager { get; init; }
 
-    private MudTable<GroupModel> table = default!;
+    private MudTable<GroupModel> groupsTable = new();
     private string? searchString;
 
     protected override void OnParametersSet()
@@ -54,19 +54,26 @@
 
     private async Task<TableData<GroupModel>> ServerReload(TableState state, CancellationToken token)
     {
-        var response = await GroupsApi.Get(state.Page, state.PageSize, searchString, token);
-
-        switch (response.StatusCode)
+        try
         {
-            case HttpStatusCode.OK:
-                return new TableData<GroupModel>()
-                {
-                    TotalItems = response.Content!.Total,
-                    Items = response.Content!.Results
-                };
-            default:
-                Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
-                break;
+            var response = await GroupsApi.Get(state.Page, state.PageSize, searchString, token);
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return new TableData<GroupModel>()
+                    {
+                        TotalItems = response.Content!.Total,
+                        Items = response.Content!.Results.ToList()
+                    };
+                default:
+                    Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
+                    break;
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            return new();
         }
 
         return new();
@@ -88,13 +95,13 @@
 
         if (result?.Data is bool created && created)
         {
-            await table.ReloadServerData();
+            await groupsTable.ReloadServerData();
         }
     }
 
     private void OnSearch(string text)
     {
         searchString = text;
-        table.ReloadServerData();
+        groupsTable.ReloadServerData();
     }
 }

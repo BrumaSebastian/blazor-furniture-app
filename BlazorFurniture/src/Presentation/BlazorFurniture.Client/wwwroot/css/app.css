@@ -9,3 +9,15 @@
 .min-h-full {
     min-height: 100%;
 }
+
+.max-w-full {
+    max-width: 100%;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.min-w-full {
+    min-width: 100%;
+}

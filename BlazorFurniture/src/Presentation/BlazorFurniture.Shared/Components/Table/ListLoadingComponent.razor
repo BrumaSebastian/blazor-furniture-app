@@ -1,0 +1,12 @@
+<MudList T="string">
+    @for (int r = 0; r < RowCount; r++)
+    {
+        <MudListItem>
+            <MudSkeleton Class="w-full h-full" />
+        </MudListItem>
+    }
+</MudList>
+
+@code {
+    [Parameter] public int RowCount { get; set; } = 5;
+}

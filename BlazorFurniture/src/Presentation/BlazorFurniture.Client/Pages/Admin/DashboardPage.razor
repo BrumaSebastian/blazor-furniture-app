@@ -7,7 +7,7 @@
 <h1>@SearchService.SearchTerm</h1>
 <MudGrid Justify="Justify.Center" Spacing="8">
     <MudItem xs="12" md="6">
-        <UserGroups Style="height:400px;" />
+        <CurrentUserGroups Style="height:400px;" />
     </MudItem>
 
     <MudItem xs="12" md="6">
@@ -17,12 +17,6 @@
 
 @code {
     [Inject] public required ISearchService SearchService { get; init; }
-
-    private readonly List<ActivityTimeline.ActivityItem> recentActivities = new()
-    {
-        new() { Title = "User Login", Description = "John Doe logged in", Time = "2 min ago", Color = Color.Success },
-        new() { Title = "Group Created", Description = "Admin group created", Time = "1 hour ago", Color = Color.Info }
-    };
 
     protected override void OnParametersSet()
     {
