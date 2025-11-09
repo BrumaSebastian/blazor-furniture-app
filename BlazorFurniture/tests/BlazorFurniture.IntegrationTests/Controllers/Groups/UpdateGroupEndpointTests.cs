@@ -7,6 +7,7 @@ using System.Net;
 
 namespace BlazorFurniture.IntegrationTests.Controllers.Groups;
 
+[Trait("Category", "Integration")]
 public class UpdateGroupEndpointTests( ProgramSut sut ) : TestBase<ProgramSut>
 {
     [Fact]
