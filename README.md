@@ -1,5 +1,7 @@
 # Blazor Furniture App
 
+[![Tests](https://github.com/BrumaSebastian/blazor-furniture-app/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/BrumaSebastian/blazor-furniture-app/actions/workflows/run-tests.yml)
+
 A modern, full-stack web application for furniture management built with Blazor, featuring secure authentication, role-based authorization, and a clean architecture approach.
 
 ## 🏗️ Architecture
@@ -248,4 +250,4 @@ For questions or support, please open an issue in the GitHub repository.
 
 ---
 
-**Note**: This is a full-stack application currently designed to proxy Keycloak functionalities for authentication and authorization. Future plans may include additional features and architectural refinements.
+**Note**: This is a full-stack application currently designed to proxy Keycloak functionalities for authentication and authorization. Future plans may include additional features and architectura[...]
