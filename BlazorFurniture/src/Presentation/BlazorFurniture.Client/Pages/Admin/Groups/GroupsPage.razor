@@ -64,7 +64,7 @@
                     return new TableData<GroupModel>()
                     {
                         TotalItems = response.Content!.Total,
-                        Items = response.Content!.Results.ToList()
+                        Items = response.Content!.Results
                     };
                 default:
                     Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
