@@ -18,6 +18,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
     /// In a real scenario, you would seed the group in your test database setup.
     /// </summary>
     [Fact]
+    [Trait("Category", "Integration")]
     public async Task Example_UpdateGroup_WithSeededData()
     {
         // Arrange - In real tests, seed data in ConfigureServices or test setup
@@ -56,6 +57,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
     /// Example showing multiple test scenarios in sequence
     /// </summary>
     [Fact]
+    [Trait("Category", "Integration")]
     public async Task Example_UpdateGroup_MultipleScenarios()
     {
         // Scenario 1: Update non-existent group (should fail)
@@ -90,6 +92,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
     /// Example showing how to test with custom headers or authentication
     /// </summary>
     [Fact]
+    [Trait("Category", "Integration")]
     public async Task Example_UpdateGroup_WithAuthentication()
     {
         // Arrange
@@ -116,6 +119,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
     /// Example showing how to extract and verify problem details
     /// </summary>
     [Fact]
+    [Trait("Category", "Integration")]
     public async Task Example_UpdateGroup_VerifyProblemDetails()
     {
         // Arrange
@@ -151,6 +155,7 @@ public class UpdateGroupEndpointExamples( ProgramSut sut ) : TestBase<ProgramSut
     /// Example showing how to test duplicate name conflict
     /// </summary>
     [Fact]
+    [Trait("Category", "Integration")]
     public async Task Example_UpdateGroup_DuplicateName()
     {
         // Arrange
