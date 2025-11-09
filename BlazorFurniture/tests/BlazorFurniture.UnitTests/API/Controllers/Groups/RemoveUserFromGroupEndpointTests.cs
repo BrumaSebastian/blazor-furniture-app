@@ -28,7 +28,7 @@ public sealed class RemoveUserFromGroupEndpointTests
         var (request, httpContext, endpoint) = CreateTestContext();
 
         commandDispatcher
-           .Dispatch<RemoveUserFromGroupCommand, Result<EmptyResult>>(
+           .DispatchCommand<RemoveUserFromGroupCommand, EmptyResult>(
                 Arg.Any<RemoveUserFromGroupCommand>(),
                 Arg.Any<CancellationToken>())
            .Returns(Result<EmptyResult>.Succeeded(new EmptyResult()));
@@ -52,7 +52,7 @@ public sealed class RemoveUserFromGroupEndpointTests
     private async Task VerifyDispatcherCalled()
     {
         await commandDispatcher.Received(1)
-           .Dispatch<RemoveUserFromGroupCommand, Result<EmptyResult>>(
+           .DispatchCommand<RemoveUserFromGroupCommand, EmptyResult>(
                 Arg.Any<RemoveUserFromGroupCommand>(),
                 Arg.Any<CancellationToken>());
     }

@@ -11,9 +11,9 @@ namespace BlazorFurniture.Infrastructure.Implementations.Features.GroupManagemen
 internal sealed class UpdateGroupCommandHandler(
     IGroupManagementClient groupManagementClient,
     [FromKeyedServices(KeyedServices.KEYCLOAK)] IHttpErrorMapper errorMapper )
-    : ICommandHandler<UpdateGroupCommand, Result<EmptyResult>>
+    : ICommandHandler<UpdateGroupCommand, EmptyResult>
 {
-    public async Task<Result<EmptyResult>> HandleAsync( UpdateGroupCommand command, CancellationToken ct )
+    public async Task<Result<EmptyResult>> HandleAsync( UpdateGroupCommand command, CancellationToken ct = default)
     {
         var groupResult = await groupManagementClient.Get(command.Request.GroupId, ct);
 

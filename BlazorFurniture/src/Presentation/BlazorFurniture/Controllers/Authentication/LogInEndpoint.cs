@@ -10,7 +10,8 @@ public class LogInEndpoint : Endpoint<LogInRequest>
 {
     public override void Configure()
     {
-        Get("/authentication/login");
+        Get("authentication/login");
+        RoutePrefixOverride(string.Empty);
         AllowAnonymous();
 
         Description(options =>

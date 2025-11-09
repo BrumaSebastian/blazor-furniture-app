@@ -18,5 +18,4 @@ public interface IGroupsApi
 
     [Get("/api/groups/{groupId}/users")]
     Task<IApiResponse<PaginatedModel<GroupUserModel>>> GetUsers( Guid groupId, int page, int pageSize, string? name, CancellationToken ct );
-
 }

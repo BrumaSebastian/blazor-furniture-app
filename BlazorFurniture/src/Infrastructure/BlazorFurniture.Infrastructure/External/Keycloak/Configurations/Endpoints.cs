@@ -12,6 +12,7 @@ internal sealed class Endpoints( string Realm )
     public string UsersExtension() => $"{Users()}-extension";
     public string UserById( Guid userId ) => $"{UsersExtension()}/{userId}";
     public string UserPermissions( Guid userId ) => $"{UserById(userId)}/permissions";
+    public string UserGroups( Guid userId ) => $"{UserById(userId)}/groups-membership";
 
     // Groups
     public string Groups() => $"{AdminRestApiBaseUrl}/groups";

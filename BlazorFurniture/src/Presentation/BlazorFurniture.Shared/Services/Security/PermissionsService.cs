@@ -2,6 +2,7 @@
 using BlazorFurniture.Shared.Services.API.Interfaces;
 using BlazorFurniture.Shared.Services.Security.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
+using Polly.Timeout;
 using Refit;
 
 namespace BlazorFurniture.Shared.Services.Security;
@@ -10,15 +11,15 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
     : IPermissionsService, IDisposable
 {
     private static readonly TimeSpan TimeToLive = TimeSpan.FromSeconds(30);
-    private UserPermissions? userPermissions;
+    private UserPermissionsModel? userPermissions;
     private DateTimeOffset expiresAt = DateTimeOffset.MinValue;
     public event Action? Changed;
     private bool subscribed;
 
-    private Task<UserPermissions?>? inflight;
+    private Task<UserPermissionsModel?>? inflight;
     private readonly SemaphoreSlim gate = new(1, 1);
 
-    public async Task<UserPermissions?> GetUserPermissions( bool force = false, CancellationToken ct = default )
+    public async Task<UserPermissionsModel?> GetUserPermissions( bool force = false, CancellationToken ct = default )
     {
         EnsureSubscribedToAuthChanges();
 
@@ -96,7 +97,7 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
         subscribed = true;
     }
 
-    private async Task<UserPermissions?> FetchAndUpdateAsync( CancellationToken ct )
+    private async Task<UserPermissionsModel?> FetchAndUpdateAsync( CancellationToken ct )
     {
         try
         {
@@ -111,6 +112,11 @@ public class PermissionsService( IUserApi userApi, AuthenticationStateProvider a
         {
             SetNullAndNotify();
             return null;
+        }
+        catch (TimeoutRejectedException)
+        {
+            // Serve stale permissions instead of failing the page render/AuthorizeView.
+            return userPermissions;
         }
         catch (HttpRequestException)
         {

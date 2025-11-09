@@ -1,0 +1,16 @@
+@for (int r = 0; r < RowCount; r++)
+{
+    <MudTr>
+        @for (int c = 0; c < ColumnCount; c++)
+        {
+            <MudTd>
+                <MudSkeleton />
+            </MudTd>
+        }
+    </MudTr>
+}
+
+@code {
+    [Parameter] public int RowCount { get; set; } = 5;
+    [Parameter] public int ColumnCount { get; set; } = 1;
+}

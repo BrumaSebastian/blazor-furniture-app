@@ -50,7 +50,7 @@ public class GetGroupUsersQueryHandlerTests
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal(0, result.Value.Total);
+        Assert.Equal(0u, result.Value.Total);
         Assert.Empty(result.Value.Results);
         await clientMock.Received(1).GetUsersCount(groupId, null, Arg.Any<CancellationToken>());
         await clientMock.Received(1).GetUsers(groupId,
@@ -92,7 +92,7 @@ public class GetGroupUsersQueryHandlerTests
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal(10, result.Value.Total);
+        Assert.Equal(10u, result.Value.Total);
         Assert.Equal(2, result.Value.Results.Count());
         users.ForEach(u => Assert.Contains(result.Value.Results, ru => ru.Email == u.Email));
         await clientMock.Received(1).GetUsersCount(groupId, null, Arg.Any<CancellationToken>());
@@ -152,7 +152,7 @@ public class GetGroupUsersQueryHandlerTests
     {
         // Arrange
         var groupId = Guid.NewGuid();
-        var expectedCount = 25;
+        var expectedCount = 25u;
         var request = new GetGroupUsersRequest
         {
             GroupId = groupId,

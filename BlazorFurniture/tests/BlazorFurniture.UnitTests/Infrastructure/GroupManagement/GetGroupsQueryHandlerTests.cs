@@ -48,7 +48,7 @@ public class GetGroupsQueryHandlerTests
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal(0, result.Value.Total);
+        Assert.Equal(0u, result.Value.Total);
         Assert.Empty(result.Value.Results);
         await clientMock.Received(1).GetGroupsCount(null, Arg.Any<CancellationToken>());
         await clientMock.Received(1).Get(Arg.Is<GroupQueryFilters>(f => f.Page == 1 && f.PageSize == 10), Arg.Any<CancellationToken>());
@@ -81,7 +81,7 @@ public class GetGroupsQueryHandlerTests
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal(10, result.Value.Total);
+        Assert.Equal(10u, result.Value.Total);
         Assert.Equal(2, result.Value.Results.Count());
         groups.ForEach(g => Assert.Contains(result.Value.Results, rg => rg.Name == g.Name));
         await clientMock.Received(1).GetGroupsCount(null, Arg.Any<CancellationToken>());

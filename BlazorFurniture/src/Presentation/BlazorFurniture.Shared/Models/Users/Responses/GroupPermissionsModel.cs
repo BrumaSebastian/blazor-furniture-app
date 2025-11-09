@@ -1,8 +1,6 @@
-﻿using BlazorFurniture.Shared.Models.Users;
+﻿namespace BlazorFurniture.Shared.Models.Users.Responses;
 
-namespace BlazorFurniture.Shared.Models.Users.Responses;
-
-public sealed class GroupPermissions
+public sealed class GroupPermissionsModel
 {
     public Guid Id { get; init; }
     public required string Name { get; init; }

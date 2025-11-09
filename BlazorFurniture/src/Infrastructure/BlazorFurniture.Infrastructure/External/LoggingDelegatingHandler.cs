@@ -7,64 +7,40 @@ internal sealed class LoggingDelegatingHandler( ILogger<LoggingDelegatingHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync( HttpRequestMessage request, CancellationToken cancellationToken )
     {
-        var stopwatch = Stopwatch.StartNew();
-
-        // Log request
-        logger.LogInformation(
-            "HTTP {Method} {Uri} - Starting request",
-            request.Method,
-            request.RequestUri);
-
-        if (logger.IsEnabled(LogLevel.Debug) && request.Content is not null)
-        {
-            await request.Content.LoadIntoBufferAsync(cancellationToken);
-            var requestBody = await request.Content.ReadAsStringAsync(cancellationToken);
-            logger.LogDebug(
-                "HTTP {Method} {Uri} - Request Body: {Body}",
-                request.Method,
-                request.RequestUri,
-                requestBody);
-        }
-
-        HttpResponseMessage? response = null;
+        var sw = Stopwatch.StartNew();
         try
         {
-            response = await base.SendAsync(request, cancellationToken);
+            logger.LogInformation("HTTP {Method} {Uri} - Starting request", request.Method, request.RequestUri);
 
-            stopwatch.Stop();
+            var response = await base.SendAsync(request, cancellationToken);
 
-            // Log response
-            logger.LogInformation(
-                "HTTP {Method} {Uri} - {StatusCode} {StatusCodeName} in {ElapsedMs}ms",
-                request.Method,
-                request.RequestUri,
-                (int)response.StatusCode,
-                response.StatusCode,
-                stopwatch.ElapsedMilliseconds);
-
-            if (logger.IsEnabled(LogLevel.Debug) && response.Content is not null)
-            {
-                var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-                logger.LogDebug(
-                    "HTTP {Method} {Uri} - Response Body: {Body}",
-                    request.Method,
-                    request.RequestUri,
-                    responseBody);
-            }
+            sw.Stop();
+            logger.LogInformation("HTTP {Method} {Uri} - {StatusCode} {Reason} in {Elapsed}ms",
+                request.Method, request.RequestUri, (int)response.StatusCode, response.ReasonPhrase, sw.ElapsedMilliseconds);
 
             return response;
         }
+        catch (OperationCanceledException oce) when (cancellationToken.IsCancellationRequested)
+        {
+            sw.Stop();
+            // Request was intentionally canceled (e.g., client navigated away)
+            logger.LogDebug(oce, "HTTP {Method} {Uri} - Canceled after {Elapsed}ms",
+                request.Method, request.RequestUri, sw.ElapsedMilliseconds);
+            throw;
+        }
+        catch (TaskCanceledException tce)
+        {
+            sw.Stop();
+            // Likely a timeout (token not canceled)
+            logger.LogWarning(tce, "HTTP {Method} {Uri} - Timed out after {Elapsed}ms",
+                request.Method, request.RequestUri, sw.ElapsedMilliseconds);
+            throw;
+        }
         catch (Exception ex)
         {
-            stopwatch.Stop();
-
-            logger.LogError(
-                ex,
-                "HTTP {Method} {Uri} - Request failed after {ElapsedMs}ms",
-                request.Method,
-                request.RequestUri,
-                stopwatch.ElapsedMilliseconds);
-
+            sw.Stop();
+            logger.LogError(ex, "HTTP {Method} {Uri} - Request failed after {Elapsed}ms",
+                request.Method, request.RequestUri, sw.ElapsedMilliseconds);
             throw;
         }
     }

@@ -22,7 +22,7 @@ internal abstract class KeycloakBaseHttpClient(
     protected Endpoints Endpoints { get; } = endpoints;
     protected HttpClient HttpClient { get; } = httpClient;
 
-    protected async Task<HttpResult<TValue, ErrorRepresentation>> SendRequest<TValue, TError>( HttpRequestMessage requestMessage, CancellationToken ct )
+    protected async Task<HttpResult<TValue, ErrorRepresentation>> SendRequest<TValue>( HttpRequestMessage requestMessage, CancellationToken ct )
         where TValue : class, new()
     {
         var tokenResult = await GetServiceAccessToken(ct);

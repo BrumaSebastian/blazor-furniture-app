@@ -4,4 +4,4 @@ using BlazorFurniture.Application.Features.GroupManagement.Requests;
 
 namespace BlazorFurniture.Application.Features.GroupManagement.Commands;
 
-public sealed record UpdateGroupCommand( UpdateGroupRequest Request ) : ICommand<Result<EmptyResult>>;
+public sealed record UpdateGroupCommand( UpdateGroupRequest Request ) : ICommand<EmptyResult>;

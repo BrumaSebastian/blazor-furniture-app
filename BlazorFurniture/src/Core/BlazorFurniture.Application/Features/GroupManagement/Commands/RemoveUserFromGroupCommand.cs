@@ -4,4 +4,4 @@ using BlazorFurniture.Application.Features.GroupManagement.Requests;
 
 namespace BlazorFurniture.Application.Features.GroupManagement.Commands;
 
-public sealed record RemoveUserFromGroupCommand( RemoveUserFromGroupRequest Request ) : ICommand<Result<EmptyResult>>;
+public sealed record RemoveUserFromGroupCommand( RemoveUserFromGroupRequest Request ) : ICommand<EmptyResult>;

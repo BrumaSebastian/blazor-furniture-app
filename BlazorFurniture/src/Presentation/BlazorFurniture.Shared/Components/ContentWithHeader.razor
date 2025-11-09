@@ -1,0 +1,54 @@
+<MudPaper Elevation="6" Style="@Style" Class="@Class">
+    <MudStack Spacing="0" StretchItems="StretchItems.End" Class="h-full">
+        <MudStack Class="ml-4 pt-4" Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            @if (HeaderContent is not null)
+            {
+                @HeaderContent
+            }
+            else if (!string.IsNullOrWhiteSpace(Title))
+            {
+                <MudText Typo="Typo.h5" GutterBottom="true">@Title</MudText>
+            }
+
+            @if (HeaderActions is not null)
+            {
+                <div class="ml-auto">
+                    @HeaderActions
+                </div>
+            }
+        </MudStack>
+
+        <MudDivider Class="flex-grow-0" />
+
+        @if (BodyComponent is not null)
+        {
+            <DynamicComponent Type="BodyComponent" Parameters="BodyParameters" />
+        }
+        else
+        {
+            @ChildContent
+        }
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter] public string Style { get; set; } = string.Empty;
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    // Simple title alternative to providing a full header fragment
+    [Parameter] public string? Title { get; set; }
+
+    // Optional explicit header fragment (overrides Title)
+    [Parameter] public RenderFragment? HeaderContent { get; set; }
+
+    // Optional actions area on the right side of header
+    [Parameter] public RenderFragment? HeaderActions { get; set; }
+
+    // Main body slot
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    // Dynamic component option (if provided, overrides ChildContent)
+    [Parameter] public Type? BodyComponent { get; set; }
+
+    [Parameter] public Dictionary<string, object?>? BodyParameters { get; set; }
+}

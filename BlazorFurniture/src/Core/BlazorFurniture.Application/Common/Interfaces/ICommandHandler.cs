@@ -1,11 +1,10 @@
-﻿namespace BlazorFurniture.Application.Common.Interfaces;
+﻿using BlazorFurniture.Application.Common.Models;
 
-//public interface ICommandHandler<in TCommand> where TCommand : ICommand
-//{
-//    Task HandleAsync( TCommand command, CancellationToken ct = default );
-//}
+namespace BlazorFurniture.Application.Common.Interfaces;
 
-public interface ICommandHandler<in TCommand, TResult> where TCommand : ICommand<TResult>
+public interface ICommandHandler<in TCommand, TResult>
+    where TCommand : ICommand<TResult>
+    where TResult : class
 {
-    Task<TResult> HandleAsync( TCommand command, CancellationToken ct = default );
+    Task<Result<TResult>> HandleAsync( TCommand command, CancellationToken ct = default );
 }

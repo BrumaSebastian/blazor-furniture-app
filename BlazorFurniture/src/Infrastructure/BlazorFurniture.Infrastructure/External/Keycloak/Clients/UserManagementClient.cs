@@ -16,12 +16,7 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
             .WithPath(Endpoints.UserById(userId))
             .Build();
 
-        return await SendRequest<UserRepresentation, ErrorRepresentation>(requestMessage, ct);
-    }
-
-    public Task<HttpResult<GroupRepresentation, ErrorRepresentation>> GetGroups( Guid userId, CancellationToken ct )
-    {
-        throw new NotImplementedException();
+        return await SendRequest<UserRepresentation>(requestMessage, ct);
     }
 
     public async Task<HttpResult<UserPermissionsRepresentation, ErrorRepresentation>> GetPermissions( Guid userId, CancellationToken ct )
@@ -31,7 +26,7 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
            .WithPath(Endpoints.UserPermissions(userId))
            .Build();
 
-        return await SendRequest<UserPermissionsRepresentation, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<UserPermissionsRepresentation>(requestMessage, ct);
     }
 
     public Task<HttpResult<EmptyResult, ErrorRepresentation>> UpdateCredentials( UserRepresentation userRepresentation, CancellationToken ct )
@@ -47,6 +42,16 @@ internal class UserManagementClient( Endpoints endpoints, HttpClient httpClient,
             .WithContent(userRepresentation)
             .Build();
 
-        return await SendRequest<EmptyResult, ErrorRepresentation>(requestMessage, ct);
+        return await SendRequest<EmptyResult>(requestMessage, ct);
+    }
+
+    public async Task<HttpResult<List<UserGroupRepresentation>, ErrorRepresentation>> GetGroups( Guid userId, CancellationToken ct )
+    {
+        var requestMessage = HttpRequestMessageBuilder
+           .Create(HttpClient, HttpMethod.Get)
+           .WithPath(Endpoints.UserGroups(userId))
+           .Build();
+
+        return await SendRequest<List<UserGroupRepresentation>>(requestMessage, ct);
     }
 }

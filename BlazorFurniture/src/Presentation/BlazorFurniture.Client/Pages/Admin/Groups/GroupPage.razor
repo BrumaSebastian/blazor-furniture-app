@@ -1,4 +1,5 @@
 ﻿@page "/admin/groups/{groupId:guid}"
+@using BlazorFurniture.Shared.Components.Table
 @layout AdminLayout
 @inherits AdminPageBase
 @attribute [Authorize]
@@ -14,7 +15,7 @@
             <MudText Typo="Typo.subtitle2">@AdminResource.groups_groupSubtitle</MudText>
         </MudStack>
         <MudSpacer />
-        <MudButton StartIcon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+        <MudButton Disabled="true" StartIcon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
             <MudText Typo="Typo.subtitle1">@AdminResource.add_member</MudText>
         </MudButton>
     </MudStack>
@@ -48,9 +49,9 @@
         <NoRecordsContent>
             <MudText>@CommonResource.message_noRecordsFound</MudText>
         </NoRecordsContent>
-        <LoadingContent>
-            <MudText>@CommonResource.message_loading...</MudText>
-        </LoadingContent>
+        <LoadingContentBody>
+            <TableLoadingComponent ColumnCount="3" />
+        </LoadingContentBody>
         <PagerContent>
             <MudTablePager />
         </PagerContent>
@@ -76,9 +77,9 @@
         <NoRecordsContent>
             <MudText>@CommonResource.message_noRecordsFound</MudText>
         </NoRecordsContent>
-        <LoadingContent>
-            <MudText>@CommonResource.message_loading...</MudText>
-        </LoadingContent>
+        <LoadingContentBody>
+            <TableLoadingComponent RowCount="10" />
+        </LoadingContentBody>
         <PagerContent>
             <MudTablePager />
         </PagerContent>

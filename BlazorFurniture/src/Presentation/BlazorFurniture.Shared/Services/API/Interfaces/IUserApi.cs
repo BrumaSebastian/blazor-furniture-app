@@ -6,8 +6,11 @@ namespace BlazorFurniture.Shared.Services.API.Interfaces;
 public interface IUserApi
 {
     [Get("/api/user/permissions")]
-    Task<UserPermissions> GetUserPermissions(CancellationToken ct);
+    Task<UserPermissionsModel> GetUserPermissions(CancellationToken ct);
 
     [Get("/api/users/{userId}")]
-    Task<UserProfile> GetUserProfile( Guid userId, CancellationToken ct );
+    Task<UserProfileModel> GetUserProfile( Guid userId, CancellationToken ct );
+
+    [Get("/api/users/{userId}/groups")]
+    Task<IApiResponse<List<UserGroupMembershipModel>>> GetUserGroups( Guid userId, CancellationToken ct );
 }

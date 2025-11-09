@@ -1,45 +1,47 @@
 ﻿@using BlazorFurniture.Shared.Resources.Pages.Admin
-<MudPaper Style="height:100%" Elevation="6">
-    <MudText Typo="Typo.h5" GutterBottom="true" Class="ml-4 pt-4">@CommonResource.section_quickActions</MudText>
-    <MudDivider />
-    <MudGrid Justify="Justify.Center">
-        <AuthorizeView Policy="@Permissions.WithPrefix(Permissions.CREATE_GROUP)">
-            <Authorized>
-                <MudItem xs="6">
-                    <ActionButton Icon="@Icons.Material.Filled.Add"
-                                  Text="@AdminResource.add_group"
-                                  DialogComponent="typeof(CreateGroupDialog)"
-                                  DialogTitle="@AdminResource.add_group" />
-                </MudItem>
-            </Authorized>
-        </AuthorizeView>
-        <MudItem xs="6">
-            <MudButton FullWidth="true" Style="height:100%">
-                <MudStack Justify="Justify.Center">
-                    <MudIcon Class="mx-auto" Icon="@Icons.Material.Filled.InsertInvitation" Size="Size.Large"></MudIcon>
-                    <MudText Typo="Typo.h6">Invite Member</MudText>
-                </MudStack>
-            </MudButton>
-        </MudItem>
-        <MudItem xs="6">
-            <MudButton FullWidth="true" Style="height:100%">
-                <MudStack Justify="Justify.Center">
-                    <MudIcon Class="mx-auto" Icon="@Icons.Material.Filled.AddTask" Size="Size.Large"></MudIcon>
-                    <MudText Typo="Typo.h6">Assign Task</MudText>
-                </MudStack>
-            </MudButton>
-        </MudItem>
-        <MudItem xs="6">
-            <MudButton FullWidth="true" Style="height:100%">
-                <MudStack Justify="Justify.Center">
-                    <MudIcon Class="mx-auto" Icon="@Icons.Material.Filled.UploadFile" Size="Size.Large"></MudIcon>
-                    <MudText Typo="Typo.h6">Upload File</MudText>
-                </MudStack>
-            </MudButton>
-        </MudItem>
-    </MudGrid>
-</MudPaper>
+
+<ContentWithHeader Title="@CommonResource.section_quickActions" Class="h-full" Style="@Style">
+    <ChildContent>
+        <MudGrid Justify="Justify.Center">
+            <AuthorizeView Policy="@Permissions.WithPrefix(Permissions.CREATE_GROUP)">
+                <Authorized>
+                    <MudItem xs="6">
+                        <ActionButton Icon="@Icons.Material.Filled.Add"
+                                      Text="@AdminResource.add_group"
+                                      DialogComponent="typeof(CreateGroupDialog)"
+                                      DialogTitle="@AdminResource.add_group" />
+                    </MudItem>
+                </Authorized>
+            </AuthorizeView>
+            <MudItem xs="6">
+                <MudButton FullWidth="true" Style="height:100%">
+                    <MudStack Justify="Justify.Center">
+                        <MudIcon Class="mx-auto" Icon="@Icons.Material.Filled.InsertInvitation" Size="Size.Large"></MudIcon>
+                        <MudText Typo="Typo.h6">Invite Member</MudText>
+                    </MudStack>
+                </MudButton>
+            </MudItem>
+            <MudItem xs="6">
+                <MudButton FullWidth="true" Style="height:100%">
+                    <MudStack Justify="Justify.Center">
+                        <MudIcon Class="mx-auto" Icon="@Icons.Material.Filled.AddTask" Size="Size.Large"></MudIcon>
+                        <MudText Typo="Typo.h6">Assign Task</MudText>
+                    </MudStack>
+                </MudButton>
+            </MudItem>
+            <MudItem xs="6">
+                <MudButton FullWidth="true" Style="height:100%">
+                    <MudStack Justify="Justify.Center">
+                        <MudIcon Class="mx-auto" Icon="@Icons.Material.Filled.UploadFile" Size="Size.Large"></MudIcon>
+                        <MudText Typo="Typo.h6">Upload File</MudText>
+                    </MudStack>
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    </ChildContent>
+</ContentWithHeader>
 
 @code {
-
+    [Parameter]
+    public string Style { get; set; } = string.Empty;
 }

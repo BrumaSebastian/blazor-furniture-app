@@ -37,11 +37,28 @@ builder.Services.AddMudServices();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents()
-    .AddAuthenticationStateSerialization();
+    .AddAuthenticationStateSerialization(options =>
+    {
+        options.SerializeAllClaims = true;
+    });
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
 builder.Services.AddLocalization();
+
+builder.Services.ConfigureHttpClientDefaults(http =>
+{
+    // Single resilience pipeline applied to all HttpClients/Refit clients.
+    http.AddStandardResilienceHandler(o =>
+    {
+        o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(30);
+        o.Retry.MaxRetryAttempts = 3;
+        o.Retry.BackoffType = Polly.DelayBackoffType.Exponential;
+    });
+
+    http.AddServiceDiscovery();
+});
+
 builder.Services.AddRefitServerApis();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -215,7 +232,7 @@ if (app.Environment.IsDevelopment())
         options.DefaultOpenAllTags = true;
     });
 }
-app.UseAntiforgery();
+
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

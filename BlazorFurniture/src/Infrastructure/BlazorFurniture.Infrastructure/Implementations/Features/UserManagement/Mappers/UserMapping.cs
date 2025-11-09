@@ -57,4 +57,14 @@ internal static class UserMapping
             Role = source.Role,
         };
     }
+
+    extension( UserGroupRepresentation source )
+    {
+        public UserGroupResponse ToResponse() => new()
+        {
+            Id = source.Id,
+            Name = source.Name,
+            Role = source.Role,
+        };
+    }
 }
