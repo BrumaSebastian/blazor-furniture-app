@@ -1,6 +1,6 @@
 ﻿namespace BlazorFurniture.Controllers.Authorization;
 
-public enum Claims
+public enum Scopes
 {
     Create,
     Read,
