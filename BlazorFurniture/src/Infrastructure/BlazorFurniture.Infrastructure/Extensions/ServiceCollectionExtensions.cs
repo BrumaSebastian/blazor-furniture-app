@@ -55,6 +55,10 @@ public static class ServiceCollectionExtensions
                 .ConfigureHttpClient(c => c.Timeout = Timeout.InfiniteTimeSpan)
                 .AddHttpMessageHandler<LoggingDelegatingHandler>();
 
+            services.AddHttpClientWithBaseUrl<IUmaAuthorizationService, UmaAuthorizationServiceClient>(keycloakConfig.Url)
+                .ConfigureHttpClient(c => c.Timeout = Timeout.InfiniteTimeSpan)
+                .AddHttpMessageHandler<LoggingDelegatingHandler>();
+
             return services;
         }
 

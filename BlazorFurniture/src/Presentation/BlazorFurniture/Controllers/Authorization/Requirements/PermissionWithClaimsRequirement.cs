@@ -2,4 +2,4 @@
 
 namespace BlazorFurniture.Controllers.Authorization.Requirements;
 
-public sealed record PermissionWithClaimsRequirement( string Resource, string Scope, string[] Claims ) : IAuthorizationRequirement;
+public sealed record PermissionWithClaimsRequirement( string Resource, Scopes Scope, string[] Claims ) : IAuthorizationRequirement;

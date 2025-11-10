@@ -116,7 +116,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddMemoryCache();
+builder.Services.AddHybridCache();
 //builder.Services.AddOpenApi(options =>
 //{
 //    options.AddDocumentTransformer<OAuthSecurityTransformer>();

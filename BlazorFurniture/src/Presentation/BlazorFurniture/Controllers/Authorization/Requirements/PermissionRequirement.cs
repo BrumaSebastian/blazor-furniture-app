@@ -2,4 +2,4 @@
 
 namespace BlazorFurniture.Controllers.Authorization.Requirements;
 
-public record PermissionRquirement(string Resource, string Scope) : IAuthorizationRequirement;
+public record PermissionRequirement(string Resource, Scopes Scope) : IAuthorizationRequirement;
