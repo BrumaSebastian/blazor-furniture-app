@@ -26,7 +26,7 @@ public static class GroupPolicies
         public void RegisterGroupPolicies()
         {
             options.AddPolicy(ListGroupsPolicy, policy =>
-                policy.Requirements.Add(new PermissionRquirement(GroupsResource, Scopes.List)));
+                policy.Requirements.Add(new PermissionRequirement(GroupsResource, Scopes.List)));
         }
     }
 }
