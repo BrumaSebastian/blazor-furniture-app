@@ -71,4 +71,18 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
                 Description = $"UMA authorization evaluation failed with status code: {response.StatusCode}"
             }, response.StatusCode);
     }
+
+    //public async Task<HttpResult<EmptyResult, ErrorRepresentation>> Evaluate( string accessToken, string permission, Dictionary<string, string> claims, CancellationToken ct )
+    //{
+    //    var permissionTicket = await GetOrCreatePermissionTicket(permission);
+    //}
+
+    //private async Task<string> CreatePermissionTicket( string permission, IReadOnlyDictionary<string, string> claims )
+    //{
+    //    var requestMessage = HttpRequestMessageBuilder
+    //       .Create(HttpClient, HttpMethod.Post)
+    //       .WithPath(Endpoints.Permission())
+    //       .WithContent()
+    //       .Build();
+    //}
 }

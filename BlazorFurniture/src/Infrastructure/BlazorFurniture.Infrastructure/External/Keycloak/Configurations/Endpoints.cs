@@ -6,6 +6,7 @@ internal sealed class Endpoints( string Realm )
     private string AdminRestApiBaseUrl => $"admin/realms/{Realm}";
 
     public string AccessToken() => $"{BaseRealmUrl}/protocol/openid-connect/token";
+    public string Permission() => $"{BaseRealmUrl}/authz/protection/permission";
 
     // Users
     public string Users() => $"{AdminRestApiBaseUrl}/users";

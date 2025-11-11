@@ -16,6 +16,7 @@ public static class AuthorizationExtensions
             });
 
             services.AddScoped<IAuthorizationHandler, UmaAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, UmaWithClaimsAuthorizationHandler>();
 
             return services;
         }
