@@ -9,12 +9,13 @@ using System.Net.Http.Headers;
 
 namespace BlazorFurniture.Infrastructure.External.Keycloak.Clients;
 
-internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient httpClient, KeycloakConfiguration configuration, MemoryCache cache )
+internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient httpClient, KeycloakConfiguration configuration, IMemoryCache cache )
     : KeycloakBaseHttpClient(endpoints, httpClient, configuration, cache), IUmaAuthorizationService
 {
     private const string UMA_TICKET_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:uma-ticket";
     private const string UMA_RESPONSE_MODE_DECISION = "decision";
     private const string UMA_PERMISSION_PARAM = "permission";
+    private const string AUDIENCE_PARAM = "audience";
 
     public async Task<HttpResult<EmptyResult, ErrorRepresentation>> Evaluate( string accessToken, string permission, CancellationToken ct )
     {
@@ -26,6 +27,7 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
                 { OpenIdConnectParameterNames.GrantType, UMA_TICKET_GRANT_TYPE },
                 { OpenIdConnectParameterNames.ResponseMode, UMA_RESPONSE_MODE_DECISION },
                 { UMA_PERMISSION_PARAM, permission },
+                { AUDIENCE_PARAM, Configuration.ServiceClient.ClientId }
             })
            .Build();
 

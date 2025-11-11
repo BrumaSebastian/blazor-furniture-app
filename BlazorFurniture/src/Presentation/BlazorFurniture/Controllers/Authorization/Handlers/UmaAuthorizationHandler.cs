@@ -1,5 +1,6 @@
 ﻿using BlazorFurniture.Controllers.Authorization.Requirements;
 using BlazorFurniture.Infrastructure.External.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BlazorFurniture.Controllers.Authorization.Handlers;
@@ -24,8 +25,9 @@ public class UmaAuthorizationHandler( IUmaAuthorizationService umaAuthorizationS
         }
 
         var permission = CreatePermission(requirement);
-        var response = await umaAuthorizationService.Evaluate(authorizationHeader, permission, httpContext.RequestAborted);
-
+        var accessToken = GetAccessToken(authorizationHeader);
+        var response = await umaAuthorizationService.Evaluate(accessToken, permission, httpContext.RequestAborted);
+        
         if (response.IsFailure)
         {
             context.Fail();
@@ -33,6 +35,11 @@ public class UmaAuthorizationHandler( IUmaAuthorizationService umaAuthorizationS
         }
 
         context.Succeed(requirement);
+    }
+
+    private static string GetAccessToken( string authorizationHeader )
+    {
+        return authorizationHeader[JwtBearerDefaults.AuthenticationScheme.Length..].TrimStart();
     }
 
     private static string CreatePermission( PermissionRequirement requirement )

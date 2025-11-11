@@ -6,7 +6,6 @@ using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
-using BlazorFurniture.Shared.Extensions;
 using BlazorFurniture.Shared.Security.Authorization;
 using BlazorFurniture.Shared.Services.Security;
 using BlazorFurniture.Shared.Services.Security.Interfaces;
@@ -42,6 +41,7 @@ builder.Services.AddRazorComponents()
         options.SerializeAllClaims = true;
     });
 
+builder.Services.AddHybridCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
 builder.Services.AddLocalization();
@@ -59,6 +59,7 @@ builder.Services.ConfigureHttpClientDefaults(http =>
     http.AddServiceDiscovery();
 });
 
+// TODO: move to extension specific for presentation layer
 builder.Services.AddRefitServerApis();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -66,6 +67,7 @@ builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IBreadCrumbsService, BreadcrumbsService>();
+builder.Services.AddCascadingAuthenticationState();
 
 // Get OIDC configuration for Swagger setup
 var openIdConnectOptions = builder.Configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()
@@ -116,16 +118,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddHybridCache();
-//builder.Services.AddOpenApi(options =>
-//{
-//    options.AddDocumentTransformer<OAuthSecurityTransformer>();
-//    options.AddScalarTransformers();
-//});
 
 builder.Services.AddAppServices(builder.Configuration);
 //builder.Services.AddSerilog();
-builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddCors(options =>
 {
