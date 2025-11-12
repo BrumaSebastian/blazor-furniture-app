@@ -24,12 +24,16 @@ public class UmaWithClaimsAuthorizationHandler( IUmaAuthorizationService umaAuth
             return;
         }
 
-        var permission = CreatePermission(requirement);
         var accessToken = GetAccessToken(authorizationHeader);
         var claims = GetClaimsFromRoute(httpContext, requirement.Claims);
-        var response = await umaAuthorizationService.Evaluate(accessToken, permission, claims, httpContext.RequestAborted);
+        var response = await umaAuthorizationService.Evaluate(
+            accessToken,
+            requirement.Resource,
+            [requirement.Scope.ToString().ToLower()],
+            claims!,
+            httpContext.RequestAborted);
 
-        if (response.IsFailure)
+        if (response.IsFailure || !response.Value.IsAuthorized)
         {
             context.Fail();
             return;
@@ -38,21 +42,20 @@ public class UmaWithClaimsAuthorizationHandler( IUmaAuthorizationService umaAuth
         context.Succeed(requirement);
     }
 
-    private Dictionary<string, string> GetClaimsFromRoute( HttpContext httpContext, IEnumerable<string> claims )
+    private static Dictionary<string, List<string>> GetClaimsFromRoute( HttpContext httpContext, IEnumerable<string> claims )
     {
-        return claims.Where(httpContext.Request.RouteValues.ContainsKey)
-            .ToDictionary(claimKey => claimKey, claimKey => httpContext.Request.RouteValues[claimKey]?.ToString() ?? string.Empty);
+        Dictionary<string, List<string>> collection = [];
+
+        foreach (var claim in claims.Where(httpContext.Request.RouteValues.ContainsKey))
+        {
+            collection.Add(claim, [httpContext.Request.RouteValues[claim]?.ToString() ?? string.Empty]);
+        }
+
+        return collection;
     }
 
     private static string GetAccessToken( string authorizationHeader )
     {
         return authorizationHeader[JwtBearerDefaults.AuthenticationScheme.Length..].TrimStart();
-    }
-
-    private static string CreatePermission( PermissionWithClaimsRequirement requirement )
-    {
-        return requirement.Scope is Scopes.Undefined
-            ? requirement.Resource
-            : $"{requirement.Resource}#{requirement.Scope.ToString().ToLowerInvariant()}";
     }
 }

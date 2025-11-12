@@ -24,11 +24,10 @@ public class UmaAuthorizationHandler( IUmaAuthorizationService umaAuthorizationS
             return;
         }
 
-        var permission = CreatePermission(requirement);
         var accessToken = GetAccessToken(authorizationHeader);
-        var response = await umaAuthorizationService.Evaluate(accessToken, permission, httpContext.RequestAborted);
+        var response = await umaAuthorizationService.Evaluate(accessToken, requirement.Resource, [requirement.Scope.ToString().ToLower()], httpContext.RequestAborted);
         
-        if (response.IsFailure)
+        if (response.IsFailure || !response.Value.IsAuthorized)
         {
             context.Fail();
             return;
@@ -40,12 +39,5 @@ public class UmaAuthorizationHandler( IUmaAuthorizationService umaAuthorizationS
     private static string GetAccessToken( string authorizationHeader )
     {
         return authorizationHeader[JwtBearerDefaults.AuthenticationScheme.Length..].TrimStart();
-    }
-
-    private static string CreatePermission( PermissionRequirement requirement )
-    {
-        return requirement.Scope is Scopes.Undefined
-            ? requirement.Resource
-            : $"{requirement.Resource}#{requirement.Scope.ToString().ToLowerInvariant()}";
     }
 }

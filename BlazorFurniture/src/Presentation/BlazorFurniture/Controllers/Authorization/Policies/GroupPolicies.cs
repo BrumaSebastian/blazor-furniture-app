@@ -34,8 +34,11 @@ public static class GroupPolicies
             options.AddPolicy(CreateGroupPolicy, policy =>
                 policy.Requirements.Add(new PermissionRequirement(GroupsResource, Scopes.Create)));
 
+            options.AddPolicy(ReadGroupUserPolicy, configurePolicy: policy =>
+                policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupUsersResource, Scopes.Read, [Claims.GroupId])));
+
             options.AddPolicy(ListGroupUsersPolicy, configurePolicy: policy =>
-                policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupsResource, Scopes.Create, [Claims.GroupId])));
+                policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupUsersResource, Scopes.List, [Claims.GroupId])));
         }
     }
 }

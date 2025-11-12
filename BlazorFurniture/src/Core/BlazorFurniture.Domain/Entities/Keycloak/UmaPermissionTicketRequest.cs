@@ -7,7 +7,7 @@ public sealed class UmaPermissionTicketRequest
     [JsonPropertyName("resource_id")]
     public required string ResourceId { get; set; }
     [JsonPropertyName("resource_scopes")]
-    public string[] ResourceScopes { get; set; } = [];
+    public List<string> ResourceScopes { get; set; } = [];
     [JsonPropertyName("claims")]
-    public Dictionary<string, List<string>> Claims { get; set; } = [];
+    public IDictionary<string, List<string>> Claims { get; set; } = new Dictionary<string, List<string>>();
 }

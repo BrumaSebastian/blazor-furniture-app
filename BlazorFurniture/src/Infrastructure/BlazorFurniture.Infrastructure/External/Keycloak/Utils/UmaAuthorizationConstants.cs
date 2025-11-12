@@ -6,5 +6,6 @@ internal static class UmaAuthorizationConstants
     public const string UMA_RESPONSE_MODE_DECISION = "decision";
     public const string UMA_RESPONSE_MODE_PERMISSIONS = "permissions";
     public const string UMA_PERMISSION_PARAM = "permission";
+    public const string UMA_TICKET_PARAM = "ticket";
     public const string AUDIENCE_PARAM = "audience";
 }

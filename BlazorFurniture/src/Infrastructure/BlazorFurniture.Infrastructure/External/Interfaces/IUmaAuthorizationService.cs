@@ -5,7 +5,7 @@ namespace BlazorFurniture.Infrastructure.External.Interfaces;
 
 public interface IUmaAuthorizationService
 {
-    Task<HttpResult<EmptyResult, ErrorRepresentation>> Evaluate( string accessToken, string permission, CancellationToken ct );
-    Task<HttpResult<EmptyResult, ErrorRepresentation>> Evaluate( string accessToken, string permission, Dictionary<string, string> claims, CancellationToken ct );
-    Task<HttpResult<List<UmaPermissionsResponse>, ErrorRepresentation>> CheckPermissions( string accessToken, CancellationToken ct );
+    Task<HttpResult<UmaAuthorizationResponse, ErrorRepresentation>> Evaluate( string userAccessToken, string resource, List<string> scopes, CancellationToken ct );
+    Task<HttpResult<UmaAuthorizationResponse, ErrorRepresentation>> Evaluate( string userAccessToken, string resource, List<string> scopes, IReadOnlyDictionary<string, List<string>> claims, CancellationToken ct );
+    Task<HttpResult<List<UmaPermissionsResponse>, ErrorRepresentation>> CheckPermissions( string userAccessToken, CancellationToken ct );
 }
