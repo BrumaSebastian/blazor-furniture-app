@@ -81,36 +81,37 @@ var configManager = new ConfigurationManager<OpenIdConnectConfiguration>(
 var oidcConfiguration = await configManager.GetConfigurationAsync();
 
 builder.Services.AddFastEndpoints()
-.SwaggerDocument(options =>
-{
-    options.ShortSchemaNames = true;
-    options.EnableJWTBearerAuth = false;
-    options.FlattenSchema = true;
-    options.DocumentSettings = o =>
+    .AddAntiforgery()
+    .SwaggerDocument(options =>
     {
-        o.Title = "BlazorFurniture";
-        o.Version = "v1";
-        o.Description = "BlazorFurniture API with OAuth2/OIDC authentication";
-
-        // Add OAuth2 security scheme with Authorization Code Flow + PKCE
-        o.AddAuth(JwtBearerDefaults.AuthenticationScheme, new NSwag.OpenApiSecurityScheme()
+        options.ShortSchemaNames = true;
+        options.EnableJWTBearerAuth = false;
+        options.FlattenSchema = true;
+        options.DocumentSettings = o =>
         {
-            Type = OpenApiSecuritySchemeType.OAuth2,
-            Description = "OAuth2 Authorization Code Flow with PKCE",
-            Flows = new NSwag.OpenApiOAuthFlows()
+            o.Title = "BlazorFurniture";
+            o.Version = "v1";
+            o.Description = "BlazorFurniture API with OAuth2/OIDC authentication";
+
+            // Add OAuth2 security scheme with Authorization Code Flow + PKCE
+            o.AddAuth(JwtBearerDefaults.AuthenticationScheme, new NSwag.OpenApiSecurityScheme()
             {
-                AuthorizationCode = new NSwag.OpenApiOAuthFlow()
+                Type = OpenApiSecuritySchemeType.OAuth2,
+                Description = "OAuth2 Authorization Code Flow with PKCE",
+                Flows = new NSwag.OpenApiOAuthFlows()
                 {
-                    AuthorizationUrl = oidcConfiguration.AuthorizationEndpoint,
-                    TokenUrl = oidcConfiguration.TokenEndpoint,
-                    RefreshUrl = oidcConfiguration.TokenEndpoint,
-                    Scopes = openIdConnectOptions.DevPublicClient?.Scopes.ToDictionary(s => s, s => s) ?? [],
-                },
-            }
-        });
-    };
-    options.TagCase = TagCase.LowerCase;
-});
+                    AuthorizationCode = new NSwag.OpenApiOAuthFlow()
+                    {
+                        AuthorizationUrl = oidcConfiguration.AuthorizationEndpoint,
+                        TokenUrl = oidcConfiguration.TokenEndpoint,
+                        RefreshUrl = oidcConfiguration.TokenEndpoint,
+                        Scopes = openIdConnectOptions.DevPublicClient?.Scopes.ToDictionary(s => s, s => s) ?? [],
+                    },
+                }
+            });
+        };
+        options.TagCase = TagCase.LowerCase;
+    });
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -173,11 +174,11 @@ app.Use(async ( context, next ) =>
 //app.UseHttpsRedirection();
 app.UseCors();
 app.UseGlobalExceptionHandler();
-app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseFastEndpoints(options =>
+app.UseAntiforgeryFE()
+   .UseFastEndpoints(options =>
 {
     options.Endpoints.RoutePrefix = "api";
     options.Endpoints.ShortNames = true;
