@@ -2,6 +2,7 @@
 using BlazorFurniture.Application.Features.GroupManagement.Queries;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Application.Features.GroupManagement.Responses;
+using BlazorFurniture.Controllers.Authorization.Policies;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 
@@ -13,6 +14,7 @@ public class GetGroupEndpoint( IQueryDispatcher queryDispatcher ) : Endpoint<Get
     {
         Get("{groupId:guid}");
         Group<GroupsEndpointGroup>();
+        Policies(GroupPolicies.ReadGroupPolicy);
         Summary(options =>
         {
             options.Summary = "Get group by ID";

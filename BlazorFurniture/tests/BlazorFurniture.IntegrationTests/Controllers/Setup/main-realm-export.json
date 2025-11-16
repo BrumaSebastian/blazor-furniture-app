@@ -57,7 +57,8 @@
         "composites": {
           "client": {
             "server-client": [
-              "group-users-list"
+              "group-users-list",
+              "groups-read"
             ]
           }
         },
@@ -122,7 +123,11 @@
         "composites": {
           "client": {
             "server-client": [
-              "group-users-list"
+              "group-users-remove",
+              "group-users-add",
+              "groups-update",
+              "group-users-list",
+              "groups-read"
             ]
           }
         },
@@ -207,6 +212,15 @@
         {
           "id": "7894f046-8e35-41f8-a6bf-fc43fd42ce3c",
           "name": "groups-read",
+          "description": "",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "744d6548-2a70-40c0-a147-9dbc83a8ce8d",
+          "attributes": {}
+        },
+        {
+          "id": "b35daeed-d76d-4cb3-abc3-a4b35d2e27ea",
+          "name": "group-users-update",
           "description": "",
           "composite": false,
           "clientRole": true,
@@ -1334,6 +1348,9 @@
                 "name": "add"
               },
               {
+                "name": "update"
+              },
+              {
                 "name": "remove"
               },
               {
@@ -1428,6 +1445,16 @@
             }
           },
           {
+            "name": "policy-group-users-update",
+            "description": "Defines the requirement of role group-users-update within a group",
+            "type": "groupRole",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "roles": "[{\"id\":\"server-client/group-users-update\",\"required\":true}]"
+            }
+          },
+          {
             "name": "permission-groups-create",
             "description": "Defines rules for creating a group",
             "type": "scope",
@@ -1509,6 +1536,18 @@
               "resources": "[\"group-users\"]",
               "scopes": "[\"add\"]",
               "applyPolicies": "[\"policy-admin\",\"policy-group-users-add\"]"
+            }
+          },
+          {
+            "name": "permission-group-users-update",
+            "description": "",
+            "type": "scope",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+              "resources": "[\"group-users\"]",
+              "scopes": "[\"update\"]",
+              "applyPolicies": "[\"policy-group-users-update\",\"policy-admin\"]"
             }
           }
         ],

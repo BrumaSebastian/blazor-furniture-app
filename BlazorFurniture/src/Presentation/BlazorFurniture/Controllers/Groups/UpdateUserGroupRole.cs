@@ -8,18 +8,21 @@ using FastEndpoints;
 
 namespace BlazorFurniture.Controllers.Groups;
 
-internal sealed class AddUserToGroupEndpoint( ICommandDispatcher commandDispatcher ) : Endpoint<AddUserToGroupRequest>
+public class UpdateUserGroupRole( ICommandDispatcher commandDispatcher ) : Endpoint<UpdateUserGroupRoleRequest>
 {
     public override void Configure()
     {
-        Post("{groupId:guid}/users/{userId:guid}");
+        Put("{groupId:guid}/users/{userId:guid}/roles/{roleId:guid}");
         Group<GroupsEndpointGroup>();
-        Policies(GroupPolicies.AddGroupUserPolicy);
+        Policies(GroupPolicies.UpdateGroupUserPolicy);
         Summary(options =>
         {
-            options.Summary = "Adds a user into a group with role User";
+            options.Summary = "Update user role within group";
+            options.Description = "Updates the user role within a group, by removing the current and and assigning the new one";
             options.Response(StatusCodes.Status204NoContent);
             options.Response(StatusCodes.Status404NotFound);
+            options.Response(StatusCodes.Status409Conflict);
+            options.Response(StatusCodes.Status502BadGateway);
         });
 
         Description(options =>
@@ -28,9 +31,9 @@ internal sealed class AddUserToGroupEndpoint( ICommandDispatcher commandDispatch
         });
     }
 
-    public override async Task HandleAsync( AddUserToGroupRequest req, CancellationToken ct )
+    public override async Task HandleAsync( UpdateUserGroupRoleRequest req, CancellationToken ct )
     {
-        var result = await commandDispatcher.DispatchCommand<AddUserToGroupCommand, EmptyResult>(new AddUserToGroupCommand(req), ct);
+        var result = await commandDispatcher.DispatchCommand<UpdateUserGroupRoleCommand, EmptyResult>(new UpdateUserGroupRoleCommand(req), ct);
 
         await result.Match(
             response => Send.NoContentAsync(),

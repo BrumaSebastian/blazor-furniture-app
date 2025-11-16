@@ -2,6 +2,7 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
+using BlazorFurniture.Controllers.Authorization.Policies;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 
@@ -13,7 +14,7 @@ internal sealed class RemoveUserFromGroupEndpoint( ICommandDispatcher commandDis
     {
         Delete("{groupId:guid}/users/{userId:guid}");
         Group<GroupsEndpointGroup>();
-
+        Policies(GroupPolicies.RemoveGroupUserPolicy);
         Summary(options =>
         {
             options.Summary = "Remove a user from a group";

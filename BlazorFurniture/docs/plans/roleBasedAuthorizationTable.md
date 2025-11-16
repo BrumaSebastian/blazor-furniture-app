@@ -12,6 +12,7 @@
 | group-admin                 | group-users-list              |
 |                             | group-users-add               |
 |                             | group-users-remove            |
+|                             | group-users-update            |
 |                             | groups-read                   |
 |                             | groups-update                 |
 
@@ -45,15 +46,18 @@ Requires the role {roleName} within the platform. Example, to see users from gro
 
 </details>
 
-| Endpoint                                | Permission Type | Resource    | Scope  | Policies                                             | Decision Strategy |
-| --------------------------------------- | --------------- | ----------- | ------ | ---------------------------------------------------- | ----------------- |
-| GET /groups                             | scoped          | groups      | list   | **Role:** groups-list                                | Unanimous         |
-| POST /groups                            | scoped          | groups      | create | **Role:** groups-create                              | Unanimous         |
-| GET /groups/{groupId}                   | scoped          | groups      | read   | **GroupRole:** groups-read or **Role:** admin        | Affirmative       |
-| PUT /groups/{groupId}                   | scoped          | groups      | update | **GroupRole:** groups-update or **Role:** admin      | Affirmative       |
-| GET /groups/{groupId}/users             | scoped          | group-users | list   | **GroupRole:** group-users-list or **Role:** admin   | Affirmative       |
-| POST /groups/{groupId}/users/{userId}   | scoped          | group-users | add    | **GroupRole:** group-users-add or **Role:** admin    | Affirmative       |
-| DELETE /groups/{groupId}/users/{userId} | scoped          | group-users | remove | **GroupRole:** group-users-remove or **Role:** admin | Affirmative       |
+| Endpoint                                            | Permission Type | Resource    | Scope  | Policies                                             | Decision Strategy |
+| --------------------------------------------------- | --------------- | ----------- | ------ | ---------------------------------------------------- | ----------------- |
+| GET /groups                                         | scoped          | groups      | list   | **Role:** groups-list                                | Unanimous         |
+| POST /groups                                        | scoped          | groups      | create | **Role:** groups-create                              | Unanimous         |
+| GET /groups/{groupId}                               | scoped          | groups      | read   | **GroupRole:** groups-read or **Role:** admin        | Affirmative       |
+| PUT /groups/{groupId}                               | scoped          | groups      | update | **GroupRole:** groups-update or **Role:** admin      | Affirmative       |
+| GET /groups/{groupId}/users                         | scoped          | group-users | list   | **GroupRole:** group-users-list or **Role:** admin   | Affirmative       |
+| POST /groups/{groupId}/users/{userId}               | scoped          | group-users | add    | **GroupRole:** group-users-add or **Role:** admin    | Affirmative       |
+| DELETE /groups/{groupId}/users/{userId}             | scoped          | group-users | remove | **GroupRole:** group-users-remove or **Role:** admin | Affirmative       |
+| PUT /groups/{groupId}/users/{userId}/roles/{roleId} | scoped          | group-users | update | **GroupRole:** group-users-update or **Role:** admin | Affirmative       |
+
+\*\* Images might be outdated as it requires to much hasle to update for each new permission
 
 ### Permissions
 
@@ -69,4 +73,4 @@ Requires the role {roleName} within the platform. Example, to see users from gro
 
 ### Resources
 
-![Keycloak resources](image.png)
+![Keycloak resources](resources.png)

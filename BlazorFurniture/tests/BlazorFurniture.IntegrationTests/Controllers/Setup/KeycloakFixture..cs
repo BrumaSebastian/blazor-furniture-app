@@ -102,7 +102,7 @@ public class KeycloakFixture : IAsyncLifetime
         adminHttpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) };
 
         // Create platform admin user
-        var adminId = await CreateUser(PlatformAdmin.Username, PlatformAdmin.Email, PlatformAdmin.Password);
+        var adminId = await CreateUser(PlatformAdmin.Username, PlatformAdmin.Password);
 
         // Assign admin realm role to platform admin user
         var platformAdminRole = PlatformRoles.Admin.ToString().ToLower();
@@ -110,14 +110,16 @@ public class KeycloakFixture : IAsyncLifetime
         await AssignRealmRole(adminId, adminRole);
     }
 
-    public async Task<string> CreateUser( KeycloakUser user )
+    public async Task<Guid> CreateUser( KeycloakUser user )
     {
-        return await CreateUser(user.Username, user.Email, user.Password);
+        return await CreateUser(user.Username, user.Password);
     }
 
-    public async Task<string> CreateUser( string username, string email, string password, string? firstName = null, string? lastName = null, bool enabled = true )
+    public async Task<Guid> CreateUser( string username, string password = "Test123@", string? email = null, string? firstName = null, string? lastName = null, bool enabled = true )
     {
         await GetAndSetAdminAccessToken();
+
+        email ??= $"{username}@test.com";
 
         var userRepresentation = new
         {
@@ -150,7 +152,7 @@ public class KeycloakFixture : IAsyncLifetime
         var locationHeader = response.Headers.Location?.ToString();
         var userId = locationHeader?.Split('/').Last();
 
-        return userId ?? throw new InvalidOperationException("Failed to retrieve user ID");
+        return Guid.Parse(userId!);
     }
 
     public async Task<string> GetUserAccessToken( HttpClient httpClient, string username, string password )
@@ -181,7 +183,7 @@ public class KeycloakFixture : IAsyncLifetime
         return accessToken;
     }
 
-    public async Task AssignRealmRole( string userId, RoleRepresentation role )
+    public async Task AssignRealmRole( Guid userId, RoleRepresentation role )
     {
         await GetAndSetAdminAccessToken();
         var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Post)
@@ -192,7 +194,7 @@ public class KeycloakFixture : IAsyncLifetime
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task AssignClientRole( string userId, Guid clientUUID, RoleRepresentation role )
+    public async Task AssignClientRole( Guid userId, Guid clientUUID, RoleRepresentation role )
     {
         await GetAndSetAdminAccessToken();
         var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Post)
