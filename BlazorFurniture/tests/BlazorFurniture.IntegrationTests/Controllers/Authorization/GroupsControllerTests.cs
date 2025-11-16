@@ -11,7 +11,8 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
 {
     private readonly KeycloakFixture keycloakFixture;
     private readonly WebApplicationFactory<Program> factory;
-    private HttpClient client = null!;
+    private HttpClient httpClient = null!;
+    private readonly string AUTHORIZATION_RESOURCE_CLIENT = "server-client";
 
     public GroupsControllerTests( KeycloakFixture keycloakFixture )
     {
@@ -25,12 +26,12 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
 
     async ValueTask IAsyncLifetime.InitializeAsync()
     {
-        client = factory.CreateClient();
+        httpClient = factory.CreateClient();
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        client?.Dispose();
+        httpClient?.Dispose();
     }
 
     [Fact]
@@ -44,7 +45,7 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
         SetAuthorizationHeader(accessToken);
 
         // Act
-        var response = await client.GetAsync("/api/groups");
+        var response = await httpClient.GetAsync("/api/groups");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -57,7 +58,7 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
         var user = new KeycloakUser
         {
             Username = "testuser",
-            Email = "testuser@a.com",
+            Email = "testuser@test.com",
             Password = "Test123!"
         };
 
@@ -67,22 +68,48 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
         SetAuthorizationHeader(accessToken);
 
         // Act
-        var response = await client.GetAsync("/api/groups");
+        var response = await httpClient.GetAsync("/api/groups", CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
-    
+    [Fact]
+    public async Task GetGroups_WithNormalUserWithGroupsCreateRole_ReturnsOk()
+    {
+        // Arrange
+        var roleName = "groups-list";
+        var user = new KeycloakUser
+        {
+            Username = "testuser-groups-list",
+            Email = "testuser-groups-list@test.com",
+            Password = "Test123!"
+        };
+
+        var userId = await keycloakFixture.CreateUser(user);
+        var authResourceClient = await keycloakFixture.GetClient(AUTHORIZATION_RESOURCE_CLIENT);
+        var role = await keycloakFixture.GetClientRole(roleName, authResourceClient.Id);
+        await keycloakFixture.AssignClientRole(userId, authResourceClient.Id, role);
+        var accessToken = await GetUserAccessToken(user.Username, user.Password);
+
+        SetAuthorizationHeader(accessToken);
+
+        // Act
+        var response = await httpClient.GetAsync("/api/groups", CancellationToken.None);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
     private async Task<string> GetUserAccessToken( string username, string password )
     {
         using var keycloakClient = new HttpClient { BaseAddress = new Uri(keycloakFixture.BaseUrl) };
-        return await keycloakFixture.GetUserToken(keycloakClient, username, password);
+        return await keycloakFixture.GetUserAccessToken(keycloakClient, username, password);
     }
 
     private void SetAuthorizationHeader( string accessToken )
     {
-        client.DefaultRequestHeaders.Authorization =
+        httpClient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
     }
 }

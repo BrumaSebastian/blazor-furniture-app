@@ -107,8 +107,8 @@ public class KeycloakFixture : IAsyncLifetime
 
         // Assign admin realm role to platform admin user
         var platformAdminRole = PlatformRoles.Admin.ToString().ToLower();
-        var adminRole = await GetRole(platformAdminRole);
-        await AssignRole(adminId, adminRole);
+        var adminRole = await GetRealmRole(platformAdminRole);
+        await AssignRealmRole(adminId, adminRole);
     }
 
     public async Task<string> CreateUser( KeycloakUser user )
@@ -139,11 +139,12 @@ public class KeycloakFixture : IAsyncLifetime
             }
         };
 
-        var response = await adminHttpClient!.PostAsJsonAsync(
-            $"/admin/realms/{RealmName}/users",
-            userRepresentation,
-            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        var request = HttpRequestMessageBuilder.Create(adminHttpClient, HttpMethod.Post)
+            .WithPath(Endpoints.Users())
+            .WithContent(userRepresentation)
+            .Build();
 
+        var response = await adminHttpClient.SendAsync(request, CancellationToken.None);
         response.EnsureSuccessStatusCode();
 
         // Get the user ID from the Location header
@@ -153,9 +154,9 @@ public class KeycloakFixture : IAsyncLifetime
         return userId ?? throw new InvalidOperationException("Failed to retrieve user ID");
     }
 
-    public async Task<string> GetUserToken( HttpClient httpClient, string username, string password )
+    public async Task<string> GetUserAccessToken( HttpClient httpClient, string username, string password )
     {
-        var tokenRequest = HttpRequestMessageBuilder.Create(httpClient!, HttpMethod.Post)
+        var request = HttpRequestMessageBuilder.Create(httpClient, HttpMethod.Post)
                 .WithPath(Endpoints.AccessToken())
                 .WithFormParams(new Dictionary<string, string>
                 {
@@ -166,22 +167,22 @@ public class KeycloakFixture : IAsyncLifetime
                 })
                 .Build();
 
-        var tokenResponse = await httpClient.SendAsync(tokenRequest);
-        tokenResponse.EnsureSuccessStatusCode();
+        var response = await httpClient.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        var accessToken = await response.Content.ReadFromJsonAsync<KeycloakAccessToken>();
 
-        var token = await tokenResponse.Content.ReadFromJsonAsync<JsonElement>();
-        return token.GetProperty("access_token").GetString()!;
+        return accessToken?.AccessToken ?? throw new Exception($"Failed to obatin access token for {username}");
     }
 
-    public async Task<string> GetAndSetUserToken( HttpClient httpClient, string username, string password )
+    public async Task<string> GetAndSetUserAccessToken( HttpClient httpClient, string username, string password )
     {
-        var accessToken = await GetUserToken(httpClient, username, password);
+        var accessToken = await GetUserAccessToken(httpClient, username, password);
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
 
         return accessToken;
     }
 
-    private async Task AssignRole( string userId, RoleRepresentation role )
+    public async Task AssignRealmRole( string userId, RoleRepresentation role )
     {
         await GetAndSetAdminAccessToken();
         var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Post)
@@ -192,22 +193,32 @@ public class KeycloakFixture : IAsyncLifetime
         response.EnsureSuccessStatusCode();
     }
 
-    private async Task<List<RoleRepresentation>> GetRoles( string? search = null )
+    public async Task AssignClientRole( string userId, Guid clientUUID, RoleRepresentation role )
     {
-        var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Get)
-                .WithPath($"/admin/realms/{RealmName}/roles")
-                .AddQueryParam("search", search)
+        await GetAndSetAdminAccessToken();
+        var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Post)
+                .WithPath($"/admin/realms/{RealmName}/users/{userId}/role-mappings/clients/{clientUUID}")
+                .WithContent(new List<RoleRepresentation> { role })
                 .Build();
-
-        var tokenResponse = await adminHttpClient!.SendAsync(request);
-        tokenResponse.EnsureSuccessStatusCode();
-
-        var roles = await tokenResponse.Content.ReadFromJsonAsync<List<RoleRepresentation>>();
-
-        return roles ?? new List<RoleRepresentation>();
+        var response = await adminHttpClient!.SendAsync(request);
+        response.EnsureSuccessStatusCode();
     }
 
-    private async Task<RoleRepresentation> GetRole( string roleName )
+    public async Task<RoleRepresentation> GetClientRole( string roleName, Guid clientUUID )
+    {
+        var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Get)
+                .WithPath($"/admin/realms/{RealmName}/clients/{clientUUID}/roles/{roleName}")
+                .Build();
+
+        var roleResponse = await adminHttpClient!.SendAsync(request);
+        roleResponse.EnsureSuccessStatusCode();
+
+        var role = await roleResponse.Content.ReadFromJsonAsync<RoleRepresentation>();
+
+        return role ?? throw new Exception($"Failed to obtain role {roleName}");
+    }
+
+    public async Task<RoleRepresentation> GetRealmRole( string roleName )
     {
         var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Get)
                 .WithPath($"/admin/realms/{RealmName}/roles/{roleName}")
@@ -219,6 +230,21 @@ public class KeycloakFixture : IAsyncLifetime
         var role = await tokenResponse.Content.ReadFromJsonAsync<RoleRepresentation>();
 
         return role ?? throw new Exception($"Failed to obtain role {roleName}");
+    }
+
+    public async Task<ClientRepresentation> GetClient( string clientId )
+    {
+        var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Get)
+                .WithPath($"/admin/realms/{RealmName}/clients")
+                .AddQueryParam("clientId", clientId)
+                .Build();
+
+        var response = await adminHttpClient!.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        var clients = await response.Content.ReadFromJsonAsync<List<ClientRepresentation>>();
+
+        return clients?.FirstOrDefault() ?? throw new Exception($"Failed to obtain client {clientId}");
     }
 
     private async Task<string> GetAndSetAdminAccessToken()
