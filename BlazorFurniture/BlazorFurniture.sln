@@ -54,6 +54,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{B1D2C289-EBCC-479C-81D5-7E2069891CD4}"
 	ProjectSection(SolutionItems) = preProject
 		docs\plans\authorizationPlanning.md = docs\plans\authorizationPlanning.md
+		docs\plans\roleBasedAuthorizationTable.md = docs\plans\roleBasedAuthorizationTable.md
 		docs\plans\roleMapping.md = docs\plans\roleMapping.md
 		docs\plans\userManagement.md = docs\plans\userManagement.md
 	EndProjectSection

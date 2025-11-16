@@ -24,4 +24,8 @@
 		<ProjectReference Include="..\..\Core\BlazorFurniture.Templates\BlazorFurniture.Templates.csproj" />
 	</ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="BlazorFurniture.IntegrationTests" />
+    </ItemGroup>
+
 </Project>

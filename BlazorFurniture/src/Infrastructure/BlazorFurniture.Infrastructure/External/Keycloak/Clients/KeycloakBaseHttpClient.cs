@@ -21,6 +21,7 @@ internal abstract class KeycloakBaseHttpClient(
 
     protected Endpoints Endpoints { get; } = endpoints;
     protected HttpClient HttpClient { get; } = httpClient;
+    protected KeycloakConfiguration Configuration { get; } = configuration;
 
     protected async Task<HttpResult<TValue, ErrorRepresentation>> SendRequest<TValue>( HttpRequestMessage requestMessage, CancellationToken ct )
         where TValue : class, new()
@@ -69,8 +70,8 @@ internal abstract class KeycloakBaseHttpClient(
                 .WithFormParams(new Dictionary<string, string>
                 {
                     { OpenIdConnectParameterNames.GrantType, OpenIdConnectGrantTypes.ClientCredentials },
-                    { OpenIdConnectParameterNames.ClientId, configuration.ServiceClient.ClientId },
-                    { OpenIdConnectParameterNames.ClientSecret, configuration.ServiceClient.ClientSecret }
+                    { OpenIdConnectParameterNames.ClientId, Configuration.ServiceClient.ClientId },
+                    { OpenIdConnectParameterNames.ClientSecret, Configuration.ServiceClient.ClientSecret }
                 })
                 .Build();
 

@@ -3,6 +3,7 @@ using BlazorFurniture.Application.Common.Responses;
 using BlazorFurniture.Application.Features.GroupManagement.Queries;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Application.Features.GroupManagement.Responses;
+using BlazorFurniture.Controllers.Authorization.Policies;
 using BlazorFurniture.Extensions.Endpoints;
 using BlazorFurniture.Validators.Groups;
 using FastEndpoints;
@@ -16,6 +17,7 @@ internal sealed class GetGroupsEndpoint( IQueryDispatcher queryDispatcher ) : En
         Get("");
         Group<GroupsEndpointGroup>();
         Validator<GetGroupsRequestValidator>();
+        Policies(GroupPolicies.ListGroupsPolicy);
         Summary(options =>
         {
             options.Summary = "Get all groups";

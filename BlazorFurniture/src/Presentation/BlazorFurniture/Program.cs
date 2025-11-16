@@ -6,7 +6,6 @@ using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
-using BlazorFurniture.Shared.Extensions;
 using BlazorFurniture.Shared.Security.Authorization;
 using BlazorFurniture.Shared.Services.Security;
 using BlazorFurniture.Shared.Services.Security.Interfaces;
@@ -42,6 +41,7 @@ builder.Services.AddRazorComponents()
         options.SerializeAllClaims = true;
     });
 
+builder.Services.AddHybridCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
 builder.Services.AddLocalization();
@@ -59,6 +59,7 @@ builder.Services.ConfigureHttpClientDefaults(http =>
     http.AddServiceDiscovery();
 });
 
+// TODO: move to extension specific for presentation layer
 builder.Services.AddRefitServerApis();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -66,6 +67,7 @@ builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IBreadCrumbsService, BreadcrumbsService>();
+builder.Services.AddCascadingAuthenticationState();
 
 // Get OIDC configuration for Swagger setup
 var openIdConnectOptions = builder.Configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()
@@ -79,36 +81,37 @@ var configManager = new ConfigurationManager<OpenIdConnectConfiguration>(
 var oidcConfiguration = await configManager.GetConfigurationAsync();
 
 builder.Services.AddFastEndpoints()
-.SwaggerDocument(options =>
-{
-    options.ShortSchemaNames = true;
-    options.EnableJWTBearerAuth = false;
-    options.FlattenSchema = true;
-    options.DocumentSettings = o =>
+    .AddAntiforgery()
+    .SwaggerDocument(options =>
     {
-        o.Title = "BlazorFurniture";
-        o.Version = "v1";
-        o.Description = "BlazorFurniture API with OAuth2/OIDC authentication";
-
-        // Add OAuth2 security scheme with Authorization Code Flow + PKCE
-        o.AddAuth(JwtBearerDefaults.AuthenticationScheme, new NSwag.OpenApiSecurityScheme()
+        options.ShortSchemaNames = true;
+        options.EnableJWTBearerAuth = false;
+        options.FlattenSchema = true;
+        options.DocumentSettings = o =>
         {
-            Type = OpenApiSecuritySchemeType.OAuth2,
-            Description = "OAuth2 Authorization Code Flow with PKCE",
-            Flows = new NSwag.OpenApiOAuthFlows()
+            o.Title = "BlazorFurniture";
+            o.Version = "v1";
+            o.Description = "BlazorFurniture API with OAuth2/OIDC authentication";
+
+            // Add OAuth2 security scheme with Authorization Code Flow + PKCE
+            o.AddAuth(JwtBearerDefaults.AuthenticationScheme, new NSwag.OpenApiSecurityScheme()
             {
-                AuthorizationCode = new NSwag.OpenApiOAuthFlow()
+                Type = OpenApiSecuritySchemeType.OAuth2,
+                Description = "OAuth2 Authorization Code Flow with PKCE",
+                Flows = new NSwag.OpenApiOAuthFlows()
                 {
-                    AuthorizationUrl = oidcConfiguration.AuthorizationEndpoint,
-                    TokenUrl = oidcConfiguration.TokenEndpoint,
-                    RefreshUrl = oidcConfiguration.TokenEndpoint,
-                    Scopes = openIdConnectOptions.DevPublicClient?.Scopes.ToDictionary(s => s, s => s) ?? [],
-                },
-            }
-        });
-    };
-    options.TagCase = TagCase.LowerCase;
-});
+                    AuthorizationCode = new NSwag.OpenApiOAuthFlow()
+                    {
+                        AuthorizationUrl = oidcConfiguration.AuthorizationEndpoint,
+                        TokenUrl = oidcConfiguration.TokenEndpoint,
+                        RefreshUrl = oidcConfiguration.TokenEndpoint,
+                        Scopes = openIdConnectOptions.DevPublicClient?.Scopes.ToDictionary(s => s, s => s) ?? [],
+                    },
+                }
+            });
+        };
+        options.TagCase = TagCase.LowerCase;
+    });
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -116,16 +119,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddMemoryCache();
-//builder.Services.AddOpenApi(options =>
-//{
-//    options.AddDocumentTransformer<OAuthSecurityTransformer>();
-//    options.AddScalarTransformers();
-//});
 
 builder.Services.AddAppServices(builder.Configuration);
 //builder.Services.AddSerilog();
-builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddCors(options =>
 {
@@ -178,11 +174,11 @@ app.Use(async ( context, next ) =>
 //app.UseHttpsRedirection();
 app.UseCors();
 app.UseGlobalExceptionHandler();
-app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseFastEndpoints(options =>
+app.UseAntiforgeryFE()
+   .UseFastEndpoints(options =>
 {
     options.Endpoints.RoutePrefix = "api";
     options.Endpoints.ShortNames = true;

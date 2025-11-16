@@ -86,4 +86,11 @@ internal sealed class HttpRequestMessageBuilder
 
         return this;
     }
+
+    public HttpRequestMessageBuilder WithBearerAuthorization( string accessToken )
+    {
+        requestMessage.Headers.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
+
+        return this;
+    }
 }
