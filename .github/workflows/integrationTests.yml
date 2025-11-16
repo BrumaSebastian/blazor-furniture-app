@@ -3,6 +3,7 @@ name: Integration Tests (Testcontainers)
 on:
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   integration-tests:
