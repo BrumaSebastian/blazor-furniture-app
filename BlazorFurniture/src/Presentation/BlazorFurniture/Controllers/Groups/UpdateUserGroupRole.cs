@@ -2,6 +2,7 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
+using BlazorFurniture.Controllers.Authorization.Policies;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 
@@ -13,6 +14,7 @@ public class UpdateUserGroupRole( ICommandDispatcher commandDispatcher ) : Endpo
     {
         Put("{groupId:guid}/users/{userId:guid}/roles/{roleId:guid}");
         Group<GroupsEndpointGroup>();
+        Permissions(GroupPolicies.UpdateGroupUserPolicy);
         Summary(options =>
         {
             options.Summary = "Update user role within group";

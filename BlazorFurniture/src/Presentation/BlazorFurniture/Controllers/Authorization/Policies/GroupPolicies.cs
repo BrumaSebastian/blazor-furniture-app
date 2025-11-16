@@ -20,6 +20,7 @@ public static class GroupPolicies
     public const string ReadGroupUserPolicy = "ReadGroupUser";
     public const string AddGroupUserPolicy = "AddGroupUser";
     public const string RemoveGroupUserPolicy = "RemoveGroupUser";
+    public const string UpdateGroupUserPolicy = "UpdateGroupUser";
 
     extension( AuthorizationOptions options )
     {
@@ -28,17 +29,29 @@ public static class GroupPolicies
             options.AddPolicy(ListGroupsPolicy, policy =>
                 policy.Requirements.Add(new PermissionRequirement(GroupsResource, Scopes.List)));
 
-            options.AddPolicy(ReadGroupPolicy, policy =>
-                policy.Requirements.Add(new PermissionRequirement(GroupsResource, Scopes.Read)));
-
             options.AddPolicy(CreateGroupPolicy, policy =>
                 policy.Requirements.Add(new PermissionRequirement(GroupsResource, Scopes.Create)));
+
+            options.AddPolicy(ReadGroupPolicy, policy =>
+                policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupsResource, Scopes.Read, [Claims.GroupId])));
+
+            options.AddPolicy(UpdateGroupPolicy, policy =>
+                policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupsResource, Scopes.Update, [Claims.GroupId])));
 
             options.AddPolicy(ReadGroupUserPolicy, configurePolicy: policy =>
                 policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupUsersResource, Scopes.Read, [Claims.GroupId])));
 
             options.AddPolicy(ListGroupUsersPolicy, configurePolicy: policy =>
                 policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupUsersResource, Scopes.List, [Claims.GroupId])));
+
+            options.AddPolicy(AddGroupUserPolicy, configurePolicy: policy =>
+                policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupUsersResource, Scopes.Add, [Claims.GroupId])));
+
+            options.AddPolicy(RemoveGroupUserPolicy, configurePolicy: policy =>
+                policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupUsersResource, Scopes.Remove, [Claims.GroupId])));
+
+            options.AddPolicy(UpdateGroupUserPolicy, configurePolicy: policy =>
+                policy.Requirements.Add(new PermissionWithClaimsRequirement(GroupUsersResource, Scopes.Update, [Claims.GroupId])));
         }
     }
 }

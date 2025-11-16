@@ -2,6 +2,7 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
+using BlazorFurniture.Controllers.Authorization.Policies;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 
@@ -13,7 +14,7 @@ internal sealed class AddUserToGroupEndpoint( ICommandDispatcher commandDispatch
     {
         Post("{groupId:guid}/users/{userId:guid}");
         Group<GroupsEndpointGroup>();
-
+        Permissions(GroupPolicies.AddGroupUserPolicy);
         Summary(options =>
         {
             options.Summary = "Adds a user into a group with role User";

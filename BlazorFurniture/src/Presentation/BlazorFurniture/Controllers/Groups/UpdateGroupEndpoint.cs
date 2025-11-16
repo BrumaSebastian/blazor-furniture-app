@@ -2,6 +2,7 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
+using BlazorFurniture.Controllers.Authorization.Policies;
 using BlazorFurniture.Extensions.Endpoints;
 using BlazorFurniture.Validators.Groups;
 using FastEndpoints;
@@ -15,6 +16,7 @@ internal sealed class UpdateGroupEndpoint( ICommandDispatcher commandDispatcher 
         Put("{groupId:guid}");
         Group<GroupsEndpointGroup>();
         Validator<UpdateGroupRequestValidator>();
+        Permissions(GroupPolicies.UpdateGroupPolicy);
         Summary(options =>
         {
             options.Summary = "Update group";
