@@ -102,7 +102,7 @@ public class KeycloakFixture : IAsyncLifetime
         adminHttpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) };
 
         // Create platform admin user
-        var adminId = await CreateUser(PlatformAdmin.Username, PlatformAdmin.Email, PlatformAdmin.Password);
+        var adminId = await CreateUser(PlatformAdmin.Username, PlatformAdmin.Password);
 
         // Assign admin realm role to platform admin user
         var platformAdminRole = PlatformRoles.Admin.ToString().ToLower();
@@ -112,12 +112,14 @@ public class KeycloakFixture : IAsyncLifetime
 
     public async Task<string> CreateUser( KeycloakUser user )
     {
-        return await CreateUser(user.Username, user.Email, user.Password);
+        return await CreateUser(user.Username, user.Password);
     }
 
-    public async Task<string> CreateUser( string username, string email, string password, string? firstName = null, string? lastName = null, bool enabled = true )
+    public async Task<string> CreateUser( string username, string password = "Test123@", string? email = null, string? firstName = null, string? lastName = null, bool enabled = true )
     {
         await GetAndSetAdminAccessToken();
+
+        email ??= $"{username}@test.com";
 
         var userRepresentation = new
         {

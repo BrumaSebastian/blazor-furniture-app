@@ -2,6 +2,7 @@
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
+using BlazorFurniture.Controllers.Authorization.Policies;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using BlazorFurniture.Validators.Groups;
@@ -16,6 +17,7 @@ internal sealed class CreateGroupEndpoint( ICommandDispatcher commandDispatcher 
         Post("");
         Group<GroupsEndpointGroup>();
         Validator<CreateGroupRequestValidator>();
+        Policies(GroupPolicies.CreateGroupPolicy);
         Summary(options =>
         {
             options.Summary = "Create group";

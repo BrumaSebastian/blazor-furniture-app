@@ -56,9 +56,7 @@
         "composite": true,
         "composites": {
           "client": {
-            "server-client": [
-              "group-users-list"
-            ]
+            "server-client": ["group-users-list", "groups-read"]
           }
         },
         "clientRole": false,
@@ -80,16 +78,9 @@
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
-          "realm": [
-            "offline_access",
-            "uma_authorization",
-            "user"
-          ],
+          "realm": ["offline_access", "uma_authorization", "user"],
           "client": {
-            "account": [
-              "view-profile",
-              "manage-account"
-            ]
+            "account": ["view-profile", "manage-account"]
           }
         },
         "clientRole": false,
@@ -122,7 +113,11 @@
         "composites": {
           "client": {
             "server-client": [
-              "group-users-list"
+              "group-users-remove",
+              "group-users-add",
+              "groups-update",
+              "group-users-list",
+              "groups-read"
             ]
           }
         },
@@ -232,10 +227,7 @@
           "composite": true,
           "composites": {
             "client": {
-              "realm-management": [
-                "query-users",
-                "query-groups"
-              ]
+              "realm-management": ["query-users", "query-groups"]
             }
           },
           "clientRole": true,
@@ -276,9 +268,7 @@
           "composite": true,
           "composites": {
             "client": {
-              "realm-management": [
-                "query-clients"
-              ]
+              "realm-management": ["query-clients"]
             }
           },
           "clientRole": true,
@@ -478,9 +468,7 @@
           "composite": true,
           "composites": {
             "client": {
-              "account": [
-                "manage-account-links"
-              ]
+              "account": ["manage-account-links"]
             }
           },
           "clientRole": true,
@@ -503,9 +491,7 @@
           "composite": true,
           "composites": {
             "client": {
-              "account": [
-                "view-consent"
-              ]
+              "account": ["view-consent"]
             }
           },
           "clientRole": true,
@@ -555,9 +541,7 @@
           "parentId": "5c98b298-ac1d-4fc8-aa00-fd8660eb606e",
           "subGroups": [],
           "attributes": {},
-          "realmRoles": [
-            "group-admin"
-          ],
+          "realmRoles": ["group-admin"],
           "clientRoles": {}
         },
         {
@@ -567,9 +551,7 @@
           "parentId": "5c98b298-ac1d-4fc8-aa00-fd8660eb606e",
           "subGroups": [],
           "attributes": {},
-          "realmRoles": [
-            "group-member"
-          ],
+          "realmRoles": ["group-member"],
           "clientRoles": {}
         }
       ],
@@ -589,9 +571,7 @@
           "parentId": "68f28cf2-bc5e-4ca0-bff2-4fbc9fd72931",
           "subGroups": [],
           "attributes": {},
-          "realmRoles": [
-            "group-admin"
-          ],
+          "realmRoles": ["group-admin"],
           "clientRoles": {}
         },
         {
@@ -601,9 +581,7 @@
           "parentId": "68f28cf2-bc5e-4ca0-bff2-4fbc9fd72931",
           "subGroups": [],
           "attributes": {},
-          "realmRoles": [
-            "group-member"
-          ],
+          "realmRoles": ["group-member"],
           "clientRoles": {}
         }
       ],
@@ -620,9 +598,7 @@
     "clientRole": false,
     "containerId": "a62360a9-78e4-43c2-8baa-fe1e093f8600"
   },
-  "requiredCredentials": [
-    "password"
-  ],
+  "requiredCredentials": ["password"],
   "otpPolicyType": "totp",
   "otpPolicyAlgorithm": "HmacSHA1",
   "otpPolicyInitialCounter": 0,
@@ -637,10 +613,7 @@
   ],
   "localizationTexts": {},
   "webAuthnPolicyRpEntityName": "keycloak",
-  "webAuthnPolicySignatureAlgorithms": [
-    "ES256",
-    "RS256"
-  ],
+  "webAuthnPolicySignatureAlgorithms": ["ES256", "RS256"],
   "webAuthnPolicyRpId": "",
   "webAuthnPolicyAttestationConveyancePreference": "not specified",
   "webAuthnPolicyAuthenticatorAttachment": "not specified",
@@ -651,10 +624,7 @@
   "webAuthnPolicyAcceptableAaguids": [],
   "webAuthnPolicyExtraOrigins": [],
   "webAuthnPolicyPasswordlessRpEntityName": "keycloak",
-  "webAuthnPolicyPasswordlessSignatureAlgorithms": [
-    "ES256",
-    "RS256"
-  ],
+  "webAuthnPolicyPasswordlessSignatureAlgorithms": ["ES256", "RS256"],
   "webAuthnPolicyPasswordlessRpId": "",
   "webAuthnPolicyPasswordlessAttestationConveyancePreference": "not specified",
   "webAuthnPolicyPasswordlessAuthenticatorAttachment": "not specified",
@@ -675,16 +645,10 @@
       "serviceAccountClientId": "server-client",
       "disableableCredentialTypes": [],
       "requiredActions": [],
-      "realmRoles": [
-        "default-roles-main"
-      ],
+      "realmRoles": ["default-roles-main"],
       "clientRoles": {
-        "server-client": [
-          "uma_protection"
-        ],
-        "realm-management": [
-          "manage-users"
-        ]
+        "server-client": ["uma_protection"],
+        "realm-management": ["manage-users"]
       },
       "notBefore": 0,
       "groups": []
@@ -693,19 +657,14 @@
   "scopeMappings": [
     {
       "clientScope": "offline_access",
-      "roles": [
-        "offline_access"
-      ]
+      "roles": ["offline_access"]
     }
   ],
   "clientScopeMappings": {
     "account": [
       {
         "client": "account-console",
-        "roles": [
-          "manage-account",
-          "view-groups"
-        ]
+        "roles": ["manage-account", "view-groups"]
       }
     ]
   },
@@ -720,9 +679,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": [
-        "/realms/main/account/*"
-      ],
+      "redirectUris": ["/realms/main/account/*"],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -767,9 +724,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": [
-        "/realms/main/account/*"
-      ],
+      "redirectUris": ["/realms/main/account/*"],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -875,9 +830,7 @@
         "https://localhost:7128/api/user/profile",
         "https://localhost:7128/signin-oidc"
       ],
-      "webOrigins": [
-        "https://localhost:7128"
-      ],
+      "webOrigins": ["https://localhost:7128"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -988,12 +941,8 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": [
-        "/*"
-      ],
-      "webOrigins": [
-        "/*"
-      ],
+      "redirectUris": ["/*"],
+      "webOrigins": ["/*"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1102,14 +1051,8 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": [
-        "https://localhost:7128/*",
-        "*",
-        "/*"
-      ],
-      "webOrigins": [
-        "https://localhost:7128"
-      ],
+      "redirectUris": ["https://localhost:7128/*", "*", "/*"],
+      "webOrigins": ["https://localhost:7128"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1175,12 +1118,8 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": [
-        "/admin/main/console/*"
-      ],
-      "webOrigins": [
-        "+"
-      ],
+      "redirectUris": ["/admin/main/console/*"],
+      "webOrigins": ["+"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1247,12 +1186,8 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "test-server",
-      "redirectUris": [
-        "/*"
-      ],
-      "webOrigins": [
-        "/*"
-      ],
+      "redirectUris": ["/*"],
+      "webOrigins": ["/*"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -2277,9 +2212,7 @@
   "accountTheme": "keycloak.v3",
   "emailTheme": "",
   "eventsEnabled": false,
-  "eventsListeners": [
-    "jboss-logging"
-  ],
+  "eventsListeners": ["jboss-logging"],
   "enabledEventTypes": [],
   "adminEventsEnabled": false,
   "adminEventsDetailsEnabled": false,
@@ -2294,12 +2227,8 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "host-sending-registration-request-must-match": [
-            "true"
-          ],
-          "client-uris-must-match": [
-            "true"
-          ]
+          "host-sending-registration-request-must-match": ["true"],
+          "client-uris-must-match": ["true"]
         }
       },
       {
@@ -2309,9 +2238,7 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "max-clients": [
-            "200"
-          ]
+          "max-clients": ["200"]
         }
       },
       {
@@ -2340,9 +2267,7 @@
         "subType": "authenticated",
         "subComponents": {},
         "config": {
-          "allow-default-scopes": [
-            "true"
-          ]
+          "allow-default-scopes": ["true"]
         }
       },
       {
@@ -2387,9 +2312,7 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "allow-default-scopes": [
-            "true"
-          ]
+          "allow-default-scopes": ["true"]
         }
       }
     ],
@@ -2400,12 +2323,8 @@
         "providerId": "rsa-enc-generated",
         "subComponents": {},
         "config": {
-          "priority": [
-            "100"
-          ],
-          "algorithm": [
-            "RSA-OAEP"
-          ]
+          "priority": ["100"],
+          "algorithm": ["RSA-OAEP"]
         }
       },
       {
@@ -2414,12 +2333,8 @@
         "providerId": "hmac-generated",
         "subComponents": {},
         "config": {
-          "priority": [
-            "100"
-          ],
-          "algorithm": [
-            "HS512"
-          ]
+          "priority": ["100"],
+          "algorithm": ["HS512"]
         }
       },
       {
@@ -2428,9 +2343,7 @@
         "providerId": "aes-generated",
         "subComponents": {},
         "config": {
-          "priority": [
-            "100"
-          ]
+          "priority": ["100"]
         }
       },
       {
@@ -2439,18 +2352,13 @@
         "providerId": "rsa-generated",
         "subComponents": {},
         "config": {
-          "priority": [
-            "100"
-          ]
+          "priority": ["100"]
         }
       }
     ]
   },
   "internationalizationEnabled": true,
-  "supportedLocales": [
-    "de",
-    "en"
-  ],
+  "supportedLocales": ["de", "en"],
   "defaultLocale": "en",
   "authenticationFlows": [
     {
