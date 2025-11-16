@@ -1,10 +1,9 @@
 ﻿using BlazorFurniture.IntegrationTests.Controllers.Setup;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace BlazorFurniture.IntegrationTests.Controllers.Authorization;
 
@@ -38,10 +37,11 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>
     public async Task GetGroupUsers_WithAuthentication_ReturnsOk()
     {
         // Arrange
-        var client = factory.CreateClient();
-        var token = await GetUserToken("testuser", "password");
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var user = await keycloakFixture.CreateUserAsync("testuser", "testuser@a.com", "password");
 
+        using var keycloakClient = new HttpClient { BaseAddress = new Uri(keycloakFixture.BaseUrl) };
+        var token = await keycloakFixture.GetAndSetUserToken(keycloakClient, "testuser", "password");
+        var client = factory.CreateClient();
         var groupId = Guid.NewGuid(); // Replace with actual group from your realm export
 
         // Act
@@ -51,21 +51,4 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
-    private async Task<string> GetUserToken( string username, string password )
-    {
-        using var client = new HttpClient();
-        var tokenResponse = await client.PostAsync(
-            $"{keycloakFixture.Authority}/protocol/openid-connect/token",
-            new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                ["grant_type"] = "password",
-                ["client_id"] = "integration-test-client",
-                ["username"] = username,
-                ["password"] = password
-            }));
-
-        tokenResponse.EnsureSuccessStatusCode();
-        var token = await tokenResponse.Content.ReadFromJsonAsync<JsonElement>();
-        return token.GetProperty("access_token").GetString()!;
-    }
 }

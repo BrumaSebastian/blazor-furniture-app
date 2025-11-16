@@ -1,6 +1,11 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿using BlazorFurniture.Infrastructure.External;
+using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
+using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -16,9 +21,10 @@ public class KeycloakFixture : IAsyncLifetime
     public string Authority { get; private set; } = string.Empty;
     public string AdminUsername { get; } = "admin";
     public string AdminPassword { get; } = "admin";
-    public string RealmName { get; } = "main-realm";
+    public string RealmName { get; } = "main";
+    public string TestClient { get; set; } = "integration-test-client";
     public string BaseUrl { get; private set; } = string.Empty;
-
+    internal Endpoints Endpoints { get; set; } = default!;
     public async Task InitializeAsync()
     {
         // Create a shared Docker network for container-to-container communication
@@ -82,6 +88,7 @@ public class KeycloakFixture : IAsyncLifetime
         BaseUrl = $"http://localhost:{keycloakPort}";
         Authority = $"http://localhost:{keycloakPort}/realms/{RealmName}";
 
+        Endpoints = new Endpoints(RealmName);
         adminHttpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) };
     }
 
@@ -124,15 +131,18 @@ public class KeycloakFixture : IAsyncLifetime
 
     private async Task<string> GetAdminAccessTokenAsync()
     {
-        var tokenRequest = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            ["grant_type"] = "password",
-            ["client_id"] = "admin-cli",
-            ["username"] = AdminUsername,
-            ["password"] = AdminPassword
-        });
+        var tokenRequest = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Post)
+                .WithPath($"realms/master/protocol/openid-connect/token")
+                .WithFormParams(new Dictionary<string, string>
+                {
+                    { OpenIdConnectParameterNames.GrantType, OpenIdConnectGrantTypes.Password },
+                    { OpenIdConnectParameterNames.ClientId, "admin-cli" },
+                    { OpenIdConnectParameterNames.Username, AdminUsername },
+                    { OpenIdConnectParameterNames.Password, AdminPassword }
+                })
+                .Build();
 
-        var tokenResponse = await adminHttpClient!.PostAsync($"/realms/master/protocol/openid-connect/token", tokenRequest);
+        var tokenResponse = await adminHttpClient!.SendAsync(tokenRequest);
         tokenResponse.EnsureSuccessStatusCode();
 
         var tokenData = await tokenResponse.Content.ReadFromJsonAsync<JsonElement>();
@@ -140,7 +150,35 @@ public class KeycloakFixture : IAsyncLifetime
             ?? throw new InvalidOperationException("Failed to obtain access token");
 
         // Set authorization header for subsequent requests
-        adminHttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+        adminHttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
+
+        return accessToken;
+    }
+
+    public async Task<string> GetUserToken( HttpClient httpClient, string username, string password )
+    {
+        var tokenRequest = HttpRequestMessageBuilder.Create(httpClient!, HttpMethod.Post)
+                .WithPath(Endpoints.AccessToken())
+                .WithFormParams(new Dictionary<string, string>
+                {
+                    { OpenIdConnectParameterNames.GrantType, OpenIdConnectGrantTypes.Password },
+                    { OpenIdConnectParameterNames.ClientId, TestClient },
+                    { OpenIdConnectParameterNames.Username, username },
+                    { OpenIdConnectParameterNames.Password, password }
+                })
+                .Build();
+
+        var tokenResponse = await httpClient.SendAsync(tokenRequest);
+        tokenResponse.EnsureSuccessStatusCode();
+
+        var token = await tokenResponse.Content.ReadFromJsonAsync<JsonElement>();
+        return token.GetProperty("access_token").GetString()!;
+    }
+
+    public async Task<string> GetAndSetUserToken( HttpClient httpClient, string username, string password )
+    {
+        var accessToken = await GetUserToken(httpClient, username, password);
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
 
         return accessToken;
     }
