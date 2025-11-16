@@ -8,8 +8,9 @@ using System.Net;
 
 namespace BlazorFurniture.IntegrationTests.Controllers.Authorization;
 
+[Collection("Keycloak Collection")]
 [Trait("Category", "Integration")]
-public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifetime
+public class GroupsControllerTests : IAsyncLifetime
 {
     private readonly KeycloakFixture keycloakFixture;
     private readonly WebApplicationFactory<Program> factory;
