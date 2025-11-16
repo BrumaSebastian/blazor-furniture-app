@@ -30,7 +30,7 @@ jobs:
       run: dotnet build ./BlazorFurniture/BlazorFurniture.sln --no-restore --configuration Release
     
     - name: Run Integration Tests
-      run: dotnet test tests/BlazorFurniture.IntegrationTests/BlazorFurniture.IntegrationTests.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      run: dotnet test ./BlazorFurniture/tests/BlazorFurniture.IntegrationTests/BlazorFurniture.IntegrationTests.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
       env:
         ASPNETCORE_ENVIRONMENT: IntegrationTests
         DOCKER_HOST: unix:///var/run/docker.sock
