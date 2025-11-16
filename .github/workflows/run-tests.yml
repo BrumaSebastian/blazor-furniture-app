@@ -1,4 +1,4 @@
-name: Test PRs to main
+name: Unit Tets
 
 on:
   pull_request:
