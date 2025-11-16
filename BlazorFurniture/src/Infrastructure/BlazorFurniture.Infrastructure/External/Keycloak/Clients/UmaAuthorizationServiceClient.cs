@@ -72,7 +72,7 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
 
         var content = await response.Content.ReadFromJsonAsync<UmaAuthorizationResponse>(ct);
 
-        return HttpResult<UmaAuthorizationResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Coudln't serialize the uma authorization response"));
+        return HttpResult<UmaAuthorizationResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't serialize the uma authorization response"));
     }
 
     public async Task<HttpResult<UmaAuthorizationResponse, ErrorRepresentation>> Evaluate( string userAccessToken, string resource, List<string> scopes, IReadOnlyDictionary<string, List<string>> claims, CancellationToken ct )
@@ -142,7 +142,7 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
 
         var content = await response.Content.ReadFromJsonAsync<UmaPermissionTicketResponse>(cancellationToken: ct);
 
-        return HttpResult<UmaPermissionTicketResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Coudln't serialize the uma ticket response"));
+        return HttpResult<UmaPermissionTicketResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't serialize the uma ticket response"));
     }
 
     private async Task<HttpResult<UmaAuthorizationResponse, ErrorRepresentation>> EvaluateWithTicket( string accessToken, string ticket, CancellationToken ct )
@@ -175,6 +175,6 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
 
         var content = await response.Content.ReadFromJsonAsync<UmaAuthorizationResponse>(cancellationToken: ct);
 
-        return HttpResult<UmaAuthorizationResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Coudln't serialize the uma authorization response"));
+        return HttpResult<UmaAuthorizationResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't serialize the uma authorization response"));
     }
 }

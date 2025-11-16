@@ -33,6 +33,7 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
         httpClient?.Dispose();
+        await factory.DisposeAsync();
     }
 
     [Fact]

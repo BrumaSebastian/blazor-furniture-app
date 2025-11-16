@@ -86,7 +86,6 @@ public class KeycloakFixture : IAsyncLifetime
             .WithEnvironment("KC_DB_PASSWORD", "password")
             .WithEnvironment("KC_HOSTNAME_STRICT", "false")
             .WithEnvironment("KC_HTTP_ENABLED", "true")
-            .WithEnvironment("KC_HTTP_ENABLED", "true")
             .WithEnvironment("KC_HEALTH_ENABLED", "true")
             .WithPortBinding(KeycloakPort, 8080)
             .WithPortBinding(KeycloakHealthPort, 9000)
@@ -171,7 +170,7 @@ public class KeycloakFixture : IAsyncLifetime
         response.EnsureSuccessStatusCode();
         var accessToken = await response.Content.ReadFromJsonAsync<KeycloakAccessToken>();
 
-        return accessToken?.AccessToken ?? throw new Exception($"Failed to obatin access token for {username}");
+        return accessToken?.AccessToken ?? throw new Exception($"Failed to obtain access token for {username}");
     }
 
     public async Task<string> GetAndSetUserAccessToken( HttpClient httpClient, string username, string password )
