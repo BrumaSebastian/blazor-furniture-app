@@ -24,10 +24,10 @@ jobs:
         docker compose version
     
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./BlazorFurniture/BlazorFurniture.sln
     
     - name: Build
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build ./BlazorFurniture/BlazorFurniture.sln --no-restore --configuration Release
     
     - name: Run Integration Tests
       run: dotnet test tests/BlazorFurniture.IntegrationTests/BlazorFurniture.IntegrationTests.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
