@@ -20,6 +20,10 @@ public class KeycloakFixture : IAsyncLifetime
     private IContainer? keycloakContainer;
     private HttpClient adminHttpClient = null!;
 
+    private const int KeycloakPort = 18080;
+    private const int KeycloakHealthPort = 19000;
+    private const int PostgresPort = 15432;
+
     public string Authority { get; private set; } = string.Empty;
     public string AdminUsername { get; } = "admin";
     public string AdminPassword { get; } = "admin";
@@ -50,7 +54,7 @@ public class KeycloakFixture : IAsyncLifetime
             .WithEnvironment("POSTGRES_DB", "keycloak")
             .WithEnvironment("POSTGRES_USER", "keycloak")
             .WithEnvironment("POSTGRES_PASSWORD", "password")
-            .WithPortBinding(5432, true)
+            .WithPortBinding(PostgresPort, 5432)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
             .Build();
 
@@ -84,8 +88,8 @@ public class KeycloakFixture : IAsyncLifetime
             .WithEnvironment("KC_HTTP_ENABLED", "true")
             .WithEnvironment("KC_HTTP_ENABLED", "true")
             .WithEnvironment("KC_HEALTH_ENABLED", "true")
-            .WithPortBinding(8080, true)
-            .WithPortBinding(9000, true)
+            .WithPortBinding(KeycloakPort, 8080)
+            .WithPortBinding(KeycloakHealthPort, 9000)
             .WithCommand("start-dev", "--import-realm")
             .WithWaitStrategy(Wait.ForUnixContainer()
                 .UntilHttpRequestIsSucceeded(r => r.ForPort(9000).ForPath("/health/ready")))
@@ -93,10 +97,8 @@ public class KeycloakFixture : IAsyncLifetime
 
         await keycloakContainer.StartAsync();
 
-        var keycloakPort = keycloakContainer.GetMappedPublicPort(8080);
-        BaseUrl = $"http://localhost:{keycloakPort}";
-        Authority = $"http://localhost:{keycloakPort}/realms/{RealmName}";
-
+        BaseUrl = $"http://localhost:{KeycloakPort}";
+        Authority = $"{BaseUrl}/realms/{RealmName}";
         Endpoints = new Endpoints(RealmName);
         adminHttpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) };
 
@@ -182,8 +184,6 @@ public class KeycloakFixture : IAsyncLifetime
                 .WithContent(new List<RoleRepresentation> { role })
                 .Build();
         var response = await adminHttpClient!.SendAsync(request);
-
-        var content = await response.Content.ReadAsStringAsync();
         response.EnsureSuccessStatusCode();
     }
 

@@ -1,7 +1,7 @@
 ﻿using BlazorFurniture.IntegrationTests.Controllers.Setup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Http.Headers;
 
@@ -18,18 +18,7 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>
         factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
-                builder.ConfigureAppConfiguration(( context, config ) =>
-                {
-                    // Override Keycloak settings to point to test container
-                    config.AddInMemoryCollection(new Dictionary<string, string>
-                    {
-                        ["OpenIdConnect:Authority"] = keycloakFixture.Authority,
-                        ["Keycloak:Url"] = keycloakFixture.Authority.Replace($"/realms/{keycloakFixture.RealmName}", ""),
-                        ["Keycloak:Realm"] = keycloakFixture.RealmName,
-                        ["Keycloak:ServiceClient:ClientId"] = "test-api-client",
-                        ["Keycloak:ServiceClient:ClientSecret"] = "test-secret"
-                    }!);
-                });
+                builder.UseEnvironment("IntegrationTests");
             });
     }
 
@@ -46,6 +35,22 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>
 
         // Act
         var response = await client.GetAsync($"/api/groups/{groupId}/users");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetGroups_WithPlatformAdminRole_ReturnsOk()
+    {
+        // Arrange
+        using var keycloakClient = new HttpClient { BaseAddress = new Uri(keycloakFixture.BaseUrl) };
+        var accessToken = await keycloakFixture.GetAndSetUserToken(keycloakClient, keycloakFixture.PlatformAdmin.Username, keycloakFixture.PlatformAdmin.Password);
+        var client = factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
+
+        // Act
+        var response = await client.GetAsync($"/api/groups", CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

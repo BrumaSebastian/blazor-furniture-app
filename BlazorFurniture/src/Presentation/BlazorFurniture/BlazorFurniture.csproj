@@ -14,6 +14,7 @@
 	  <Content Remove="Components\Authentication\**" />
 	  <EmbeddedResource Remove="Components\Authentication\**" />
 	  <None Remove="Components\Authentication\**" />
+	  <Content Remove="appsettings.IntegrationTests.json" />
         <InternalsVisibleTo Include="BlazorFurniture.IntegrationTests" />
         <InternalsVisibleTo Include="BlazorFurniture.UnitTests" />
     </ItemGroup>
@@ -41,6 +42,10 @@
 	<ItemGroup>
 		<Folder Include="Authorization\" />
 		<Folder Include="Filters\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="appsettings.IntegrationTests.json" />
 	</ItemGroup>
 
 	<ItemGroup>
