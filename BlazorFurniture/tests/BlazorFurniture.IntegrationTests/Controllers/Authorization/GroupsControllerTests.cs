@@ -37,7 +37,7 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>
     public async Task GetGroupUsers_WithAuthentication_ReturnsOk()
     {
         // Arrange
-        var user = await keycloakFixture.CreateUserAsync("testuser", "testuser@a.com", "password");
+        var user = await keycloakFixture.CreateUser("testuser", "testuser@a.com", "password");
 
         using var keycloakClient = new HttpClient { BaseAddress = new Uri(keycloakFixture.BaseUrl) };
         var token = await keycloakFixture.GetAndSetUserToken(keycloakClient, "testuser", "password");

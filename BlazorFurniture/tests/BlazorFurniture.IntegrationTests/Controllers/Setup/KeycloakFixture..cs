@@ -1,4 +1,6 @@
-﻿using BlazorFurniture.Infrastructure.External;
+﻿using BlazorFurniture.Domain.Entities.Keycloak;
+using BlazorFurniture.Domain.Enums;
+using BlazorFurniture.Infrastructure.External;
 using BlazorFurniture.Infrastructure.External.Keycloak.Configurations;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
@@ -16,7 +18,7 @@ public class KeycloakFixture : IAsyncLifetime
     private INetwork? network;
     private IContainer? postgresContainer;
     private IContainer? keycloakContainer;
-    private HttpClient? adminHttpClient;
+    private HttpClient adminHttpClient = null!;
 
     public string Authority { get; private set; } = string.Empty;
     public string AdminUsername { get; } = "admin";
@@ -25,6 +27,13 @@ public class KeycloakFixture : IAsyncLifetime
     public string TestClient { get; set; } = "integration-test-client";
     public string BaseUrl { get; private set; } = string.Empty;
     internal Endpoints Endpoints { get; set; } = default!;
+    public KeycloakUser PlatformAdmin { get; set; } = new KeycloakUser
+    {
+        Username = "platformadmin",
+        Email = "platformadmin@test.com",
+        Password = "Test123@"
+    };
+
     public async Task InitializeAsync()
     {
         // Create a shared Docker network for container-to-container communication
@@ -90,11 +99,19 @@ public class KeycloakFixture : IAsyncLifetime
 
         Endpoints = new Endpoints(RealmName);
         adminHttpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) };
+
+        // Create platform admin user
+        var adminId = await CreateUser(PlatformAdmin.Username, PlatformAdmin.Email, PlatformAdmin.Password);
+
+        // Assign admin realm role to platform admin user
+        var platformAdminRole = PlatformRoles.Admin.ToString().ToLower();
+        var adminRole = await GetRole(platformAdminRole);
+        await AssignRole(adminId, adminRole);
     }
 
-    public async Task<string> CreateUserAsync( string username, string email, string password, string? firstName = null, string? lastName = null, bool enabled = true )
+    public async Task<string> CreateUser( string username, string email, string password, string? firstName = null, string? lastName = null, bool enabled = true )
     {
-        var accessToken = await GetAdminAccessTokenAsync();
+        await GetAndSetAdminAccessToken();
 
         var userRepresentation = new
         {
@@ -129,32 +146,6 @@ public class KeycloakFixture : IAsyncLifetime
         return userId ?? throw new InvalidOperationException("Failed to retrieve user ID");
     }
 
-    private async Task<string> GetAdminAccessTokenAsync()
-    {
-        var tokenRequest = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Post)
-                .WithPath($"realms/master/protocol/openid-connect/token")
-                .WithFormParams(new Dictionary<string, string>
-                {
-                    { OpenIdConnectParameterNames.GrantType, OpenIdConnectGrantTypes.Password },
-                    { OpenIdConnectParameterNames.ClientId, "admin-cli" },
-                    { OpenIdConnectParameterNames.Username, AdminUsername },
-                    { OpenIdConnectParameterNames.Password, AdminPassword }
-                })
-                .Build();
-
-        var tokenResponse = await adminHttpClient!.SendAsync(tokenRequest);
-        tokenResponse.EnsureSuccessStatusCode();
-
-        var tokenData = await tokenResponse.Content.ReadFromJsonAsync<JsonElement>();
-        var accessToken = tokenData.GetProperty("access_token").GetString()
-            ?? throw new InvalidOperationException("Failed to obtain access token");
-
-        // Set authorization header for subsequent requests
-        adminHttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
-
-        return accessToken;
-    }
-
     public async Task<string> GetUserToken( HttpClient httpClient, string username, string password )
     {
         var tokenRequest = HttpRequestMessageBuilder.Create(httpClient!, HttpMethod.Post)
@@ -179,6 +170,79 @@ public class KeycloakFixture : IAsyncLifetime
     {
         var accessToken = await GetUserToken(httpClient, username, password);
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
+
+        return accessToken;
+    }
+
+    private async Task AssignRole( string userId, RoleRepresentation role )
+    {
+        await GetAndSetAdminAccessToken();
+        var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Post)
+                .WithPath($"/admin/realms/{RealmName}/users/{userId}/role-mappings/realm")
+                .WithContent(new List<RoleRepresentation> { role })
+                .Build();
+        var response = await adminHttpClient!.SendAsync(request);
+
+        var content = await response.Content.ReadAsStringAsync();
+        response.EnsureSuccessStatusCode();
+    }
+
+    private async Task<List<RoleRepresentation>> GetRoles( string? search = null )
+    {
+        var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Get)
+                .WithPath($"/admin/realms/{RealmName}/roles")
+                .AddQueryParam("search", search)
+                .Build();
+
+        var tokenResponse = await adminHttpClient!.SendAsync(request);
+        tokenResponse.EnsureSuccessStatusCode();
+
+        var roles = await tokenResponse.Content.ReadFromJsonAsync<List<RoleRepresentation>>();
+
+        return roles ?? new List<RoleRepresentation>();
+    }
+
+    private async Task<RoleRepresentation> GetRole( string roleName )
+    {
+        var request = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Get)
+                .WithPath($"/admin/realms/{RealmName}/roles/{roleName}")
+                .Build();
+
+        var tokenResponse = await adminHttpClient!.SendAsync(request);
+        tokenResponse.EnsureSuccessStatusCode();
+
+        var role = await tokenResponse.Content.ReadFromJsonAsync<RoleRepresentation>();
+
+        return role ?? throw new Exception($"Failed to obtain role {roleName}");
+    }
+
+    private async Task<string> GetAndSetAdminAccessToken()
+    {
+        var accessToken = await GetAdminAccessToken();
+        adminHttpClient!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
+
+        return accessToken;
+    }
+
+    private async Task<string> GetAdminAccessToken()
+    {
+        var tokenRequest = HttpRequestMessageBuilder.Create(adminHttpClient!, HttpMethod.Post)
+                .WithPath($"realms/master/protocol/openid-connect/token")
+                .WithFormParams(new Dictionary<string, string>
+                {
+                    { OpenIdConnectParameterNames.GrantType, OpenIdConnectGrantTypes.Password },
+                    { OpenIdConnectParameterNames.ClientId, "admin-cli" },
+                    { OpenIdConnectParameterNames.Username, AdminUsername },
+                    { OpenIdConnectParameterNames.Password, AdminPassword }
+                })
+                .Build();
+
+        var tokenResponse = await adminHttpClient!.SendAsync(tokenRequest);
+        tokenResponse.EnsureSuccessStatusCode();
+
+        var tokenData = await tokenResponse.Content.ReadFromJsonAsync<JsonElement>();
+        var accessToken = tokenData.GetProperty("access_token").GetString()
+            ?? throw new InvalidOperationException("Failed to obtain access token");
 
         return accessToken;
     }
