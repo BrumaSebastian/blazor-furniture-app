@@ -114,7 +114,7 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
     }
 
     [Fact]
-    public async Task CreateGroup_WithPlatformAdminUser_ReturnsSuccesfullResponse()
+    public async Task CreateGroup_WithPlatformAdminUser_ReturnsSuccessfulResponse()
     {
         // Arrange
         var accessToken = await GetUserAccessToken(
