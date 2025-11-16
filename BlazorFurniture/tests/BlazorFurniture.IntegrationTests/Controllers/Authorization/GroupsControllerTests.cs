@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 
 namespace BlazorFurniture.IntegrationTests.Controllers.Authorization;
 
+[Trait("Category", "Integration")]
 public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifetime
 {
     private readonly KeycloakFixture keycloakFixture;
