@@ -7,10 +7,11 @@ using System.Net.Http.Headers;
 
 namespace BlazorFurniture.IntegrationTests.Controllers.Authorization;
 
-public class GroupsControllerTests : IClassFixture<KeycloakFixture>
+public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifetime
 {
     private readonly KeycloakFixture keycloakFixture;
     private readonly WebApplicationFactory<Program> factory;
+    private HttpClient client = null!;
 
     public GroupsControllerTests( KeycloakFixture keycloakFixture )
     {
@@ -22,38 +23,66 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>
             });
     }
 
-    [Fact]
-    public async Task GetGroupUsers_WithAuthentication_ReturnsOk()
+    async ValueTask IAsyncLifetime.InitializeAsync()
     {
-        // Arrange
-        var user = await keycloakFixture.CreateUser("testuser", "testuser@a.com", "password");
+        client = factory.CreateClient();
+    }
 
-        using var keycloakClient = new HttpClient { BaseAddress = new Uri(keycloakFixture.BaseUrl) };
-        var token = await keycloakFixture.GetAndSetUserToken(keycloakClient, "testuser", "password");
-        var client = factory.CreateClient();
-        var groupId = Guid.NewGuid(); // Replace with actual group from your realm export
-
-        // Act
-        var response = await client.GetAsync($"/api/groups/{groupId}/users");
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        client?.Dispose();
     }
 
     [Fact]
     public async Task GetGroups_WithPlatformAdminRole_ReturnsOk()
     {
         // Arrange
-        using var keycloakClient = new HttpClient { BaseAddress = new Uri(keycloakFixture.BaseUrl) };
-        var accessToken = await keycloakFixture.GetAndSetUserToken(keycloakClient, keycloakFixture.PlatformAdmin.Username, keycloakFixture.PlatformAdmin.Password);
-        var client = factory.CreateClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
+        var accessToken = await GetUserAccessToken(
+            keycloakFixture.PlatformAdmin.Username,
+            keycloakFixture.PlatformAdmin.Password);
+
+        SetAuthorizationHeader(accessToken);
 
         // Act
-        var response = await client.GetAsync($"/api/groups", CancellationToken.None);
+        var response = await client.GetAsync("/api/groups");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
+    [Fact]
+    public async Task GetGroups_WithNormalUser_ReturnsForbidden()
+    {
+        // Arrange
+        var user = new KeycloakUser
+        {
+            Username = "testuser",
+            Email = "testuser@a.com",
+            Password = "Test123!"
+        };
+
+        await keycloakFixture.CreateUser(user);
+        var accessToken = await GetUserAccessToken(user.Username, user.Password);
+
+        SetAuthorizationHeader(accessToken);
+
+        // Act
+        var response = await client.GetAsync("/api/groups");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    
+    private async Task<string> GetUserAccessToken( string username, string password )
+    {
+        using var keycloakClient = new HttpClient { BaseAddress = new Uri(keycloakFixture.BaseUrl) };
+        return await keycloakFixture.GetUserToken(keycloakClient, username, password);
+    }
+
+    private void SetAuthorizationHeader( string accessToken )
+    {
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
+    }
 }

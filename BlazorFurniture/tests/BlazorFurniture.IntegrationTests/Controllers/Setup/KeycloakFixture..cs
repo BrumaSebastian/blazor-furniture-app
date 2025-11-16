@@ -111,6 +111,11 @@ public class KeycloakFixture : IAsyncLifetime
         await AssignRole(adminId, adminRole);
     }
 
+    public async Task<string> CreateUser( KeycloakUser user )
+    {
+        return await CreateUser(user.Username, user.Email, user.Password);
+    }
+
     public async Task<string> CreateUser( string username, string email, string password, string? firstName = null, string? lastName = null, bool enabled = true )
     {
         await GetAndSetAdminAccessToken();
