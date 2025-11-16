@@ -139,4 +139,14 @@ internal class GroupManagementClient( Endpoints endpoints, HttpClient httpClient
 
         return await SendRequest<EmptyResult>(requestMessage, ct);
     }
+
+    public async Task<HttpResult<EmptyResult, ErrorRepresentation>> UpdateUserRole( Guid groupId, Guid userId, Guid roleId, CancellationToken ct )
+    {
+        var requestMessage = HttpRequestMessageBuilder
+           .Create(HttpClient, HttpMethod.Put)
+           .WithPath(Endpoints.GroupMemberByIdRole(groupId, userId, roleId))
+           .Build();
+
+        return await SendRequest<EmptyResult>(requestMessage, ct);
+    }
 }

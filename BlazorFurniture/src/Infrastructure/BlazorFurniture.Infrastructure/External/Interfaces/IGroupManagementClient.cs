@@ -16,4 +16,5 @@ internal interface IGroupManagementClient
     Task<HttpResult<List<GroupUserRepresentation>, ErrorRepresentation>> GetUsers( Guid groupId, GroupUsersQueryFilter filters, CancellationToken ct );
     Task<HttpResult<EmptyResult, ErrorRepresentation>> RemoveUser( Guid groupId, Guid userId, CancellationToken ct );
     Task<HttpResult<EmptyResult, ErrorRepresentation>> Update( Guid groupId, GroupRepresentation groupRepresentation, CancellationToken ct );
+    Task<HttpResult<EmptyResult, ErrorRepresentation>> UpdateUserRole( Guid groupId, Guid userId, Guid roleId, CancellationToken ct );
 }
