@@ -14,7 +14,7 @@ public class UpdateUserGroupRole( ICommandDispatcher commandDispatcher ) : Endpo
     {
         Put("{groupId:guid}/users/{userId:guid}/roles/{roleId:guid}");
         Group<GroupsEndpointGroup>();
-        Permissions(GroupPolicies.UpdateGroupUserPolicy);
+        Policies(GroupPolicies.UpdateGroupUserPolicy);
         Summary(options =>
         {
             options.Summary = "Update user role within group";

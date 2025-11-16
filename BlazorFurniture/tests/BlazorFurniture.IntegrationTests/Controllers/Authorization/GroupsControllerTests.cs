@@ -1,15 +1,10 @@
 ﻿using BlazorFurniture.Application.Features.GroupManagement.Requests;
-using BlazorFurniture.Application.Features.GroupManagement.Responses;
-using BlazorFurniture.Domain.Entities.Keycloak;
 using BlazorFurniture.Infrastructure.External;
 using BlazorFurniture.IntegrationTests.Controllers.Setup;
 using FluentAssertions;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Org.BouncyCastle.Asn1.Ocsp;
 using System.Net;
-using System.Net.Http.Json;
 
 namespace BlazorFurniture.IntegrationTests.Controllers.Authorization;
 
@@ -187,10 +182,10 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
     public async Task GetGroup_WithPlatformAdminUser_ReturnsSuccesfullResponse()
     {
         // Arrange
-        var accessToken = await GetUserAccessToken(keycloakFixture.PlatformAdmin.Username, keycloakFixture.PlatformAdmin.Password);
         var groupName = "Test Get Group";
         var groupId = await CreateGroup(groupName, "This is a test group created during integration tests.");
 
+        var accessToken = await GetUserAccessToken(keycloakFixture.PlatformAdmin.Username, keycloakFixture.PlatformAdmin.Password);
         var request = HttpRequestMessageBuilder.Create(httpClient, HttpMethod.Get)
             .WithPath($"/api/groups/{groupId}")
             .WithAuthorization(accessToken)
@@ -208,12 +203,13 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
     public async Task GetGroup_WithNormalUserWithGroupsReadRole_ReturnsForbiddenResponse()
     {
         // Arrange
+        var groupName = "Test Get Group 2";
+        var groupId = await CreateGroup(groupName, "This is a test group created during integration tests.");
+
         var roleName = "groups-read";
         var user = new KeycloakUser();
         await CreateUserAndAssignClientRole(roleName, user);
         var accessToken = await GetUserAccessToken(user.Username, user.Password);
-        var groupName = "Test Get Group 2";
-        var groupId = await CreateGroup(groupName, "This is a test group created during integration tests.");
 
         var request = HttpRequestMessageBuilder.Create(httpClient, HttpMethod.Get)
             .WithPath($"/api/groups/{groupId}")
@@ -232,12 +228,12 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
     public async Task GetGroup_WithNormalUser_ReturnsForbidden()
     {
         // Arrange
+        var groupName = Guid.NewGuid().ToString();
+        var groupId = await CreateGroup(groupName, "This is a test");
+
         var user = new KeycloakUser();
         await keycloakFixture.CreateUser(user);
         var accessToken = await GetUserAccessToken(user.Username, user.Password);
-        var groupName = "Test Get Group 3";
-        var groupId = await CreateGroup(groupName, "This is a test group created during integration tests.");
-
         var request = HttpRequestMessageBuilder.Create(httpClient, HttpMethod.Get)
             .WithPath($"/api/groups/{groupId}")
             .WithAuthorization(accessToken)
@@ -247,6 +243,56 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
         var response = await httpClient.SendAsync(request, CancellationToken.None);
 
         // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task GetGroup_WithNormalUser_WithinGroup_ReturnsSuccessResponse()
+    {
+        // Arrange
+        var groupName = Guid.NewGuid().ToString();
+        var groupId = await CreateGroup(groupName);
+
+        var user = new KeycloakUser();
+        var userId = await keycloakFixture.CreateUser(user);
+        await AddUserToGroup(groupId, userId);
+        var accessToken = await GetUserAccessToken(user.Username, user.Password);
+        var request = HttpRequestMessageBuilder.Create(httpClient, HttpMethod.Get)
+            .WithPath($"/api/groups/{groupId}")
+            .WithAuthorization(accessToken)
+            .Build();
+
+        // Act
+        var response = await httpClient.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GetGroup_WithNormalUser_WithinAGroup_TryingToGetAnotherGroupInfo_ReturnsForbidden()
+    {
+        // Arrange
+        var userGroupName = Guid.NewGuid().ToString();
+        var userGroupId = await CreateGroup(userGroupName);
+
+        var secondGroupName = Guid.NewGuid().ToString();
+        var secondGroupId = await CreateGroup(secondGroupName);
+
+        var user = new KeycloakUser();
+        var userId = await keycloakFixture.CreateUser(user);
+        await AddUserToGroup(userGroupId, userId);
+        var accessToken = await GetUserAccessToken(user.Username, user.Password);
+        var request = HttpRequestMessageBuilder.Create(httpClient, HttpMethod.Get)
+            .WithPath($"/api/groups/{secondGroupId}")
+            .WithAuthorization(accessToken)
+            .Build();
+
+        // Act
+        var response = await httpClient.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
@@ -264,7 +310,7 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
         return await keycloakFixture.GetUserAccessToken(keycloakClient, username, password);
     }
 
-    private async Task<string> CreateGroup( string name, string? description )
+    private async Task<Guid> CreateGroup( string name, string? description = "" )
     {
         var accessToken = await GetUserAccessToken(keycloakFixture.PlatformAdmin.Username, keycloakFixture.PlatformAdmin.Password);
 
@@ -281,6 +327,19 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
         var locationHeader = response.Headers.Location?.ToString();
         var groupId = locationHeader?.Split('/').Last();
 
-        return groupId ?? throw new Exception($"Failed to retrieve group id for {name}");
+        return Guid.Parse(groupId!);
+    }
+
+    private async Task AddUserToGroup( Guid groupId, Guid userId )
+    {
+        var accessToken = await GetUserAccessToken(keycloakFixture.PlatformAdmin.Username, keycloakFixture.PlatformAdmin.Password);
+
+        var request = HttpRequestMessageBuilder.Create(httpClient, HttpMethod.Post)
+            .WithPath($"/api/groups/{groupId}/users/{userId}")
+            .WithAuthorization(accessToken)
+            .Build();
+
+        var response = await httpClient.SendAsync(request, CancellationToken.None);
+        response.EnsureSuccessStatusCode();
     }
 }

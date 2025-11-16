@@ -57,6 +57,8 @@ Requires the role {roleName} within the platform. Example, to see users from gro
 | DELETE /groups/{groupId}/users/{userId}             | scoped          | group-users | remove | **GroupRole:** group-users-remove or **Role:** admin | Affirmative       |
 | PUT /groups/{groupId}/users/{userId}/roles/{roleId} | scoped          | group-users | update | **GroupRole:** group-users-update or **Role:** admin | Affirmative       |
 
+\*\* Images might be outdated as it requires to much hasle to update for each new permission
+
 ### Permissions
 
 ![Keycloak permissions](permissions.png)

@@ -14,7 +14,7 @@ internal sealed class RemoveUserFromGroupEndpoint( ICommandDispatcher commandDis
     {
         Delete("{groupId:guid}/users/{userId:guid}");
         Group<GroupsEndpointGroup>();
-        Permissions(GroupPolicies.RemoveGroupUserPolicy);
+        Policies(GroupPolicies.RemoveGroupUserPolicy);
         Summary(options =>
         {
             options.Summary = "Remove a user from a group";

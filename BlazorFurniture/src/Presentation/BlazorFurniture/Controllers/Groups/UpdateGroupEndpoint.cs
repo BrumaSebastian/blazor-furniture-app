@@ -16,7 +16,7 @@ internal sealed class UpdateGroupEndpoint( ICommandDispatcher commandDispatcher 
         Put("{groupId:guid}");
         Group<GroupsEndpointGroup>();
         Validator<UpdateGroupRequestValidator>();
-        Permissions(GroupPolicies.UpdateGroupPolicy);
+        Policies(GroupPolicies.UpdateGroupPolicy);
         Summary(options =>
         {
             options.Summary = "Update group";

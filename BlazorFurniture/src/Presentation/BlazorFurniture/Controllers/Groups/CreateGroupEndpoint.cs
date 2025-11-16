@@ -3,7 +3,6 @@ using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.GroupManagement.Commands;
 using BlazorFurniture.Application.Features.GroupManagement.Requests;
 using BlazorFurniture.Controllers.Authorization.Policies;
-using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using BlazorFurniture.Validators.Groups;
 using FastEndpoints;
