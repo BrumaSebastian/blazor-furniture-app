@@ -1,6 +1,7 @@
 # Blazor Furniture App
 
 [![Tests](https://github.com/BrumaSebastian/blazor-furniture-app/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/BrumaSebastian/blazor-furniture-app/actions/workflows/run-tests.yml)
+[![Tests](https://github.com/BrumaSebastian/blazor-furniture-app/actions/workflows/integrationTests.yml/badge.svg?branch=main)](https://github.com/BrumaSebastian/blazor-furniture-app/actions/workflows/integrationTests.yml)
 
 A modern, full-stack web application for furniture management built with Blazor, featuring secure authentication, role-based authorization, and a clean architecture approach.
 
