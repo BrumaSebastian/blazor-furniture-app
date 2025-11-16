@@ -18,7 +18,7 @@ public class UpdateUserGroupRole( ICommandDispatcher commandDispatcher ) : Endpo
         Summary(options =>
         {
             options.Summary = "Update user role within group";
-            options.Description = "Updates the user role within a group, by removing the current and and asigning the new one";
+            options.Description = "Updates the user role within a group, by removing the current and and assigning the new one";
             options.Response(StatusCodes.Status204NoContent);
             options.Response(StatusCodes.Status404NotFound);
             options.Response(StatusCodes.Status409Conflict);
