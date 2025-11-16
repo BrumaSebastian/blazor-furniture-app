@@ -179,7 +179,7 @@ public class GroupsControllerTests : IClassFixture<KeycloakFixture>, IAsyncLifet
     }
 
     [Fact]
-    public async Task GetGroup_WithPlatformAdminUser_ReturnsSuccesfullResponse()
+    public async Task GetGroup_WithPlatformAdminUser_ReturnsSuccessfulResponse()
     {
         // Arrange
         var groupName = "Test Get Group";
