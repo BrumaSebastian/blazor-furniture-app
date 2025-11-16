@@ -1,0 +1,43 @@
+name: Integration Tests (Testcontainers)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+    
+    - name: Setup Docker
+      run: |
+        docker --version
+        docker compose version
+    
+    - name: Restore dependencies
+      run: dotnet restore ./BlazorFurniture/BlazorFurniture.sln
+    
+    - name: Build
+      run: dotnet build ./BlazorFurniture/BlazorFurniture.sln --no-restore --configuration Release
+    
+    - name: Run Integration Tests
+      run: dotnet test ./BlazorFurniture/tests/BlazorFurniture.IntegrationTests/BlazorFurniture.IntegrationTests.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      env:
+        ASPNETCORE_ENVIRONMENT: IntegrationTests
+        DOCKER_HOST: unix:///var/run/docker.sock
+    
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: '**/test-results.trx'
