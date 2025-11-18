@@ -5,9 +5,11 @@ using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Infrastructure.Extensions;
 using BlazorFurniture.Middlewares;
 using BlazorFurniture.Shared.Extensions;
+using BlazorFurniture.Shared.Security.Authorization;
 using BlazorFurniture.Shared.Services.API.Interfaces;
 using BlazorFurniture.Shared.Services.Security;
 using BlazorFurniture.Shared.Services.Security.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlazorFurniture.Extensions.ServiceCollection;
 
@@ -46,6 +48,17 @@ public static class ServiceCollectionExtensions
             services.AddApiClient<IGroupsApi>()
                 .ConfigureHttpClient(ConfigureServerBaseAddressHttpClient())
                 .AddHttpMessageHandler<ForwardAuthHeaderHandler>();
+
+            return services;
+        }
+
+        public IServiceCollection AddServerSide()
+        {
+            services.AddRefitServerApis();
+            services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            services.AddServerSideServices();
+            services.AddCascadingAuthenticationState();
 
             return services;
         }

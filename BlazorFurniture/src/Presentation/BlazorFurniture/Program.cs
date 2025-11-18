@@ -4,11 +4,9 @@ using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
-using BlazorFurniture.Shared.Security.Authorization;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MudBlazor.Services;
@@ -41,6 +39,7 @@ builder.Services.AddHybridCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
 builder.Services.AddLocalization();
+builder.Services.AddServerSide();
 
 builder.Services.ConfigureHttpClientDefaults(http =>
 {
@@ -54,13 +53,6 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 
     http.AddServiceDiscovery();
 });
-
-// TODO: move to extension specific for presentation layer
-builder.Services.AddRefitServerApis();
-builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-builder.Services.AddServerSideServices();
-builder.Services.AddCascadingAuthenticationState();
 
 // Get OIDC configuration for Swagger setup
 var openIdConnectOptions = builder.Configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()
