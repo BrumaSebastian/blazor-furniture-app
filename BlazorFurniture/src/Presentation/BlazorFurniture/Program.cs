@@ -24,9 +24,7 @@ builder.Host.UseDefaultServiceProvider(options =>
     options.ValidateOnBuild = true;
 });
 
-// Add MudBlazor services
 builder.Services.AddMudServices();
-
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents()
@@ -34,25 +32,11 @@ builder.Services.AddRazorComponents()
     {
         options.SerializeAllClaims = true;
     });
-
 builder.Services.AddHybridCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
 builder.Services.AddLocalization();
 builder.Services.AddServerSide();
-
-builder.Services.ConfigureHttpClientDefaults(http =>
-{
-    // Single resilience pipeline applied to all HttpClients/Refit clients.
-    http.AddStandardResilienceHandler(o =>
-    {
-        o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(30);
-        o.Retry.MaxRetryAttempts = 3;
-        o.Retry.BackoffType = Polly.DelayBackoffType.Exponential;
-    });
-
-    http.AddServiceDiscovery();
-});
 
 // Get OIDC configuration for Swagger setup
 var openIdConnectOptions = builder.Configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()
@@ -161,7 +145,7 @@ app.UseCors();
 app.UseGlobalExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseAntiforgery();
 app.UseAntiforgeryFE()
    .UseFastEndpoints(options =>
 {
