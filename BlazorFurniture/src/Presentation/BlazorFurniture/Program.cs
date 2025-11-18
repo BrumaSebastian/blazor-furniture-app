@@ -1,5 +1,3 @@
-using BlazorFurniture.Client.Services;
-using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Components;
 using BlazorFurniture.Core.Shared.Configurations;
 using BlazorFurniture.Extensions;
@@ -7,8 +5,6 @@ using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
 using BlazorFurniture.Shared.Security.Authorization;
-using BlazorFurniture.Shared.Services.Security;
-using BlazorFurniture.Shared.Services.Security.Interfaces;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -63,10 +59,7 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 builder.Services.AddRefitServerApis();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-builder.Services.AddScoped<IPermissionsService, PermissionsService>();
-builder.Services.AddSingleton<IThemeService, ThemeService>();
-builder.Services.AddScoped<ISearchService, SearchService>();
-builder.Services.AddScoped<IBreadCrumbsService, BreadcrumbsService>();
+builder.Services.AddServerSideServices();
 builder.Services.AddCascadingAuthenticationState();
 
 // Get OIDC configuration for Swagger setup

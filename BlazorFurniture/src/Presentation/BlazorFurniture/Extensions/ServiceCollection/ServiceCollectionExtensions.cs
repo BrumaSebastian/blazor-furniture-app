@@ -1,9 +1,13 @@
 ﻿using BlazorFurniture.Application.Common.Extensions;
+using BlazorFurniture.Client.Services;
+using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Infrastructure.Extensions;
 using BlazorFurniture.Middlewares;
 using BlazorFurniture.Shared.Extensions;
 using BlazorFurniture.Shared.Services.API.Interfaces;
+using BlazorFurniture.Shared.Services.Security;
+using BlazorFurniture.Shared.Services.Security.Interfaces;
 
 namespace BlazorFurniture.Extensions.ServiceCollection;
 
@@ -42,6 +46,16 @@ public static class ServiceCollectionExtensions
             services.AddApiClient<IGroupsApi>()
                 .ConfigureHttpClient(ConfigureServerBaseAddressHttpClient())
                 .AddHttpMessageHandler<ForwardAuthHeaderHandler>();
+
+            return services;
+        }
+
+        public IServiceCollection AddServerSideServices()
+        {
+            services.AddScoped<IPermissionsService, PermissionsService>();
+            services.AddSingleton<IThemeService, ThemeService>();
+            services.AddScoped<ISearchService, SearchService>();
+            services.AddScoped<IBreadCrumbsService, BreadcrumbsService>();
 
             return services;
         }
