@@ -5,7 +5,7 @@ namespace BlazorFurniture.Domain.Entities.Keycloak;
 public sealed class UmaPermissionTicketRequest
 {
     [JsonPropertyName("resource_id")]
-    public required string ResourceId { get; set; }
+    public string ResourceId { get; set; }
     [JsonPropertyName("resource_scopes")]
     public List<string> ResourceScopes { get; set; } = [];
     [JsonPropertyName("claims")]
