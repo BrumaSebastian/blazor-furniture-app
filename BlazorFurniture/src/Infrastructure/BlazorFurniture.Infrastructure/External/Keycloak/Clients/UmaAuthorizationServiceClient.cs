@@ -54,12 +54,12 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
 
         var ticketRequest = new UmaPermissionTicketRequest
         {
-            ResourceId = null!,
-            ResourceScopes = null!,
+            ResourceId = resource,
+            ResourceScopes = scopes,
             Claims = (IDictionary<string, List<string>>)claims
         };
 
-        var ticketResult = await GetPermissionTicket(authClientAccessTokenResult.Value.AccessToken!, ticketRequest, ct);
+        var ticketResult = await GetPermissionTicket(authClientAccessTokenResult.Value.AccessToken!, [ticketRequest], ct);
 
         if (ticketResult.IsFailure)
         {
@@ -144,7 +144,7 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
             Claims = (IDictionary<string, List<string>>)claims
         };
 
-        var ticketResult = await GetPermissionTicket(authClientAccessTokenResult.Value.AccessToken!, ticketRequest, ct);
+        var ticketResult = await GetPermissionTicket(authClientAccessTokenResult.Value.AccessToken!, [ticketRequest], ct);
 
         if (ticketResult.IsFailure)
         {
@@ -158,8 +158,6 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
             return HttpResult<UmaAuthorizationResponse, ErrorRepresentation>.Failed(authorizationResult.Error, authorizationResult.StatusCode);
         }
 
-        _ = await CheckPermissions(userAccessToken, resource, [], claims, ct);
-
         return authorizationResult;
     }
 
@@ -170,15 +168,12 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
             : $"{resource}#{string.Join(", ", scopes)}";
     }
 
-    private async Task<HttpResult<UmaPermissionTicketResponse, ErrorRepresentation>> GetPermissionTicket( string authClientAccessToken, UmaPermissionTicketRequest ticketRequest, CancellationToken ct )
+    private async Task<HttpResult<UmaPermissionTicketResponse, ErrorRepresentation>> GetPermissionTicket( string authClientAccessToken, List<UmaPermissionTicketRequest> ticketRequests, CancellationToken ct )
     {
         var requestMessage = HttpRequestMessageBuilder
            .Create(HttpClient, HttpMethod.Post)
            .WithPath(Endpoints.AuthzPermission())
-           .WithContent(new List<UmaPermissionTicketRequest>(1)
-           {
-               ticketRequest
-           })
+           .WithContent(ticketRequests)
            .WithBearerAuthorization(authClientAccessToken)
            .Build();
 
@@ -225,7 +220,6 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
                 Error = "UMA_EVALUATION_FAILED",
                 Description = $"UMA authorization evaluation failed with status code: {response.StatusCode}"
             }, response.StatusCode);
-
         }
 
         var content = await response.Content.ReadFromJsonAsync<UmaAuthorizationResponse>(cancellationToken: ct);
