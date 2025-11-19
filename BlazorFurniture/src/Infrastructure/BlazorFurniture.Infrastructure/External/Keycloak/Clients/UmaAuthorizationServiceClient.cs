@@ -40,7 +40,60 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
 
         var content = await response.Content.ReadFromJsonAsync<List<UmaPermissionsResponse>>(cancellationToken: ct);
 
-        return HttpResult<List<UmaPermissionsResponse>, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't serialize the uma permissions response"));
+        return HttpResult<List<UmaPermissionsResponse>, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't deserialize the uma permissions response"));
+    }
+
+    public async Task<HttpResult<List<UmaPermissionsResponse>, ErrorRepresentation>> CheckPermissions( string userAccessToken, string resource, List<string> scopes, IReadOnlyDictionary<string, List<string>> claims, CancellationToken ct )
+    {
+        var authClientAccessTokenResult = await GetServiceAccessToken(ct);
+
+        if (authClientAccessTokenResult.IsFailure)
+        {
+            return HttpResult<List<UmaPermissionsResponse>, ErrorRepresentation>.Failed(authClientAccessTokenResult.Error, authClientAccessTokenResult.StatusCode);
+        }
+
+        var ticketRequest = new UmaPermissionTicketRequest
+        {
+            ResourceId = resource,
+            ResourceScopes = scopes,
+            Claims = (IDictionary<string, List<string>>)claims
+        };
+
+        var ticketResult = await GetPermissionTicket(authClientAccessTokenResult.Value.AccessToken!, [ticketRequest], ct);
+
+        if (ticketResult.IsFailure)
+        {
+            return HttpResult<List<UmaPermissionsResponse>, ErrorRepresentation>.Failed(ticketResult.Error, ticketResult.StatusCode);
+        }
+
+        var requestMessage = HttpRequestMessageBuilder
+          .Create(HttpClient, HttpMethod.Post)
+          .WithPath(Endpoints.AccessToken())
+          .WithFormParams(new Dictionary<string, string>
+           {
+                { OpenIdConnectParameterNames.GrantType, UmaAuthorizationConstants.UMA_TICKET_GRANT_TYPE },
+                { OpenIdConnectParameterNames.ResponseMode, UmaAuthorizationConstants.UMA_RESPONSE_MODE_PERMISSIONS },
+                { UmaAuthorizationConstants.UMA_TICKET_PARAM, ticketResult.Value.Ticket }
+           })
+          .WithBearerAuthorization(userAccessToken)
+          .Build();
+
+        var response = await HttpClient.SendAsync(requestMessage, ct);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            logger.LogInformation("Retrieving permission failed, {Content}", await response.Content.ReadAsStringAsync(ct));
+
+            return HttpResult<List<UmaPermissionsResponse>, ErrorRepresentation>.Failed(new ErrorRepresentation()
+            {
+                Error = "UMA_PERMISSIONS_FAILED",
+                Description = $"Retrieving permission failed with code: {response.StatusCode}"
+            }, response.StatusCode);
+        }
+
+        var content = await response.Content.ReadFromJsonAsync<List<UmaPermissionsResponse>>(ct);
+
+        return HttpResult<List<UmaPermissionsResponse>, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't deserialize the uma permissions response"));
     }
 
     public async Task<HttpResult<UmaAuthorizationResponse, ErrorRepresentation>> Evaluate( string userAccessToken, string resource, List<string> scopes, CancellationToken ct )
@@ -72,7 +125,7 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
 
         var content = await response.Content.ReadFromJsonAsync<UmaAuthorizationResponse>(ct);
 
-        return HttpResult<UmaAuthorizationResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't serialize the uma authorization response"));
+        return HttpResult<UmaAuthorizationResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't deserialize the uma authorization response"));
     }
 
     public async Task<HttpResult<UmaAuthorizationResponse, ErrorRepresentation>> Evaluate( string userAccessToken, string resource, List<string> scopes, IReadOnlyDictionary<string, List<string>> claims, CancellationToken ct )
@@ -91,7 +144,7 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
             Claims = (IDictionary<string, List<string>>)claims
         };
 
-        var ticketResult = await GetPermissionTicket(authClientAccessTokenResult.Value.AccessToken!, ticketRequest, ct);
+        var ticketResult = await GetPermissionTicket(authClientAccessTokenResult.Value.AccessToken!, [ticketRequest], ct);
 
         if (ticketResult.IsFailure)
         {
@@ -115,15 +168,12 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
             : $"{resource}#{string.Join(", ", scopes)}";
     }
 
-    private async Task<HttpResult<UmaPermissionTicketResponse, ErrorRepresentation>> GetPermissionTicket( string authClientAccessToken, UmaPermissionTicketRequest ticketRequest, CancellationToken ct )
+    private async Task<HttpResult<UmaPermissionTicketResponse, ErrorRepresentation>> GetPermissionTicket( string authClientAccessToken, List<UmaPermissionTicketRequest> ticketRequests, CancellationToken ct )
     {
         var requestMessage = HttpRequestMessageBuilder
            .Create(HttpClient, HttpMethod.Post)
            .WithPath(Endpoints.AuthzPermission())
-           .WithContent(new List<UmaPermissionTicketRequest>(1)
-           {
-               ticketRequest
-           })
+           .WithContent(ticketRequests)
            .WithBearerAuthorization(authClientAccessToken)
            .Build();
 
@@ -142,7 +192,7 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
 
         var content = await response.Content.ReadFromJsonAsync<UmaPermissionTicketResponse>(cancellationToken: ct);
 
-        return HttpResult<UmaPermissionTicketResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't serialize the uma ticket response"));
+        return HttpResult<UmaPermissionTicketResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't deserialize the uma ticket response"));
     }
 
     private async Task<HttpResult<UmaAuthorizationResponse, ErrorRepresentation>> EvaluateWithTicket( string accessToken, string ticket, CancellationToken ct )
@@ -170,11 +220,10 @@ internal class UmaAuthorizationServiceClient( Endpoints endpoints, HttpClient ht
                 Error = "UMA_EVALUATION_FAILED",
                 Description = $"UMA authorization evaluation failed with status code: {response.StatusCode}"
             }, response.StatusCode);
-
         }
 
         var content = await response.Content.ReadFromJsonAsync<UmaAuthorizationResponse>(cancellationToken: ct);
 
-        return HttpResult<UmaAuthorizationResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't serialize the uma authorization response"));
+        return HttpResult<UmaAuthorizationResponse, ErrorRepresentation>.Succeeded(content ?? throw new Exception("Couldn't deserialize the uma authorization response"));
     }
 }

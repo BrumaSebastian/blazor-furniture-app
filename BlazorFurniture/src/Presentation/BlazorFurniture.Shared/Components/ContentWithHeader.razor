@@ -20,20 +20,24 @@
 
         <MudDivider Class="flex-grow-0" />
 
-        @if (BodyComponent is not null)
-        {
-            <DynamicComponent Type="BodyComponent" Parameters="BodyParameters" />
-        }
-        else
-        {
-            @ChildContent
-        }
+        <div class="@ContentClass" style="@ContentStyle">
+            @if (BodyComponent is not null)
+            {
+                <DynamicComponent Type="BodyComponent" Parameters="BodyParameters" />
+            }
+            else
+            {
+                @ChildContent
+            }
+        </div>
     </MudStack>
 </MudPaper>
 
 @code {
     [Parameter] public string Style { get; set; } = string.Empty;
     [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter] public string ContentStyle { get; set; } = string.Empty;
+    [Parameter] public string ContentClass { get; set; } = string.Empty;
 
     // Simple title alternative to providing a full header fragment
     [Parameter] public string? Title { get; set; }

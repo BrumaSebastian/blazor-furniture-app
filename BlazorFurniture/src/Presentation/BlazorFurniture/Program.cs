@@ -1,18 +1,12 @@
-using BlazorFurniture.Client.Services;
-using BlazorFurniture.Client.Services.Interfaces;
 using BlazorFurniture.Components;
 using BlazorFurniture.Core.Shared.Configurations;
 using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Extensions.ServiceCollection;
 using BlazorFurniture.ServiceDefaults;
-using BlazorFurniture.Shared.Security.Authorization;
-using BlazorFurniture.Shared.Services.Security;
-using BlazorFurniture.Shared.Services.Security.Interfaces;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MudBlazor.Services;
@@ -30,9 +24,7 @@ builder.Host.UseDefaultServiceProvider(options =>
     options.ValidateOnBuild = true;
 });
 
-// Add MudBlazor services
 builder.Services.AddMudServices();
-
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents()
@@ -40,34 +32,11 @@ builder.Services.AddRazorComponents()
     {
         options.SerializeAllClaims = true;
     });
-
 builder.Services.AddHybridCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ForwardAuthHeaderHandler>();
 builder.Services.AddLocalization();
-
-builder.Services.ConfigureHttpClientDefaults(http =>
-{
-    // Single resilience pipeline applied to all HttpClients/Refit clients.
-    http.AddStandardResilienceHandler(o =>
-    {
-        o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(30);
-        o.Retry.MaxRetryAttempts = 3;
-        o.Retry.BackoffType = Polly.DelayBackoffType.Exponential;
-    });
-
-    http.AddServiceDiscovery();
-});
-
-// TODO: move to extension specific for presentation layer
-builder.Services.AddRefitServerApis();
-builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-builder.Services.AddScoped<IPermissionsService, PermissionsService>();
-builder.Services.AddSingleton<IThemeService, ThemeService>();
-builder.Services.AddScoped<ISearchService, SearchService>();
-builder.Services.AddScoped<IBreadCrumbsService, BreadcrumbsService>();
-builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddServerSide();
 
 // Get OIDC configuration for Swagger setup
 var openIdConnectOptions = builder.Configuration.GetSection(OpenIdConnectConfigOptions.NAME).Get<OpenIdConnectConfigOptions>()
@@ -176,7 +145,7 @@ app.UseCors();
 app.UseGlobalExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseAntiforgery();
 app.UseAntiforgeryFE()
    .UseFastEndpoints(options =>
 {

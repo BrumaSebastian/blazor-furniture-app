@@ -38,6 +38,20 @@ public static class Extensions
         //     options.AllowedSchemes = ["https"];
         // });
 
+        builder.Services.ConfigureHttpClientDefaults(http =>
+        {
+            // Single resilience pipeline applied to all HttpClients/Refit clients.
+            http.AddStandardResilienceHandler(o =>
+            {
+                o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(30);
+                o.Retry.MaxRetryAttempts = 3;
+                o.Retry.BackoffType = Polly.DelayBackoffType.Exponential;
+            });
+
+            http.AddServiceDiscovery();
+
+        });
+
         return builder;
     }
 
