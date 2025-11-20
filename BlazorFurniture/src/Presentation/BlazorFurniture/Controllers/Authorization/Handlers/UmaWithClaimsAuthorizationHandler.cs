@@ -1,6 +1,8 @@
 ﻿using BlazorFurniture.Controllers.Authorization.Requirements;
 using BlazorFurniture.Infrastructure.External.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BlazorFurniture.Controllers.Authorization.Handlers;
@@ -18,13 +20,23 @@ public class UmaWithClaimsAuthorizationHandler( IUmaAuthorizationService umaAuth
 
         var authorizationHeader = httpContext.Request.Headers.Authorization.ToString();
 
-        if (string.IsNullOrEmpty(authorizationHeader))
+        string? accessToken = null;
+
+        if (!string.IsNullOrEmpty(authorizationHeader))
+        {
+            accessToken = GetAccessToken(authorizationHeader);
+        }
+        else if (httpContext.User.Identity?.IsAuthenticated == true)
+        {
+            accessToken = await httpContext.GetTokenAsync(OpenIdConnectDefaults.AuthenticationScheme, "access_token");
+        }
+
+        if (string.IsNullOrEmpty(accessToken))
         {
             context.Fail();
             return;
         }
 
-        var accessToken = GetAccessToken(authorizationHeader);
         var claims = GetClaimsFromRoute(httpContext, requirement.Claims);
         var response = await umaAuthorizationService.Evaluate(
             accessToken,
