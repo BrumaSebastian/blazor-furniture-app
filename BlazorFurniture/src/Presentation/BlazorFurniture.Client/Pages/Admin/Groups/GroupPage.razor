@@ -15,7 +15,7 @@
             <MudText Typo="Typo.subtitle2">@AdminResource.groups_groupSubtitle</MudText>
         </MudStack>
         <MudSpacer />
-        <MudButton Disabled="true" StartIcon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+        <MudButton OnClick="AssignUserToGroupDialog" StartIcon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
             <MudText Typo="Typo.subtitle1">@AdminResource.add_member</MudText>
         </MudButton>
     </MudStack>
@@ -87,6 +87,7 @@
 }
 
 @code {
+    [Inject] public required IDialogService DialogService { get; init; }
     [Inject] public required IGroupsApi GroupsApi { get; init; }
     [Inject] public required NavigationManager NavigationManager { get; init; }
     [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
@@ -154,5 +155,21 @@
     {
         searchString = text;
         await usersTable.ReloadServerData();
+    }
+
+    private async Task AssignUserToGroupDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var parameters = new DialogParameters<AssignUserToGroupDialog>
+        {
+            { x => x.Group, groupDetails }
+        };
+        var dialogRef = await DialogService.ShowAsync<AssignUserToGroupDialog>($"Assign user to {groupDetails!.Name}", parameters, options);
+        var result = await dialogRef.Result;
+
+        // if (result?.Data is bool created && created)
+        // {
+        //     await groupsTable.ReloadServerData();
+        // }
     }
 }
