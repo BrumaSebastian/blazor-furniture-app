@@ -1,6 +1,7 @@
 ﻿@page "/admin/groups/{groupId:guid}"
 @using BlazorFurniture.Shared.Components.Table
 @using BlazorFurniture.Shared.Extensions
+@using BlazorFurniture.Client.Components.Admin.Dialogs
 @layout AdminLayout
 @inherits AdminPageBase
 @attribute [Authorize]
@@ -53,7 +54,7 @@
                     {
                         <MudMenu Icon="@Icons.Material.Filled.MoreHoriz"
                                  AriaLabel="Open user actions">
-                            <MudMenuItem Label="Remove" OnClick="@(async () => await RemoveMember(context.Id))" />
+                            <MudMenuItem Label="Remove" OnClick="@(async () => await OpenRemoveMemberDialog(context))" />
                         </MudMenu>
                     }
                 </AuthorizeView>
@@ -191,19 +192,24 @@
         }
     }
 
-    private async Task RemoveMember(Guid userId)
+    private async Task OpenRemoveMemberDialog(GroupUserModel user)
     {
-        var response = await GroupsApi.RemoveMember(GroupId, userId, default);
-
-        switch (response.StatusCode)
+        var options = new DialogOptions
         {
-            case HttpStatusCode.NoContent:
-                Snackbar.Add(CommonResource.message_groupMemberRemoved, Severity.Success);
-                await usersTable.ReloadServerData();
-                break;
-            default:
-                Snackbar.Add(CommonResource.errors_unknownError, Severity.Error);
-                break;
+            CloseOnEscapeKey = false,
+            BackdropClick = false,
+            MaxWidth = MaxWidth.Small,
+        };
+        var parameters = new DialogParameters<RemoveMemberFromGroupDialog>
+        {
+            { x => x.Group, groupDetails },
+            { x => x.User, user }
+        };
+        var dialogRef = await DialogService.ShowAsync<RemoveMemberFromGroupDialog>($"Remove {user.FullName}?", parameters, options);
+        var result = await dialogRef.Result;
+        if (result?.Data is not null)
+        {
+            await usersTable.ReloadServerData();
         }
     }
 }

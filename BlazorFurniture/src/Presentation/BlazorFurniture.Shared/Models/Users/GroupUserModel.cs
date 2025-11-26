@@ -6,5 +6,6 @@ public sealed class GroupUserModel
     public required string Email { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
+    public string FullName { get => $"{FirstName} {LastName}"; }
     public GroupRoles Role { get; set; }
 }
