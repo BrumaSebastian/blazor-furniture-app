@@ -195,4 +195,10 @@
   <data name="message.groupMemberAdded" xml:space="preserve">
     <value>Adaugare cu success</value>
   </data>
+  <data name="actions" xml:space="preserve">
+    <value>Actiuni</value>
+  </data>
+  <data name="message.groupMemberRemoved" xml:space="preserve">
+    <value>Scos cu success</value>
+  </data>
 </root>
