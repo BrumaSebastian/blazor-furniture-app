@@ -192,4 +192,7 @@
   <data name="model.description" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="message.groupMemberAdded" xml:space="preserve">
+    <value>Added successfully</value>
+  </data>
 </root>

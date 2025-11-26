@@ -2,7 +2,7 @@
 @using BlazorFurniture.Shared.Models.Groups
 @using BlazorFurniture.Shared.Services.API.Interfaces
 
-<MudDialog>
+<MudDialog Gutters="true" OnBackdropClick="Cancel">
     <TitleContent>
         <MudText Typo="Typo.subtitle1" GutterBottom="true">Add Member to @Group.Name </MudText>
         <MudText Typo="Typo.subtitle2">Search for an existing user and assign them to the group.</MudText>
@@ -17,7 +17,7 @@
             <HeaderContent>
             </HeaderContent>
             <RowTemplate>
-                <MudStack Breakpoint="Breakpoint.Md" Class="my-2">
+                <MudStack Row="true" Breakpoint="Breakpoint.Md" Class="my-2">
                     <MudStack>
                         <MudText Typo="Typo.subtitle1">
                             @($"{context.FirstName} {context.LastName}")
@@ -33,7 +33,7 @@
                     }
                     else
                     {
-                        <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" FullWidth="true">Add</MudButton>
+                        <MudButton OnClick="@(async () => await AssignUserToGroup(context.Id))" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" FullWidth="true">Add</MudButton>
                     }
                 </MudStack>
             </RowTemplate>
@@ -53,9 +53,9 @@
     </DialogActions>
 </MudDialog>
 @code {
-    [Inject] public required IDialogService DialogService { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
     [Inject] public required IUsersApi UsersApi { get; init; }
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; init; } = default!;
@@ -64,6 +64,7 @@
 
     private MudTable<UserModel> usersTable = default!;
     private string? searchString;
+    private bool groupMembersChanged = false;
 
     private async Task<TableData<UserModel>> GetUsers(TableState state, CancellationToken token)
     {
@@ -78,7 +79,6 @@
                     Items = response.Content!.Results
                 };
             default:
-                // Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
                 break;
         }
 
@@ -93,6 +93,29 @@
 
     private void Cancel()
     {
-        MudDialog.Cancel();
+        if (groupMembersChanged)
+        {
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        else{
+            MudDialog.Cancel();
+        }
+    }
+
+    private async Task AssignUserToGroup(Guid userId)
+    {
+        var response = await GroupsApi.AddMember(Group.Id, userId, default);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.NoContent:
+                Snackbar.Add(CommonResource.message_groupMemberAdded, Severity.Success);
+                await usersTable.ReloadServerData();
+                groupMembersChanged = true;
+                break;
+            default:
+                Snackbar.Add(CommonResource.errors_unknownError, Severity.Error);
+                break;
+        }
     }
 }

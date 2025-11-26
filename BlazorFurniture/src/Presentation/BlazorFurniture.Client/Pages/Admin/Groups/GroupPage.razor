@@ -159,7 +159,11 @@
 
     private async Task AssignUserToGroupDialog()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var options = new DialogOptions 
+        { 
+            CloseOnEscapeKey = true, 
+            MaxWidth = MaxWidth.Large,
+        };
         var parameters = new DialogParameters<AssignUserToGroupDialog>
         {
             { x => x.Group, groupDetails }
@@ -167,9 +171,9 @@
         var dialogRef = await DialogService.ShowAsync<AssignUserToGroupDialog>($"Assign user to {groupDetails!.Name}", parameters, options);
         var result = await dialogRef.Result;
 
-        // if (result?.Data is bool created && created)
-        // {
-        //     await groupsTable.ReloadServerData();
-        // }
+        if (result?.Data is bool updated && updated)
+        {
+            await usersTable.ReloadServerData();
+        }
     }
 }
