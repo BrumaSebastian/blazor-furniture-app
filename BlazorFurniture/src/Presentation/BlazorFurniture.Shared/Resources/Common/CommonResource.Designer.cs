@@ -169,6 +169,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added successfully.
+        /// </summary>
+        public static string message_groupMemberAdded {
+            get {
+                return ResourceManager.GetString("message.groupMemberAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading.
         /// </summary>
         public static string message_loading {

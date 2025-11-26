@@ -10,7 +10,7 @@ public static class ServiceCollectionExtensions
     {
         public IServiceCollection AddServerApis( string baseAddress )
         {
-            services.AddApiClient<IUserApi>(baseAddress)
+            services.AddApiClient<IUsersApi>(baseAddress)
                 .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
             services.AddApiClient<IGroupsApi>(baseAddress)

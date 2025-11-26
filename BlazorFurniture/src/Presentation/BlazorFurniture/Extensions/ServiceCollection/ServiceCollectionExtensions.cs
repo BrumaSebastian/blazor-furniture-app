@@ -41,7 +41,7 @@ public static class ServiceCollectionExtensions
 
         public IServiceCollection AddRefitServerApis()
         {
-            services.AddApiClient<IUserApi>()
+            services.AddApiClient<IUsersApi>()
                 .ConfigureHttpClient(ConfigureServerBaseAddressHttpClient())
                 .AddHttpMessageHandler<ForwardAuthHeaderHandler>();
 
