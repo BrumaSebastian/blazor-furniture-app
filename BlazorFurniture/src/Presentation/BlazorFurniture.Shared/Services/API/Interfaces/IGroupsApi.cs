@@ -21,4 +21,7 @@ public interface IGroupsApi
 
     [Post("/api/groups/{groupId}/users/{userId}")]
     Task<IApiResponse> AddMember( Guid groupId, Guid userId, CancellationToken ct );
+
+    [Delete("/api/groups/{groupId}/users/{userId}")]
+    Task<IApiResponse> RemoveMember( Guid groupId, Guid userId, CancellationToken ct );
 }

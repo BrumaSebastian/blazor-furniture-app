@@ -1,5 +1,6 @@
 ﻿@page "/admin/groups/{groupId:guid}"
 @using BlazorFurniture.Shared.Components.Table
+@using BlazorFurniture.Shared.Extensions
 @layout AdminLayout
 @inherits AdminPageBase
 @attribute [Authorize]
@@ -40,11 +41,23 @@
             <MudTh>@CommonResource.model_name</MudTh>
             <MudTh>@CommonResource.email</MudTh>
             <MudTh>@CommonResource.role</MudTh>
+            <MudTh>@CommonResource.actions</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="@CommonResource.model_name">@($"{context.FirstName} {context.LastName}")</MudTd>
             <MudTd DataLabel="@CommonResource.email">@context.Email</MudTd>
             <MudTd DataLabel="@CommonResource.role">@CommonLocalizer[$"roles.{context.Role}"]</MudTd>
+            <MudTd DataLabel="@CommonResource.actions">
+                <AuthorizeView Context="authContext">
+                    @if (!authContext.User.GetUserId().Equals(context.Id))
+                    {
+                        <MudMenu Icon="@Icons.Material.Filled.MoreHoriz"
+                                 AriaLabel="Open user actions">
+                            <MudMenuItem Label="Remove" OnClick="@(async () => await RemoveMember(context.Id))" />
+                        </MudMenu>
+                    }
+                </AuthorizeView>
+            </MudTd>
         </RowTemplate>
         <NoRecordsContent>
             <MudText>@CommonResource.message_noRecordsFound</MudText>
@@ -91,6 +104,7 @@
     [Inject] public required IGroupsApi GroupsApi { get; init; }
     [Inject] public required NavigationManager NavigationManager { get; init; }
     [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
 
     [Parameter] public Guid GroupId { get; init; }
 
@@ -110,7 +124,7 @@
                 groupDetails = response.Content!;
                 break;
             default:
-                // Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
+                Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
                 break;
         }
     }
@@ -128,7 +142,7 @@
                     Items = response.Content!.Results
                 };
             default:
-                // Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
+                Snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
                 break;
         }
 
@@ -159,9 +173,9 @@
 
     private async Task AssignUserToGroupDialog()
     {
-        var options = new DialogOptions 
-        { 
-            CloseOnEscapeKey = true, 
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
             MaxWidth = MaxWidth.Large,
         };
         var parameters = new DialogParameters<AssignUserToGroupDialog>
@@ -174,6 +188,22 @@
         if (result?.Data is bool updated && updated)
         {
             await usersTable.ReloadServerData();
+        }
+    }
+
+    private async Task RemoveMember(Guid userId)
+    {
+        var response = await GroupsApi.RemoveMember(GroupId, userId, default);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.NoContent:
+                Snackbar.Add(CommonResource.message_groupMemberRemoved, Severity.Success);
+                await usersTable.ReloadServerData();
+                break;
+            default:
+                Snackbar.Add(CommonResource.errors_unknownError, Severity.Error);
+                break;
         }
     }
 }

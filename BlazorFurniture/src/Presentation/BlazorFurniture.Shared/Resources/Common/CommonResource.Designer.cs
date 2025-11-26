@@ -61,6 +61,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Actions.
+        /// </summary>
+        public static string actions {
+            get {
+                return ResourceManager.GetString("actions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string button_cancel {
@@ -174,6 +183,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         public static string message_groupMemberAdded {
             get {
                 return ResourceManager.GetString("message.groupMemberAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removed successfully.
+        /// </summary>
+        public static string message_groupMemberRemoved {
+            get {
+                return ResourceManager.GetString("message.groupMemberRemoved", resourceCulture);
             }
         }
         
