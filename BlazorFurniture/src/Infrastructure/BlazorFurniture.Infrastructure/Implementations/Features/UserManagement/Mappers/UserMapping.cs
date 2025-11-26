@@ -19,6 +19,19 @@ internal static class UserMapping
         };
     }
 
+    extension( ExtendedUserRepresentation source )
+    {
+        public UserResponse ToResponse() => new()
+        {
+            Id = source.Id,
+            Email = source.Email!,
+            FirstName = source.FirstName!,
+            LastName = source.LastName!,
+            Role = source.Role,
+            Groups = source.Groups
+        };
+    }
+
     extension( UpdateUserProfileRequest source )
     {
         public UserRepresentation ToRepresentation() => new()

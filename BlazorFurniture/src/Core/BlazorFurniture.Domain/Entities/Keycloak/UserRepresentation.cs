@@ -1,6 +1,6 @@
 ﻿namespace BlazorFurniture.Domain.Entities.Keycloak;
 
-public sealed record UserRepresentation
+public record UserRepresentation
 {
     public Guid Id { get; set; }
     public string? Username { get; set; }
@@ -9,4 +9,5 @@ public sealed record UserRepresentation
     public string? Email { get; set; }
     public bool EmailVerified { get; set; }
     public bool Enabled { get; set; }
+    public List<Guid> Groups { get; set; } = [];
 }
