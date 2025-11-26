@@ -5,10 +5,10 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.subtitle1" GutterBottom="true">Add Member to @Group.Name </MudText>
-        <MudText Typo="Typo.subtitle2">Search for an existing user and assign them to a role.</MudText>
+        <MudText Typo="Typo.subtitle2">Search for an existing user and assign them to the group.</MudText>
     </TitleContent>
     <DialogContent>
-        <MudTable T="GroupUserModel" @ref="usersTable" ServerData="GetUsers"
+        <MudTable T="UserModel" @ref="usersTable" ServerData="GetUsers"
                   Hover="true" RowClass="cursor-pointer" Breakpoint="Breakpoint.Sm" Bordered="false" Dense="true">
             <ToolBarContent>
                 <MudTextField T="string" ValueChanged="@(async s => await OnSearch(s))" Placeholder="@CommonResource.search" Adornment="Adornment.Start"
@@ -17,20 +17,25 @@
             <HeaderContent>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="@CommonResource.model_name">
-                    <MudStack Row="true">
-                        <MudStack>
-                            <MudText Typo="Typo.subtitle1">
-                                @($"{context.FirstName} {context.LastName}")
-                            </MudText>
-                            <MudText Typo="Typo.caption">
-                                @context.Email
-                            </MudText>
-                        </MudStack>
-                        <MudSpacer />
-                        <MudButton Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">Add</MudButton>
+                <MudStack Breakpoint="Breakpoint.Md" Class="my-2">
+                    <MudStack>
+                        <MudText Typo="Typo.subtitle1">
+                            @($"{context.FirstName} {context.LastName}")
+                        </MudText>
+                        <MudText Typo="Typo.caption">
+                            @context.Email
+                        </MudText>
                     </MudStack>
-                </MudTd>
+                    <MudFlexBreak />
+                    @if (context.Groups.Contains(Group.Id))
+                    {
+                        <MudButton Ripple="false" StartIcon="@Icons.Material.Filled.Check" Color="Color.Info" Variant="Variant.Filled" FullWidth="true">Added</MudButton>
+                    }
+                    else
+                    {
+                        <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" FullWidth="true">Add</MudButton>
+                    }
+                </MudStack>
             </RowTemplate>
             <NoRecordsContent>
                 <MudText>@CommonResource.message_noRecordsFound</MudText>
@@ -50,24 +55,24 @@
 @code {
     [Inject] public required IDialogService DialogService { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
-    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required IUsersApi UsersApi { get; init; }
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; init; } = default!;
 
     [Parameter, EditorRequired] public required GroupModel Group { get; set; }
 
-    private MudTable<GroupUserModel> usersTable = default!;
+    private MudTable<UserModel> usersTable = default!;
     private string? searchString;
 
-    private async Task<TableData<GroupUserModel>> GetUsers(TableState state, CancellationToken token)
+    private async Task<TableData<UserModel>> GetUsers(TableState state, CancellationToken token)
     {
-        var response = await GroupsApi.GetUsers(Group.Id, state.Page, state.PageSize, searchString, token);
+        var response = await UsersApi.GetUsers(state.Page, state.PageSize, searchString, token);
 
         switch (response.StatusCode)
         {
             case HttpStatusCode.OK:
-                return new TableData<GroupUserModel>()
+                return new TableData<UserModel>()
                 {
                     TotalItems = response.Content!.Total,
                     Items = response.Content!.Results

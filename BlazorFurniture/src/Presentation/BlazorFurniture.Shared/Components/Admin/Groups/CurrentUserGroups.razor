@@ -41,7 +41,7 @@
 @code {
     [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
     [Inject] public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-    [Inject] public required IUserApi UserApi { get; set; }
+    [Inject] public required IUsersApi UserApi { get; set; }
 
     [PersistentState]
     public IEnumerable<UserGroupMembershipModel>? Groups { get; set; }
