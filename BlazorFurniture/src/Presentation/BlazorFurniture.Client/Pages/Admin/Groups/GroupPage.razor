@@ -31,7 +31,8 @@
 {
     <MudTable T="GroupUserModel" @ref="usersTable" ServerData="GetUsers"
               Hover="true" OnRowClick="NavigateToUserEvent"
-              RowClass="cursor-pointer" Breakpoint="Breakpoint.Sm">
+              RowClass="cursor-pointer" Breakpoint="Breakpoint.Sm"
+              Context="tableContext">
         <ToolBarContent>
             <MudText Typo="Typo.h6">@AdminResource.nav_users</MudText>
             <MudSpacer />
@@ -45,18 +46,24 @@
             <MudTh>@CommonResource.actions</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="@CommonResource.model_name">@($"{context.FirstName} {context.LastName}")</MudTd>
-            <MudTd DataLabel="@CommonResource.email">@context.Email</MudTd>
-            <MudTd DataLabel="@CommonResource.role">@CommonLocalizer[$"roles.{context.Role}"]</MudTd>
+            <MudTd DataLabel="@CommonResource.model_name">@($"{tableContext.FirstName} {tableContext.LastName}")</MudTd>
+            <MudTd DataLabel="@CommonResource.email">@tableContext.Email</MudTd>
+            <MudTd DataLabel="@CommonResource.role">@CommonLocalizer[$"roles.{tableContext.Role}"]</MudTd>
             <MudTd DataLabel="@CommonResource.actions">
                 <AuthorizeView Context="authContext">
-                    @if (!authContext.User.GetUserId().Equals(context.Id))
-                    {
-                        <MudMenu Icon="@Icons.Material.Filled.MoreHoriz"
-                                 AriaLabel="Open user actions">
-                            <MudMenuItem Label="Remove" OnClick="@(async () => await OpenRemoveMemberDialog(context))" />
-                        </MudMenu>
-                    }
+                    <Authorized>
+                        @if (!authContext.User.GetUserId().Equals(tableContext.Id))
+                        {
+                            <MudMenu Icon="@Icons.Material.Filled.MoreHoriz"
+                                     AriaLabel="Open user actions">
+                                <PermissionAuthorizeView Permission="@Permissions.REMOVE_GROUP_MEMBER" GroupId="@GroupId">
+                                    <Authorized>
+                                        <MudMenuItem Label="Remove" OnClick="@(async () => await OpenRemoveMemberDialog(tableContext))" />
+                                    </Authorized>
+                                </PermissionAuthorizeView>
+                            </MudMenu>
+                        }
+                    </Authorized>
                 </AuthorizeView>
             </MudTd>
         </RowTemplate>

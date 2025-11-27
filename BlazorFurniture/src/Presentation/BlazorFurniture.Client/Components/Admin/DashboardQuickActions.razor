@@ -4,7 +4,7 @@
 <ContentWithHeader Title="@CommonResource.section_quickActions" Class="h-full" Style="@Style" ContentClass="py-4 align-content-center">
     <ChildContent>
         <MudGrid Justify="Justify.Center">
-            <AuthorizeView Policy="@Permissions.WithPrefix(Permissions.CREATE_GROUP)">
+            <AuthorizeView Policy="@Permissions.GetPolicy(Permissions.CREATE_GROUP)">
                 <Authorized>
                     <MudItem xs="6">
                         <ActionButton Icon="@Icons.Material.Filled.Add"
