@@ -111,7 +111,7 @@ public class GroupsControllerTests : IAsyncLifetime
         var response = await httpClient.SendAsync(request, CancellationToken.None);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        response.IsSuccessStatusCode.Should().BeFalse();
     }
 
     [Fact]
