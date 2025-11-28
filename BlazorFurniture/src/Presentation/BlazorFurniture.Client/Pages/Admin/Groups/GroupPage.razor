@@ -43,15 +43,20 @@
             <MudTh>@CommonResource.model_name</MudTh>
             <MudTh>@CommonResource.email</MudTh>
             <MudTh>@CommonResource.role</MudTh>
-            <MudTh>@CommonResource.actions</MudTh>
+            <RoleAuthorizeView PlatformRole="@PlatformRoles.Admin" GroupRole="@GroupRoles.GroupAdmin" GroupId="@GroupId">
+                <Authorized>
+                    <MudTh>@CommonResource.actions</MudTh>
+                </Authorized>
+                <Authorizing/>
+            </RoleAuthorizeView>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="@CommonResource.model_name">@($"{tableContext.FirstName} {tableContext.LastName}")</MudTd>
             <MudTd DataLabel="@CommonResource.email">@tableContext.Email</MudTd>
             <MudTd DataLabel="@CommonResource.role">@CommonLocalizer[$"roles.{tableContext.Role}"]</MudTd>
-            <MudTd DataLabel="@CommonResource.actions">
-                <RoleAuthorizeView PlatformRole="@PlatformRoles.Admin" GroupRole="@GroupRoles.GroupAdmin" GroupId="@GroupId">
-                    <Authorized>
+            <RoleAuthorizeView PlatformRole="@PlatformRoles.Admin" GroupRole="@GroupRoles.GroupAdmin" GroupId="@GroupId">
+                <Authorized>
+                    <MudTd DataLabel="@CommonResource.actions">
                         @if (!context.User.GetUserId().Equals(tableContext.Id))
                         {
                             <MudMenu Icon="@Icons.Material.Filled.MoreHoriz"
@@ -63,9 +68,9 @@
                                 </PermissionAuthorizeView>
                             </MudMenu>
                         }
-                    </Authorized>
-                </RoleAuthorizeView>
-            </MudTd>
+                    </MudTd>
+                </Authorized>
+            </RoleAuthorizeView>
         </RowTemplate>
         <NoRecordsContent>
             <MudText>@CommonResource.message_noRecordsFound</MudText>
