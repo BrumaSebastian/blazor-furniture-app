@@ -12,4 +12,5 @@ public sealed record GroupUserRepresentation
     public bool Enabled { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public GroupRoles Role { get; set; }
+    public Dictionary<string, List<string>> Attributes { get; set; } = [];
 }

@@ -8,4 +8,5 @@ public sealed class UserModel
     public required string LastName { get; set; }
     public PlatformRoles Role { get; set; }
     public IEnumerable<Guid> Groups { get; set; } = [];
+    public string? Avatar { get; set; }
 }

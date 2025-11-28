@@ -10,4 +10,5 @@ public sealed class UserResponse
     public required string LastName { get; set; }
     public PlatformRoles Role { get; set; }
     public List<Guid> Groups { get; set; }
+    public string? Avatar { get; set; }
 }

@@ -24,6 +24,10 @@
 		<ProjectReference Include="..\BlazorFurniture.Shared\BlazorFurniture.Shared.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\media\avatars\" />
+	</ItemGroup>
+
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<MudAllowedAttributePattern>LowerCase</MudAllowedAttributePattern>
 	</PropertyGroup>

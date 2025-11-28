@@ -8,4 +8,5 @@ public sealed class GroupUserModel
     public required string LastName { get; set; }
     public string FullName { get => $"{FirstName} {LastName}"; }
     public GroupRoles Role { get; set; }
+    public string? Avatar { get; set; }
 }

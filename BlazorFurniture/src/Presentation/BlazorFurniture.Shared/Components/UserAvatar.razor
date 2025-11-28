@@ -1,0 +1,15 @@
+<MudStack Row="true" Justify="Justify.Center">
+    <MudAvatar>
+        <MudImage Src="@ImageUrl" />
+    </MudAvatar>
+    <MudStack>
+        <MudText Typo="Typo.subtitle1">@FullName</MudText>
+        <MudText Typo="Typo.body2">@Email</MudText>
+    </MudStack>
+</MudStack>
+
+@code {
+    [Parameter] public string? ImageUrl { get; set; }
+    [Parameter, EditorRequired] public string FullName { get; set; }
+    [Parameter, EditorRequired] public string Email { get; set; }
+}

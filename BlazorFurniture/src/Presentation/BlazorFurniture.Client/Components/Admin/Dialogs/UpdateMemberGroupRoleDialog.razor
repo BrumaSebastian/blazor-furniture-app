@@ -1,0 +1,51 @@
+﻿@using BlazorFurniture.Shared.Models.Groups
+@using BlazorFurniture.Shared.Services.API.Interfaces
+@using MudBlazor.Charts
+@using BlazorFurniture.Shared.Components
+
+<MudDialog Gutters="true" TitleClass="d-flex justify-center" ContentClass="mb-2">
+    <TitleContent>
+        <MudStack>
+            <MudText Typo="Typo.subtitle2"><strong>Modify Role</strong></MudText>
+            <MudText Typo="Typo.body2">For <strong>@User.FullName</strong> in <strong>@Group.Name</strong></MudText>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        <UserAvatar ImageUrl="@User.Avatar" FullName="@User.FullName" Email="@User.Email" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" FullWidth="true">Cancel</MudButton>
+        <MudButton Color="Color.Error" FullWidth="true" Variant="Variant.Filled" OnClick="Confirm">Save Changes</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
+
+    [Parameter] public required GroupModel Group { get; init; }
+    [Parameter] public required GroupUserModel User { get; init; }
+
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; init; } = default!;
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Confirm()
+    {
+        // var response = await GroupsApi.UpdateMemberGroupRole(Group.Id, User.Id, default);
+
+        // switch (response.StatusCode)
+        // {
+        //     case HttpStatusCode.NoContent:
+        //         Snackbar.Add(CommonResource.message_groupMemberRemoved, Severity.Success);
+        //         MudDialog.Close(true);
+        //         break;
+        //     default:
+        //         Snackbar.Add(CommonResource.errors_unknownError, Severity.Error);
+        //         break;
+        // }
+    }
+}

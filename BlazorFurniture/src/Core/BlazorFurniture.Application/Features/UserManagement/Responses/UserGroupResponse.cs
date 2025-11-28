@@ -7,4 +7,5 @@ public sealed class UserGroupResponse
     public Guid Id { get; init; }
     public required string Name { get; init; }
     public required GroupRoles Role { get; set; }
+    public string? Avatar { get; set; }
 }

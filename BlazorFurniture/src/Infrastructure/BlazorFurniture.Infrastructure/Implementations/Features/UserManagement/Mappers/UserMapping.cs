@@ -16,6 +16,7 @@ internal static class UserMapping
             Email = source.Email,
             FirstName = source.FirstName,
             LastName = source.LastName,
+            Avatar = GetUserAvatar(source.Attributes)
         };
     }
 
@@ -28,7 +29,8 @@ internal static class UserMapping
             FirstName = source.FirstName!,
             LastName = source.LastName!,
             Role = source.Role,
-            Groups = source.Groups
+            Groups = source.Groups,
+            Avatar = GetUserAvatar(source.Attributes)
         };
     }
 
@@ -68,6 +70,7 @@ internal static class UserMapping
             FirstName = source.FirstName!,
             LastName = source.LastName!,
             Role = source.Role,
+            Avatar = GetUserAvatar(source.Attributes)
         };
     }
 
@@ -78,6 +81,19 @@ internal static class UserMapping
             Id = source.Id,
             Name = source.Name,
             Role = source.Role,
+            Avatar = GetUserAvatar(source.Attributes),
         };
+    }
+
+    private static string? GetUserAvatar( Dictionary<string, List<string>>? keyValuePairs )
+    {
+        if (keyValuePairs is null)
+        {
+            return null;
+        }
+
+        return keyValuePairs.TryGetValue("avatar", out var avatars) && avatars.Count > 0
+                ? avatars[0]
+                : null;
     }
 }

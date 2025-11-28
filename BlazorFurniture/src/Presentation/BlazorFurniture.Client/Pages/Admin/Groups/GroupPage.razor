@@ -47,11 +47,18 @@
                 <Authorized>
                     <MudTh>@CommonResource.actions</MudTh>
                 </Authorized>
-                <Authorizing/>
+                <Authorizing />
             </RoleAuthorizeView>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="@CommonResource.model_name">@($"{tableContext.FirstName} {tableContext.LastName}")</MudTd>
+            <MudTd DataLabel="@CommonResource.model_name">
+                <MudStack Row="true" AlignItems="AlignItems.Center">
+                    <MudAvatar>
+                        <MudImage Src="@tableContext.Avatar"></MudImage>
+                    </MudAvatar>
+                    @tableContext.FullName
+                </MudStack>
+            </MudTd>
             <MudTd DataLabel="@CommonResource.email">@tableContext.Email</MudTd>
             <MudTd DataLabel="@CommonResource.role">@CommonLocalizer[$"roles.{tableContext.Role}"]</MudTd>
             <RoleAuthorizeView PlatformRole="@PlatformRoles.Admin" GroupRole="@GroupRoles.GroupAdmin" GroupId="@GroupId">
@@ -64,6 +71,11 @@
                                 <PermissionAuthorizeView Permission="@Permissions.REMOVE_GROUP_MEMBER" GroupId="@GroupId">
                                     <Authorized>
                                         <MudMenuItem Label="Remove" OnClick="@(async () => await OpenRemoveMemberDialog(tableContext))" />
+                                    </Authorized>
+                                </PermissionAuthorizeView>
+                                <PermissionAuthorizeView Permission="@Permissions.UPDATE_GROUP_MEMBER" GroupId="@GroupId">
+                                    <Authorized>
+                                        <MudMenuItem Label="Change Role" OnClick="@(async () => await OpenChangeGroupRoleDialog(tableContext))" />
                                     </Authorized>
                                 </PermissionAuthorizeView>
                             </MudMenu>
@@ -218,6 +230,27 @@
             { x => x.User, user }
         };
         var dialogRef = await DialogService.ShowAsync<RemoveMemberFromGroupDialog>($"Remove {user.FullName}?", parameters, options);
+        var result = await dialogRef.Result;
+        if (result?.Data is not null)
+        {
+            await usersTable.ReloadServerData();
+        }
+    }
+
+    private async Task OpenChangeGroupRoleDialog(GroupUserModel user)
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = false,
+            BackdropClick = false,
+            MaxWidth = MaxWidth.Small,
+        };
+        var parameters = new DialogParameters<UpdateMemberGroupRoleDialog>
+        {
+            { x => x.Group, groupDetails },
+            { x => x.User, user }
+        };
+        var dialogRef = await DialogService.ShowAsync<UpdateMemberGroupRoleDialog>(null, parameters, options);
         var result = await dialogRef.Result;
         if (result?.Data is not null)
         {
