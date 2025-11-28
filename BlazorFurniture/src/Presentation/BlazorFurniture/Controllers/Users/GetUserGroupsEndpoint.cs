@@ -18,6 +18,7 @@ public class GetUserGroupsEndpoint( IQueryDispatcher queryDispatcher ) : Endpoin
             options.Summary = "Retrieve user groups by ID";
             options.Description = "Endpoint to get the groups associated with a specific user by their ID.";
             options.Response(StatusCodes.Status200OK);
+            options.Response<IEnumerable<UserGroupResponse>>();
         });
     }
 

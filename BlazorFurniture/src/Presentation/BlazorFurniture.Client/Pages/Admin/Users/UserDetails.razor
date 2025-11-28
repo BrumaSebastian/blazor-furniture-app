@@ -1,5 +1,111 @@
-﻿<h3>UserDetails</h3>
+﻿@page "/admin/users/{userId:guid}"
+@layout AdminLayout
+@inherits AdminPageBase
+@attribute [Authorize]
+
+<MudStack Breakpoint="Breakpoint.MdAndUp" Class="pa-4" Spacing="6">
+    @if (user is not null)
+    {
+        <MudPaper Elevation="2" MinWidth="150px" Class="pa-6">
+            <MudStack AlignItems="AlignItems.Center">
+                <MudImage Src="@user.Avatar" Width="250" Fluid="true" />
+                <MudText Typo="Typo.subtitle1">@user.FullName</MudText>
+                <MudText Typo="Typo.body2">@user.Email</MudText>
+                <MudChip T="string" Color="Color.Success">Active</MudChip>
+                <MudDivider />
+                <MudText Typo="Typo.h6">Last Login</MudText>
+                <MudText Typo="Typo.body2">2 days ago</MudText>
+            </MudStack>
+        </MudPaper>
+    }
+
+    @if (groups is not null)
+    {
+        <MudPaper Elevation="2" Width="100%">
+            <MudStack>
+                <MudTabs @bind-ActivePanelIndex="@tabIndex">
+                    <MudTabPanel Text="Groups & Roles"></MudTabPanel>
+                    <MudTabPanel Text="Activity Log"></MudTabPanel>
+                    <MudTabPanel Text="Settings"></MudTabPanel>
+                </MudTabs>
+
+                @if (tabIndex == 0)
+                {
+                    <MudList T="UserGroupMembershipModel">
+                        @foreach (var group in groups)
+                        {
+                            <MudListItem>
+                                <MudStack Row="true" AlignItems="AlignItems.Center">
+                                    <MudText Typo="Typo.h6">@group.Name</MudText>
+                                    <MudSpacer />
+                                    <MudChip T="string"> @CommonLocalizer[$"roles.{group.Role}"]</MudChip>
+                                    <MudLink OnClick="@(() => NavigateToGroup(group))" Href=@($"/admin/groups/{group.Id}") Color="Color.Primary">Manage</MudLink>
+                                </MudStack>
+                            </MudListItem>
+                        }
+                    </MudList>
+                }
+            </MudStack>
+        </MudPaper>
+    }
+</MudStack>
 
 @code {
+    [Inject] public required IUsersApi UsersApi { get; init; }
+    [Inject] public required ISnackbar snackbar { get; init; }
+    [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; init; }
+    [Inject] public required NavigationManager NavigationManager { get; init; }
 
+    [Parameter] public Guid UserId { get; set; }
+
+    private UserProfileModel? user;
+    private List<UserGroupMembershipModel>? groups;
+    private int tabIndex = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userProfileTask = UsersApi.GetUserProfile(UserId, default);
+        var groupsTask = UsersApi.GetUserGroups(UserId, default);
+        await Task.WhenAll(userProfileTask, groupsTask);
+
+        var userResponse = userProfileTask.Result;
+        var groupsResponse = groupsTask.Result;
+
+        switch (userResponse.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                user = userResponse.Content!;
+                break;
+            default:
+                snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
+                break;
+        }
+
+        switch (groupsResponse.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                groups = groupsResponse.Content!;
+                break;
+            default:
+                snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
+                break;
+        }
+    }
+
+    private void NavigateToGroup(UserGroupMembershipModel group)
+    {
+        var href = $"/admin/groups/{group.Id}";
+
+        if (Breadcrumbs.Items[^2].Text == group.Name)
+        {
+            var items = Breadcrumbs.Items.ToArray();
+            Breadcrumbs.Set(items[..^1]);
+        }
+        else
+        {
+            Breadcrumbs.Add(new BreadcrumbItem(group.Name, href: href));
+        }
+
+        NavigationManager.NavigateTo(href);
+    }
 }

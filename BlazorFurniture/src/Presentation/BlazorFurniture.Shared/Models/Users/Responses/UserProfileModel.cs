@@ -8,4 +8,5 @@ public sealed class UserProfileModel
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
     public string? Avatar { get; set; }
+    public string FullName { get => $"{FirstName} {LastName}"; }
 }

@@ -190,7 +190,7 @@
 
     private void NavigateToUserEvent(TableRowClickEventArgs<GroupUserModel> e)
     {
-        var href = $"/admin/groups/{GroupId}/users/{e.Item!.Id}";
+        var href = $"/admin/users/{e.Item!.Id}";
         Breadcrumbs.Add(new BreadcrumbItem(e.Item!.Email, href: href));
         NavigationManager.NavigateTo(href);
     }
