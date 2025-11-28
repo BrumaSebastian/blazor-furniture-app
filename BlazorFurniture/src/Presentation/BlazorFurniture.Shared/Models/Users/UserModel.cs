@@ -9,4 +9,5 @@ public sealed class UserModel
     public PlatformRoles Role { get; set; }
     public IEnumerable<Guid> Groups { get; set; } = [];
     public string? Avatar { get; set; }
+    public string FullName { get => $"{FirstName} {LastName}"; }
 }

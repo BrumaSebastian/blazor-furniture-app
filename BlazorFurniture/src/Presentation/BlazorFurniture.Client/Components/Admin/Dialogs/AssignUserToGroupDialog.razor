@@ -18,14 +18,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudStack Row="true" Breakpoint="Breakpoint.Md" Class="my-2">
-                    <MudStack>
-                        <MudText Typo="Typo.subtitle1">
-                            @($"{context.FirstName} {context.LastName}")
-                        </MudText>
-                        <MudText Typo="Typo.caption">
-                            @context.Email
-                        </MudText>
-                    </MudStack>
+                    <UserAvatar FullName="@context.FullName" Email="@context.Email" ImageUrl="@context.Avatar" />
                     <MudFlexBreak />
                     @if (context.Groups.Contains(Group.Id))
                     {
@@ -97,7 +90,8 @@
         {
             MudDialog.Close(DialogResult.Ok(true));
         }
-        else{
+        else
+        {
             MudDialog.Cancel();
         }
     }
