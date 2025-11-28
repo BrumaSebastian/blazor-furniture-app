@@ -2,8 +2,6 @@
 using BlazorFurniture.Application.Features.UserManagement.Queries;
 using BlazorFurniture.Application.Features.UserManagement.Requests;
 using BlazorFurniture.Application.Features.UserManagement.Responses;
-using BlazorFurniture.Core.Shared.Utils.Extensions;
-using BlazorFurniture.Extensions;
 using BlazorFurniture.Extensions.Endpoints;
 using FastEndpoints;
 

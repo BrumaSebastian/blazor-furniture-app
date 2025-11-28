@@ -10,4 +10,5 @@ public record UserRepresentation
     public bool EmailVerified { get; set; }
     public bool Enabled { get; set; }
     public List<Guid> Groups { get; set; } = [];
+    public Dictionary<string, List<string>> Attributes { get; set; } = [];
 }

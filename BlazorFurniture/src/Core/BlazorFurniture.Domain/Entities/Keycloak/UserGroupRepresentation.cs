@@ -9,4 +9,5 @@ public sealed record UserGroupRepresentation
     public required string Name { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public required GroupRoles Role { get; set; }
+    public Dictionary<string, List<string>> Attributes { get; set; } = [];
 }

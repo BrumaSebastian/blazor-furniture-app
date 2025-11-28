@@ -7,4 +7,5 @@ public sealed class UserProfileModel
     public string? Email { get; init; }
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
+    public string? Avatar { get; set; }
 }

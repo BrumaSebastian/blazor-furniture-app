@@ -11,6 +11,13 @@ internal static partial class CookieOidcServiceCollectionExtensions
         services.AddSingleton<CookieOidcRefresher>();
         services.AddOptions<CookieAuthenticationOptions>(cookieScheme).Configure<CookieOidcRefresher>(( cookieOptions, refresher ) =>
         {
+            cookieOptions.LoginPath = "/authentication/login";
+            cookieOptions.LogoutPath = "/authentication/logout";
+            cookieOptions.Events.OnRedirectToLogin = ctx =>
+            {
+                ctx.Response.Redirect(ctx.RedirectUri);
+                return Task.CompletedTask;
+            };
             cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, oidcScheme);
         });
         services.AddOptions<OpenIdConnectOptions>(oidcScheme).Configure(oidcOptions =>

@@ -1,0 +1,74 @@
+﻿@using BlazorFurniture.Shared.Models.Groups
+@using BlazorFurniture.Shared.Services.API.Interfaces
+@using MudBlazor.Charts
+@using BlazorFurniture.Shared.Components
+
+<MudDialog Gutters="true" TitleClass="w-full" ContentClass="mb-2">
+    <TitleContent>
+        <MudStack>
+            <MudText Typo="Typo.h5"><strong>Modify Role</strong></MudText>
+            <MudText Typo="Typo.caption">For <strong>@User.FullName</strong> in <strong>@Group.Name</strong></MudText>
+        </MudStack>
+        <MudDivider DividerType="DividerType.FullWidth" />
+    </TitleContent>
+    <DialogContent>
+        <MudStack AlignItems="AlignItems.Start">
+            <UserAvatar ImageUrl="@User.Avatar" FullName="@User.FullName" Email="@User.Email" />
+
+            <MudRadioGroup T="GroupRoles" @bind-Value="selectedRole" Class="w-full flex-column" InputClass="flex-column align-start">
+                @foreach (var roleModel in Group.Roles)
+                {
+                    <MudRadio Class="@(selectedRole == roleModel.Role ? "border-solid border mud-border-primary rounded w-full" : "w-full")"
+                              Value="@roleModel.Role" Color="Color.Primary">
+                        @CommonLocalizer[$"roles.{roleModel.Role}"]
+                    </MudRadio>
+                }
+            </MudRadioGroup>
+            <MudDivider DividerType="DividerType.FullWidth" />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" FullWidth="true">Cancel</MudButton>
+        <MudButton Disabled="@(selectedRole == User.Role)" Color="Color.Error" FullWidth="true" Variant="Variant.Filled" OnClick="Confirm">Save Changes</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
+    [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
+
+    [Parameter] public required DetailedGroupModel Group { get; init; }
+    [Parameter] public required GroupUserModel User { get; init; }
+
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; init; } = default!;
+
+    private GroupRoles selectedRole;
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    protected override void OnParametersSet()
+    {
+        selectedRole = User.Role;
+    }
+
+    private async Task Confirm()
+    {
+        var roleId = Group.Roles.Where(r => r.Role == selectedRole).First().Id;
+        var response = await GroupsApi.UpdateMemberGroupRole(Group.Id, User.Id, roleId, default);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.NoContent:
+                Snackbar.Add(CommonResource.message_groupMemberRoleUpdated, Severity.Success);
+                MudDialog.Close(true);
+                break;
+            default:
+                Snackbar.Add(CommonResource.errors_unknownError, Severity.Error);
+                break;
+        }
+    }
+}

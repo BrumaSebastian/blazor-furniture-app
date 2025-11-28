@@ -1,0 +1,50 @@
+﻿@using BlazorFurniture.Shared.Models.Groups
+@using BlazorFurniture.Shared.Services.API.Interfaces
+@using MudBlazor.Charts
+
+<MudDialog Gutters="true" TitleClass="d-flex justify-center" ContentClass="mb-2">
+    <TitleContent>
+        <MudStack AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Outlined.Delete" Color="Color.Error"></MudIcon>
+            <MudText Typo="Typo.subtitle1" GutterBottom="true">Remove <strong>@User.FullName</strong>?</MudText>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        <MudText Typo="Typo.subtitle2">Are you sure you want to remove <strong>@User.FullName</strong> from the <strong>@Group.Name</strong> group?<br />This action cannot be undone.</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" FullWidth="true">Cancel</MudButton>
+        <MudButton Color="Color.Error" FullWidth="true" Variant="Variant.Filled" OnClick="ConfirmRemove">Confirm Removal</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
+
+    [Parameter] public required GroupModel Group { get; init; }
+    [Parameter] public required GroupUserModel User { get; init; }
+
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; init; } = default!;
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task ConfirmRemove()
+    {
+        var response = await GroupsApi.RemoveMember(Group.Id, User.Id, default);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.NoContent:
+                Snackbar.Add(CommonResource.message_groupMemberRemoved, Severity.Success);
+                MudDialog.Close(true);
+                break;
+            default:
+                Snackbar.Add(CommonResource.errors_unknownError, Severity.Error);
+                break;
+        }
+    }
+}

@@ -196,6 +196,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Role updated successfully.
+        /// </summary>
+        public static string message_groupMemberRoleUpdated {
+            get {
+                return ResourceManager.GetString("message.groupMemberRoleUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading.
         /// </summary>
         public static string message_loading {

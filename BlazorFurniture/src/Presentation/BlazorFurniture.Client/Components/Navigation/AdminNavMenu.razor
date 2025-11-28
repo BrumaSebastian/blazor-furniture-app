@@ -5,13 +5,13 @@
 		<MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
         <MudNavLink Href="/admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">@AdminResource.nav_dashboard</MudNavLink>
 
-        <AuthorizeView Policy="@Permissions.WithPrefix(Permissions.VIEW_GROUPS)">
+        <AuthorizeView Policy="@Permissions.GetPolicy(Permissions.VIEW_GROUPS)">
             <Authorized>
                 <MudNavLink Href="/admin/groups" Icon="@Icons.Material.Filled.Group">@AdminResource.nav_groups</MudNavLink>
             </Authorized>
         </AuthorizeView>
 
-        <AuthorizeView Policy="@Permissions.WithPrefix(Permissions.VIEW_USERS)">
+        <AuthorizeView Policy="@Permissions.GetPolicy(Permissions.VIEW_USERS)">
             <Authorized>
                 <MudNavLink Href="/admin/users" Icon="@Icons.Material.Filled.People">@AdminResource.nav_users</MudNavLink>
             </Authorized>
