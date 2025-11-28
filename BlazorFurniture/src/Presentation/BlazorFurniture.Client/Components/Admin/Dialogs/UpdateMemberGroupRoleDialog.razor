@@ -3,15 +3,19 @@
 @using MudBlazor.Charts
 @using BlazorFurniture.Shared.Components
 
-<MudDialog Gutters="true" TitleClass="d-flex justify-center" ContentClass="mb-2">
+<MudDialog Gutters="true" TitleClass="max-w-full" ContentClass="mb-2">
     <TitleContent>
         <MudStack>
-            <MudText Typo="Typo.subtitle2"><strong>Modify Role</strong></MudText>
-            <MudText Typo="Typo.body2">For <strong>@User.FullName</strong> in <strong>@Group.Name</strong></MudText>
+            <MudText Typo="Typo.h5"><strong>Modify Role</strong></MudText>
+            <MudText Typo="Typo.caption">For <strong>@User.FullName</strong> in <strong>@Group.Name</strong></MudText>
         </MudStack>
+        <MudDivider DividerType="DividerType.FullWidth" />
     </TitleContent>
     <DialogContent>
-        <UserAvatar ImageUrl="@User.Avatar" FullName="@User.FullName" Email="@User.Email" />
+        <MudStack AlignItems="AlignItems.Start">
+            <UserAvatar ImageUrl="@User.Avatar" FullName="@User.FullName" Email="@User.Email" />
+            <MudDivider DividerType="DividerType.FullWidth" />
+        </MudStack>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel" FullWidth="true">Cancel</MudButton>
