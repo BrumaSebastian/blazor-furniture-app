@@ -1,0 +1,6 @@
+.selected-radio {
+    border: 1px solid var(--mud-palette-primary);
+    border-radius: 6px;
+    padding: 0.25rem;
+    box-shadow: 0 0 0 2px rgba(25,118,210,0.06);
+}
