@@ -21,10 +21,13 @@
             <MudText Typo="Typo.subtitle1">@AdminResource.add_member</MudText>
         </MudButton>
     </MudStack>
-    <MudTabs Outlined="true" @bind-ActivePanelIndex="@tabIndex">
-        <MudTabPanel Text="@AdminResource.groups_users" Icon="@Icons.Material.Filled.Groups" />
-        <MudTabPanel Text="@AdminResource.groups_roles" />
-    </MudTabs>
+    <MudStack Row="true" Class="my-8">
+        <MudTabs Elevation="2" Outlined="true" @bind-ActivePanelIndex="@tabIndex" Border="true" Rounded="true" >
+            <MudTabPanel Text="@AdminResource.groups_users" Icon="@Icons.Material.Filled.Groups" />
+            <MudTabPanel Text="@AdminResource.groups_roles" />
+        </MudTabs>
+        <MudSpacer/>
+    </MudStack>
 }
 
 @if (tabIndex is 0)
@@ -101,7 +104,9 @@
     <MudTable T="GroupRoleModel" @ref="rolesTable" ServerData="GetRoles"
               Hover="true"
               RowClass="cursor-pointer"
-              Breakpoint="Breakpoint.Sm">
+              Breakpoint="Breakpoint.Sm"
+              Bordered="true"
+              ContainerClass="rounded">
         <ToolBarContent>
             <MudText Typo="Typo.h6">@AdminResource.groups_roles</MudText>
             <MudSpacer />
