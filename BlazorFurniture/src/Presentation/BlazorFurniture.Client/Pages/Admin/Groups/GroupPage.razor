@@ -231,6 +231,7 @@
         };
         var dialogRef = await DialogService.ShowAsync<RemoveMemberFromGroupDialog>($"Remove {user.FullName}?", parameters, options);
         var result = await dialogRef.Result;
+
         if (result?.Data is not null)
         {
             await usersTable.ReloadServerData();
@@ -253,6 +254,7 @@
         };
         var dialogRef = await DialogService.ShowAsync<UpdateMemberGroupRoleDialog>(null, parameters, options);
         var result = await dialogRef.Result;
+
         if (result?.Data is not null)
         {
             await usersTable.ReloadServerData();

@@ -16,7 +16,7 @@ public partial class RoleAuthorizeView : AuthorizeView
     [Parameter] public GroupRoles? GroupRole { get; set; }
     [Parameter] public string? Context { get; set; }
 
-    private bool? hasPermission;
+    private bool hasPermission;
     private AuthenticationState? authState;
 
     protected override async Task OnParametersSetAsync()
@@ -25,8 +25,6 @@ public partial class RoleAuthorizeView : AuthorizeView
         {
             throw new InvalidOperationException($"Do not specify both '{nameof(Authorized)}' and '{nameof(ChildContent)}'.");
         }
-
-        hasPermission = null;
 
         authState = await AuthStateProvider.GetAuthenticationStateAsync();
 
@@ -41,7 +39,7 @@ public partial class RoleAuthorizeView : AuthorizeView
             hasPermission = await PermissionService.HasPlatformRole(PlatformRole.Value);
         }
         
-        if (hasPermission is null && GroupRole is not null)
+        if (!hasPermission && GroupRole is not null)
         {
             if (!GroupId.HasValue)
             {
@@ -54,11 +52,11 @@ public partial class RoleAuthorizeView : AuthorizeView
 
     protected override void BuildRenderTree( RenderTreeBuilder builder )
     {
-        if (hasPermission is null || authState is null)
+        if (authState is null)
         {
             builder.AddContent(0, Authorizing);
         }
-        else if (hasPermission!.Value)
+        else if (hasPermission)
         {
             var authorizedContent = Authorized ?? ChildContent;
             builder.AddContent(1, authorizedContent?.Invoke(authState));

@@ -25,6 +25,6 @@ public interface IGroupsApi
     [Delete("/api/groups/{groupId}/users/{userId}")]
     Task<IApiResponse> RemoveMember( Guid groupId, Guid userId, CancellationToken ct );
 
-    [Put("/api/groups/{groupId}/users/{userId}/roles")]
+    [Put("/api/groups/{groupId}/users/{userId}/roles/{roleId}")]
     Task<IApiResponse> UpdateMemberGroupRole( Guid groupId, Guid userId, Guid roleId, CancellationToken ct );
 }

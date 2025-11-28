@@ -57,17 +57,18 @@
 
     private async Task Confirm()
     {
-        // var response = await GroupsApi.UpdateMemberGroupRole(Group.Id, User.Id, default);
+        var roleId = Group.Roles.Where(r => r.Role == selectedRole).First().Id;
+        var response = await GroupsApi.UpdateMemberGroupRole(Group.Id, User.Id, roleId, default);
 
-        // switch (response.StatusCode)
-        // {
-        //     case HttpStatusCode.NoContent:
-        //         Snackbar.Add(CommonResource.message_groupMemberRemoved, Severity.Success);
-        //         MudDialog.Close(true);
-        //         break;
-        //     default:
-        //         Snackbar.Add(CommonResource.errors_unknownError, Severity.Error);
-        //         break;
-        // }
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.NoContent:
+                Snackbar.Add(CommonResource.message_groupMemberRoleUpdated, Severity.Success);
+                MudDialog.Close(true);
+                break;
+            default:
+                Snackbar.Add(CommonResource.errors_unknownError, Severity.Error);
+                break;
+        }
     }
 }

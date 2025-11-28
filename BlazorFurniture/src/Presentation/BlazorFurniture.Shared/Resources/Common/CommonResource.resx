@@ -201,4 +201,7 @@
   <data name="message.groupMemberRemoved" xml:space="preserve">
     <value>Removed successfully</value>
   </data>
+  <data name="message.groupMemberRoleUpdated" xml:space="preserve">
+    <value>Role updated successfully</value>
+  </data>
 </root>
