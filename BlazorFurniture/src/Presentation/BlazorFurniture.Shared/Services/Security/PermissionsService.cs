@@ -1,4 +1,5 @@
-﻿using BlazorFurniture.Shared.Models.Users.Responses;
+﻿using BlazorFurniture.Shared.Models.Users;
+using BlazorFurniture.Shared.Models.Users.Responses;
 using BlazorFurniture.Shared.Services.API.Interfaces;
 using BlazorFurniture.Shared.Services.Security.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -75,6 +76,21 @@ public class PermissionsService( IUsersApi userApi, AuthenticationStateProvider 
         return permissions?.Groups?
             .FirstOrDefault(g => g.Id == groupId)?.Permissions?
             .Contains(permission) ?? false;
+    }
+
+    public async Task<bool> HasPlatformRole( PlatformRoles role, CancellationToken ct = default )
+    {
+        var permissions = await GetUserPermissions(ct: ct);
+
+        return permissions?.Role == role;
+    }
+
+    public async Task<bool> HasGroupRole( GroupRoles role, Guid groupId, CancellationToken ct = default )
+    {
+        var permissions = await GetUserPermissions(ct: ct);
+
+        return permissions?.Groups?
+            .FirstOrDefault(g => g.Id == groupId)?.Role == role;
     }
 
     public async Task Refresh( CancellationToken ct = default )

@@ -50,9 +50,9 @@
             <MudTd DataLabel="@CommonResource.email">@tableContext.Email</MudTd>
             <MudTd DataLabel="@CommonResource.role">@CommonLocalizer[$"roles.{tableContext.Role}"]</MudTd>
             <MudTd DataLabel="@CommonResource.actions">
-                <AuthorizeView Context="authContext">
+                <RoleAuthorizeView PlatformRole="@PlatformRoles.Admin" GroupRole="@GroupRoles.GroupAdmin" GroupId="@GroupId">
                     <Authorized>
-                        @if (!authContext.User.GetUserId().Equals(tableContext.Id))
+                        @if (!context.User.GetUserId().Equals(tableContext.Id))
                         {
                             <MudMenu Icon="@Icons.Material.Filled.MoreHoriz"
                                      AriaLabel="Open user actions">
@@ -64,7 +64,7 @@
                             </MudMenu>
                         }
                     </Authorized>
-                </AuthorizeView>
+                </RoleAuthorizeView>
             </MudTd>
         </RowTemplate>
         <NoRecordsContent>
