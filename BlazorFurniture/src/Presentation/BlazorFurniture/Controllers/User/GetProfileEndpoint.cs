@@ -10,9 +10,9 @@ using FastEndpoints;
 namespace BlazorFurniture.Controllers.User;
 
 public class GetProfileEndpoint(
-    IQueryDispatcher queryDispatcher,
-    IEmailNotificationService emailNotificationService,
-    ILogger<GetProfileEndpoint> logger )
+    IQueryDispatcher queryDispatcher
+    //IEmailNotificationService emailNotificationService,
+    /*ILogger<GetProfileEndpoint> logger*/ )
     : EndpointWithoutRequest<UserProfileResponse>
 {
     public override void Configure()
@@ -45,8 +45,8 @@ public class GetProfileEndpoint(
         await result.Match(
             response =>
             {
-                _ = emailNotificationService.SendWelcomeEmail(new(response.Username, response.Email!, new System.Globalization.CultureInfo("en")), ct)
-                    .LogOnFaulted(logger);
+                //_ = emailNotificationService.SendWelcomeEmail(new(response.Username, response.Email!, new System.Globalization.CultureInfo("en")), ct)
+                //    .LogOnFaulted(logger);
 
                 return Send.OkAsync(response);
             },

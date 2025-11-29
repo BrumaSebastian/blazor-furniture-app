@@ -131,7 +131,7 @@
 
 @code {
     [Inject] public required IDialogService DialogService { get; init; }
-    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required IGroupsClient GroupsApi { get; init; }
     [Inject] public required NavigationManager NavigationManager { get; init; }
     [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
     [Inject] public required ISnackbar Snackbar { get; init; }

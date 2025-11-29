@@ -40,21 +40,7 @@
                 </NotAuthorized>
 
                 <Authorized>
-                    <MudMenu Color="Color.Primary" AriaLabel="Profile">
-                        <ActivatorContent>
-                            <MudAvatar Color="Color.Primary">
-                                @context.User.Identity?.Name
-                            </MudAvatar>
-                        </ActivatorContent>
-                        <ChildContent>
-                            <MudNavLink Match="NavLinkMatch.Prefix" Href="my-profile" Icon="@Icons.Material.Filled.AccountBox">
-                                <MudText class="d-none d-md-flex">@CommonResource.button_profile</MudText>
-                            </MudNavLink>
-                            <MudNavLink Href="authentication/logout" Icon="@Icons.Material.Filled.Login">
-                                <MudText class="d-none d-md-flex">@CommonResource.button_logout</MudText>
-                            </MudNavLink>
-                        </ChildContent>
-                    </MudMenu>
+                    <UserMenu User="@User" />
                     <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
                     <CultureSelector />
                 </Authorized>
@@ -82,15 +68,31 @@
 </div>
 
 @code {
+    [Inject] public required IUsersClient UsersClient { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
+
+    private UserProfileModel? User;
     private bool drawerOpen = false;
     private bool isDarkMode = true;
     private MudTheme? theme;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         theme = ThemeService.GetTheme(ThemeType.Default);
         isDarkMode = ThemeService.IsDarkMode;
         ThemeService.OnThemeChanged += OnThemeChanged;
+
+        var userResponse = await UsersClient.GetUserProfile(default);
+        var userResult = userResponse.ToApiResult();
+
+        if (userResult.IsSuccess)
+        {
+            User = userResult.Data;
+        }
+        else
+        {
+            Snackbar.Add(userResult.ErrorMessage ?? CommonResource.errors_unknownError, Severity.Error);
+        }
     }
 
     private void OnThemeChanged()

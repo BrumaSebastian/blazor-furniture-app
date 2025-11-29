@@ -13,33 +13,52 @@
               Style="height:100vh; width:100vw;">
     </MudImage>
 </MudOverlay> *@
+<CascadingValue Value="User" Name="CurrentUser">
+    <MudLayout>
+        <MudAppBar Elevation=2>
+            <AdminNavBar @bind-IsDrawerOpen="drawerOpen"></AdminNavBar>
+        </MudAppBar>
+        <MudDrawer @bind-Open="drawerOpen"
+                   Elevation="2"
+                   Variant="DrawerVariant.Persistent">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6">Management</MudText>
+            </MudDrawerHeader>
 
-<MudLayout>
-    <MudAppBar Elevation=2>
-        <AdminNavBar @bind-IsDrawerOpen="drawerOpen"></AdminNavBar>
-    </MudAppBar>
-    <MudDrawer @bind-Open="drawerOpen"
-               Elevation="2"
-               Variant="DrawerVariant.Persistent">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Management</MudText>
-        </MudDrawerHeader>
+            <AdminNavMenu />
+        </MudDrawer>
 
-        <AdminNavMenu />
-    </MudDrawer>
-
-    <MudMainContent>
-        <MudContainer Gutters=true Class="pt-4">
-            <MudBreadcrumbs Items="Breadcrumbs.Items" Class="mx-2" />
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
+        <MudMainContent>
+            <MudContainer Gutters=true Class="pt-4">
+                <MudBreadcrumbs Items="Breadcrumbs.Items" Class="mx-2" />
+                @Body
+            </MudContainer>
+        </MudMainContent>
+    </MudLayout>
+</CascadingValue>
 
 @code {
     [Inject] public required IBreadCrumbsService Breadcrumbs { get; init; }
+    [Inject] public required IUsersClient UsersClient { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
 
+    private UserProfileModel? User;
     private bool drawerOpen = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userResponse = await UsersClient.GetUserProfile(default);
+        var userResult = userResponse.ToApiResult();
+
+        if (userResult.IsSuccess)
+        {
+            User = userResult.Data;
+        }
+        else
+        {
+            Snackbar.Add(userResult.ErrorMessage ?? CommonResource.errors_unknownError, Severity.Error);
+        }
+    }
 
     protected override void OnInitialized()
     {

@@ -47,8 +47,8 @@
 </MudDialog>
 @code {
     [Inject] public required ISnackbar Snackbar { get; init; }
-    [Inject] public required IUsersApi UsersApi { get; init; }
-    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required IUsersClient UsersApi { get; init; }
+    [Inject] public required IGroupsClient GroupsApi { get; init; }
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; init; } = default!;

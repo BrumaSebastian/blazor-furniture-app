@@ -1,33 +1,34 @@
 ﻿@page "/my-profile"
 @using BlazorFurniture.Shared.Resources.Pages.Account
+@using BlazorFurniture.Shared.Services.API.Interfaces
 @using Microsoft.Extensions.Localization
 @attribute [Authorize]
 @* @inject IStringLocalizer<Pages_Account> Localizer *@
 
 <MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">
-	<MudText class="d-none d-md-flex">Reset password</MudText>
+    <MudText class="d-none d-md-flex">Reset password</MudText>
 </MudNavLink>
 <MudPaper Height="200px" Style="overflow:hidden; position:relative;">
-	<MudDrawerContainer Class="mud-height-full">
-		<MudDrawer @bind-Open="@_open" Fixed="false" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None">
-			<MudNavMenu>
-				<MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
-				@* <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">@Localizer[Pages_Account.profile]</MudNavLink> *@
-				<MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
-			</MudNavMenu>
-		</MudDrawer>
-		<div class="d-flex justify-center align-center mud-height-full">
-			<MudButton OnClick="@ToggleDrawer" Color="Color.Primary">Toggle</MudButton>
-		</div>
-	</MudDrawerContainer>
+    <MudDrawerContainer Class="mud-height-full">
+        <MudDrawer @bind-Open="@_open" Fixed="false" Elevation="2" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.SmAndDown">
+            <MudNavMenu>
+                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
+                @* <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">@Localizer[Pages_Account.profile]</MudNavLink> *@
+                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+        <div class="d-flex justify-center align-center mud-height-full">
+            <MudButton OnClick="@ToggleDrawer" Color="Color.Primary">Toggle</MudButton>
+        </div>
+    </MudDrawerContainer>
 </MudPaper>
 
 @code
 {
-	private bool _open = false;
+    private bool _open = true;
 
-	private void ToggleDrawer()
-	{
-		_open = !_open;
-	}
+    private void ToggleDrawer()
+    {
+        _open = !_open;
+    }
 }

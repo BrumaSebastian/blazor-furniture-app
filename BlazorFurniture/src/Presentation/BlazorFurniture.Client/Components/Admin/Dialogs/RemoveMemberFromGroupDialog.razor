@@ -19,7 +19,7 @@
 </MudDialog>
 
 @code {
-    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required IGroupsClient GroupsApi { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
 
     [Parameter] public required GroupModel Group { get; init; }

@@ -51,7 +51,7 @@
 </MudStack>
 
     @code {
-    [Inject] public required IUsersApi UsersApi { get; init; }
+    [Inject] public required IUsersClient UsersApi { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
     [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; init; }
     [Inject] public required NavigationManager NavigationManager { get; init; }
