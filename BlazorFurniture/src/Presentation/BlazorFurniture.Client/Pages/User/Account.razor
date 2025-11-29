@@ -3,32 +3,20 @@
 @using BlazorFurniture.Shared.Services.API.Interfaces
 @using Microsoft.Extensions.Localization
 @attribute [Authorize]
+@layout UserProfileLayout
 @* @inject IStringLocalizer<Pages_Account> Localizer *@
 
-<MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">
-    <MudText class="d-none d-md-flex">Reset password</MudText>
-</MudNavLink>
-<MudPaper Height="200px" Style="overflow:hidden; position:relative;">
-    <MudDrawerContainer Class="mud-height-full">
-        <MudDrawer @bind-Open="@_open" Fixed="false" Elevation="2" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.SmAndDown">
-            <MudNavMenu>
-                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
-                @* <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">@Localizer[Pages_Account.profile]</MudNavLink> *@
-                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
-            </MudNavMenu>
-        </MudDrawer>
-        <div class="d-flex justify-center align-center mud-height-full">
-            <MudButton OnClick="@ToggleDrawer" Color="Color.Primary">Toggle</MudButton>
-        </div>
-    </MudDrawerContainer>
-</MudPaper>
+
+    <MudText Typo="Typo.h2">
+        asdfasdfasdf
+    </MudText>
 
 @code
 {
-    private bool _open = true;
+    private bool open = true;
 
     private void ToggleDrawer()
     {
-        _open = !_open;
+        open = !open;
     }
 }

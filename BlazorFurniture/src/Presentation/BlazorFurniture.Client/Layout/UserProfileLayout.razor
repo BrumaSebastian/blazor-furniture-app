@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using BlazorFurniture.Shared.Resources.Pages.Account
+@inherits LayoutComponentBase
 
 @inject IThemeService ThemeService
 @implements IDisposable
@@ -7,10 +8,9 @@
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
-<MudLayout Style="height: 100vh">
-    <MudAppBar Elevation="1" Class="d-flex flex-grow-1">
-        <MudIconButton class="d-sm-flex d-md-none" Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
 
+<MudLayout Style="height: 100vh">
+    <MudAppBar Elevation="1" Fixed="true">
         <MudContainer>
             <AuthorizeView>
                 <Authorized>
@@ -21,10 +21,6 @@
                     <MudText Typo="Typo.h5" Class="ml-3">Welcome </MudText>
                 </NotAuthorized>
             </AuthorizeView>
-        </MudContainer>
-
-        <MudContainer Class="d-none d-md-flex flex-row flex-grow-1">
-            <NavMenu />
         </MudContainer>
 
         <MudContainer Class="d-flex flex-row-reverse">
@@ -49,30 +45,29 @@
         @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
     </MudAppBar>
 
-    <MudDrawer id="nav-drawer" Class="d-flex d-md-none" @bind-Open="drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+    <MudDrawer ClipMode="DrawerClipMode.Always" @bind-Open="@drawerOpen" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
         <MudNavMenu>
-            <NavMenu />
+            <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@CommonResource.navigation_home</MudNavLink>
+            <MudNavLink Href="admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+            <MudNavLink Href="/my-profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
+            <MudNavLink Href="/my-profile/groups" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
+            <MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">Reset password</MudNavLink>
         </MudNavMenu>
     </MudDrawer>
 
-    <MudMainContent Class="pt-20 mx-0 mud-height-full">
-        @Body
+    <MudMainContent Class="mud-height-full">
+        <MudContainer Gutters=true>
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
-
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
 
 @code {
     [Inject] public required IUsersClient UsersClient { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
 
     private UserProfileModel? User;
-    private bool drawerOpen = false;
+    private bool drawerOpen = true;
     private bool isDarkMode = true;
     private MudTheme? theme;
 
@@ -101,7 +96,6 @@
         StateHasChanged();
     }
 
-    private void DrawerToggle() => drawerOpen = !drawerOpen;
     private void DarkModeToggle() => ThemeService.ToggleDarkMode();
 
     public string DarkLightModeButtonIcon => isDarkMode switch
