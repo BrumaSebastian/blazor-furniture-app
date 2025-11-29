@@ -50,9 +50,9 @@
     }
 </MudStack>
 
-@code {
+    @code {
     [Inject] public required IUsersApi UsersApi { get; init; }
-    [Inject] public required ISnackbar snackbar { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
     [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; init; }
     [Inject] public required NavigationManager NavigationManager { get; init; }
 
@@ -68,27 +68,25 @@
         var groupsTask = UsersApi.GetUserGroups(UserId, default);
         await Task.WhenAll(userProfileTask, groupsTask);
 
-        var userResponse = userProfileTask.Result;
-        var groupsResponse = groupsTask.Result;
+        var userResponse = userProfileTask.Result.ToApiResult();
+        var groupsResponse = groupsTask.Result.ToApiResult();
 
-        switch (userResponse.StatusCode)
+        if (userResponse.IsSuccess)
         {
-            case HttpStatusCode.OK:
-                user = userResponse.Content!;
-                break;
-            default:
-                snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
-                break;
+            user = userResponse.Data;
+        }
+        else
+        {
+            Snackbar.Add(userResponse.ErrorMessage ?? CommonResource.errors_unknownError, MudBlazor.Severity.Error);
         }
 
-        switch (groupsResponse.StatusCode)
+        if (groupsResponse.IsSuccess)
         {
-            case HttpStatusCode.OK:
-                groups = groupsResponse.Content!;
-                break;
-            default:
-                snackbar.Add(CommonResource.errors_unknownError, MudBlazor.Severity.Error);
-                break;
+            groups = groupsResponse.Data;
+        }
+        else
+        {
+            Snackbar.Add(groupsResponse.ErrorMessage ?? CommonResource.errors_unknownError, MudBlazor.Severity.Error);
         }
     }
 
