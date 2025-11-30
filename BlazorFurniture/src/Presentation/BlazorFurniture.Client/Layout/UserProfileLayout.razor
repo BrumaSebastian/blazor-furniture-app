@@ -9,58 +9,60 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout Style="height: 100vh">
-    <MudAppBar Elevation="1" Fixed="true">
-        <MudContainer>
-            <AuthorizeView>
-                <Authorized>
-                    <MudText Typo="Typo.h5" Class="ml-3">Welcome @context.User.Identity?.Name </MudText>
-                </Authorized>
+<CascadingValue Value="User" Name="CurrentUser">
+    <MudLayout Style="height: 100vh">
+        <MudAppBar Elevation="1" Fixed="true">
+            <MudContainer>
+                <AuthorizeView>
+                    <Authorized>
+                        <MudText Typo="Typo.h5" Class="ml-3">Welcome @context.User.Identity?.Name </MudText>
+                    </Authorized>
 
-                <NotAuthorized>
-                    <MudText Typo="Typo.h5" Class="ml-3">Welcome </MudText>
-                </NotAuthorized>
-            </AuthorizeView>
-        </MudContainer>
+                    <NotAuthorized>
+                        <MudText Typo="Typo.h5" Class="ml-3">Welcome </MudText>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </MudContainer>
 
-        <MudContainer Class="d-flex flex-row-reverse">
-            <AuthorizeView>
-                <NotAuthorized>
-                    <MudNavMenu class="d-none d-md-flex align-center">
-                        <MudNavLink Href="authentication/login" Icon="@Icons.Material.Filled.Logout">
-                            <MudText>@CommonResource.button_login</MudText>
-                        </MudNavLink>
-                    </MudNavMenu>
-                    <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-                    <CultureSelector />
-                </NotAuthorized>
+            <MudContainer Class="d-flex flex-row-reverse">
+                <AuthorizeView>
+                    <NotAuthorized>
+                        <MudNavMenu class="d-none d-md-flex align-center">
+                            <MudNavLink Href="authentication/login" Icon="@Icons.Material.Filled.Logout">
+                                <MudText>@CommonResource.button_login</MudText>
+                            </MudNavLink>
+                        </MudNavMenu>
+                        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+                        <CultureSelector />
+                    </NotAuthorized>
 
-                <Authorized>
-                    <UserMenu User="@User" />
-                    <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-                    <CultureSelector />
-                </Authorized>
-            </AuthorizeView>
-        </MudContainer>
-        @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
-    </MudAppBar>
+                    <Authorized>
+                        <UserMenu User="@User" />
+                        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+                        <CultureSelector />
+                    </Authorized>
+                </AuthorizeView>
+            </MudContainer>
+            @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
+        </MudAppBar>
 
-    <MudDrawer ClipMode="DrawerClipMode.Always" @bind-Open="@drawerOpen" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
-        <MudNavMenu>
-            <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@CommonResource.navigation_home</MudNavLink>
-            <MudNavLink Href="admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-            <MudNavLink Href="/my-profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
-            <MudNavLink Href="/my-profile/groups" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
-            <MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">Reset password</MudNavLink>
-        </MudNavMenu>
-    </MudDrawer>
+        <MudDrawer ClipMode="DrawerClipMode.Always" @bind-Open="@drawerOpen" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
+            <MudNavMenu>
+                <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@CommonResource.navigation_home</MudNavLink>
+                <MudNavLink Href="admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+                <MudNavLink Href="/my-profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
+                <MudNavLink Href="/my-profile/groups" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
+                <MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">Reset password</MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
 
-    <MudMainContent Class="mud-height-full">
-        <MudContainer Gutters=true>
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
+        <MudMainContent Class="mud-height-full">
+            <MudContainer Gutters=true>
+                @Body
+            </MudContainer>
+        </MudMainContent>
+    </MudLayout>
+</CascadingValue>
 
 @code {
     [Inject] public required IUsersClient UsersClient { get; init; }

@@ -1,22 +1,131 @@
 ﻿@page "/my-profile"
+@using BlazorFurniture.Shared.Models.Users.Requests
 @using BlazorFurniture.Shared.Resources.Pages.Account
 @using BlazorFurniture.Shared.Services.API.Interfaces
 @using Microsoft.Extensions.Localization
 @attribute [Authorize]
 @layout UserProfileLayout
-@* @inject IStringLocalizer<Pages_Account> Localizer *@
 
+<MudText Typo="Typo.h3">
+    <strong>User Profile</strong>
+</MudText>
 
-    <MudText Typo="Typo.h2">
-        asdfasdfasdf
-    </MudText>
+@if (User is null)
+{
+    <MudSkeleton Height="100%" Width="500px">
+
+    </MudSkeleton>
+}
+else
+{
+    <MudPaper Elevation="4" Class="pa-4">
+        <MudStack>
+            <MudText Typo="Typo.h5"><strong>Edit Profile</strong></MudText>
+            <MudText Typo="Typo.caption">Update your personal information and avatar</MudText>
+            <MudStack Row="true" Breakpoint="Breakpoint.SmAndDown">
+                <MudImage Src="@User.Avatar" Fluid="true" Width="150" />
+                <MudStack Justify="Justify.FlexEnd">
+                    <MudButton Class="rounded" OnClick="OpenChangeAvatarDialog" StartIcon="@Icons.Material.Filled.Image" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+                        <MudText Typo="Typo.subtitle1">Change Avatar</MudText>
+                    </MudButton>
+                    @* <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+                        <ActivatorContent>
+                            <MudFab Color="Color.Secondary"
+                                    StartIcon="@Icons.Material.Filled.Image"
+                                    Label="Load picture" />
+                        </ActivatorContent>
+                    </MudFileUpload>
+                    <MudText Typo="Typo.subtitle2">JPG, GIF or PNG, 1MB max</MudText> *@
+                </MudStack>
+            </MudStack>
+            <MudForm @ref="form" Model="@model" Spacing="4">
+                <MudCardContent>
+                    <MudStack Spacing="4">
+                        <MudStack Breakpoint="Breakpoint.MdAndUp" Spacing="4">
+                            <MudTextField @bind-Value="model.FirstName"
+                                          Label="First Name" />
+
+                            <MudTextField @bind-Value="model.LastName"
+                                          Label="Last Name" />
+                        </MudStack>
+
+                        <MudTextField @bind-Value="model.Email"
+                                      Label="Email" />
+                    </MudStack>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Size="Size.Large" OnClick="@(async () => await Submit())">Save</MudButton>
+                </MudCardActions>
+            </MudForm>
+        </MudStack>
+    </MudPaper>
+}
 
 @code
 {
+    [Inject] public required IDialogService DialogService { get; init; }
+
+    [CascadingParameter(Name = "CurrentUser")] public required UserProfileModel? User { get; init; }
+
+    private IList<IBrowserFile> files = new List<IBrowserFile>();
+    private MudForm form = default!;
     private bool open = true;
+    private UpdateUserProfileModel model = default!;
+
+    protected override void OnParametersSet()
+    {
+        if (User is not null)
+        {
+            model = new UpdateUserProfileModel
+            {
+                FirstName = User.FirstName,
+                LastName = User.LastName,
+                Email = User.Email
+            };
+        }
+    }
 
     private void ToggleDrawer()
     {
         open = !open;
+    }
+
+    private void UploadFiles(IBrowserFile file)
+    {
+        files.Add(file);
+    }
+
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            // Snackbar.Add("Submitted!");
+        }
+    }
+
+    private async Task OpenChangeAvatarDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = false,
+            BackdropClick = false,
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true
+        };
+
+        var parameters = new DialogParameters<ChangeUserAvatarDialog>
+        {
+            { x => x.Avatar, User!.Avatar },
+        };
+
+        var dialogRef = await DialogService.ShowAsync<ChangeUserAvatarDialog>(null, parameters, options);
+        var result = await dialogRef.Result;
+
+        if (result?.Data is not null)
+        {
+
+        }
     }
 }

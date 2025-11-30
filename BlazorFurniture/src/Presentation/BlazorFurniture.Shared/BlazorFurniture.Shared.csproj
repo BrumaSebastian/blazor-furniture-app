@@ -26,6 +26,7 @@
 
 	<ItemGroup>
 		<Folder Include="Components\Security\" />
+		<Folder Include="Validators\Users\" />
 		<Folder Include="wwwroot\" />
 	</ItemGroup>
 
