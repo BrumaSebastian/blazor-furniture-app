@@ -10,36 +10,32 @@ public class UserState( IUsersClient usersClient ) : IUserState
     public UserProfileModel CurrentUser { get; private set; } = default!;
 
     public event Action? Changed;
-    private readonly Lock userLock = new();
+    private readonly SemaphoreSlim gate = new(1, 1);
 
     public async Task Refresh( CancellationToken ct = default )
     {
-        var response = await usersClient.GetUserProfile(ct);
-        var result = response.ToApiResult();
-        Action? changedHandler = null;
+        await gate.WaitAsync(ct);
 
-        lock (userLock)
+        try
         {
+            var response = await usersClient.GetUserProfile(ct);
+            var result = response.ToApiResult();
+
             if (result.IsSuccess)
             {
                 CurrentUser = result.Data!;
-                changedHandler = Changed;
+                Changed?.Invoke();
             }
         }
-
-        changedHandler?.Invoke();
+        finally
+        {
+            gate.Release();
+        }
     }
 
     public void SetUser( UserProfileModel user )
     {
-        Action? changedHandler;
-
-        lock (userLock)
-        {
-            CurrentUser = user;
-            changedHandler = Changed;
-        }
-
-        changedHandler?.Invoke();
+        CurrentUser = user;
+        Changed?.Invoke();
     }
 }
