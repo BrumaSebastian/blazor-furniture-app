@@ -2,6 +2,8 @@ using BlazorFurniture.Client.Extensions;
 using BlazorFurniture.Client.Services;
 using BlazorFurniture.Client.Services.API;
 using BlazorFurniture.Client.Services.Interfaces;
+using BlazorFurniture.Client.Services.States;
+using BlazorFurniture.Client.Services.States.Interfaces;
 using BlazorFurniture.Core.Shared.Constants;
 using BlazorFurniture.Shared.Extensions;
 using BlazorFurniture.Shared.Security.Authorization;
@@ -29,6 +31,7 @@ builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IBreadCrumbsService, BreadcrumbsService>();
+builder.Services.AddScoped<IUserState, UserState>();
 
 var host = builder.Build();
 

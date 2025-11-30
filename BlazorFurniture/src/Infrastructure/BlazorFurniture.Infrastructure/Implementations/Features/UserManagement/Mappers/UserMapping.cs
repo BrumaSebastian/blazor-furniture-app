@@ -92,7 +92,7 @@ internal static class UserMapping
             return null;
         }
 
-        return keyValuePairs.TryGetValue("avatar", out var avatars) && avatars.Count > 0
+        return keyValuePairs.TryGetValue(UserRepresentation.ATTRIBUTE_AVATAR, out var avatars) && avatars.Count > 0
                 ? avatars[0]
                 : null;
     }

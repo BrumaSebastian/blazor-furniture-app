@@ -12,18 +12,6 @@
 <CascadingValue Value="User" Name="CurrentUser">
     <MudLayout Style="height: 100vh">
         <MudAppBar Elevation="1" Fixed="true">
-            <MudContainer>
-                <AuthorizeView>
-                    <Authorized>
-                        <MudText Typo="Typo.h5" Class="ml-3">Welcome @context.User.Identity?.Name </MudText>
-                    </Authorized>
-
-                    <NotAuthorized>
-                        <MudText Typo="Typo.h5" Class="ml-3">Welcome </MudText>
-                    </NotAuthorized>
-                </AuthorizeView>
-            </MudContainer>
-
             <MudContainer Class="d-flex flex-row-reverse">
                 <AuthorizeView>
                     <NotAuthorized>
@@ -51,7 +39,7 @@
                 <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@CommonResource.navigation_home</MudNavLink>
                 <MudNavLink Href="admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
                 <MudNavLink Href="/my-profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
-                <MudNavLink Href="/my-profile/groups" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink>
+@*                 <MudNavLink Href="/my-profile/groups" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink> *@
                 <MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">Reset password</MudNavLink>
             </MudNavMenu>
         </MudDrawer>
@@ -68,7 +56,7 @@
     [Inject] public required IUsersClient UsersClient { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
 
-    private UserProfileModel? User;
+    [PersistentState] public UserProfileModel? User { get; set; }
     private bool drawerOpen = true;
     private bool isDarkMode = true;
     private MudTheme? theme;

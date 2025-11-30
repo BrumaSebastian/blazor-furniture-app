@@ -2,7 +2,8 @@
 
 public sealed class UpdateUserProfileRequest
 {
-    public string? FirstName { get; init; }
-    public string? LastName { get; init; }
-    public string? Email { get; init; }
+    public required string FirstName { get; init; }
+    public required string LastName { get; init; }
+    public required string Email { get; init; }
+    public required string Avatar { get; init; }
 }

@@ -6,7 +6,7 @@
 @attribute [Authorize]
 @layout UserProfileLayout
 
-<MudText Typo="Typo.h3">
+<MudText Typo="Typo.h4" Class="my-4">
     <strong>User Profile</strong>
 </MudText>
 
@@ -22,24 +22,16 @@ else
         <MudStack>
             <MudText Typo="Typo.h5"><strong>Edit Profile</strong></MudText>
             <MudText Typo="Typo.caption">Update your personal information and avatar</MudText>
-            <MudStack Row="true" Breakpoint="Breakpoint.SmAndDown">
-                <MudImage Src="@User.Avatar" Fluid="true" Width="150" />
-                <MudStack Justify="Justify.FlexEnd">
-                    <MudButton Class="rounded" OnClick="OpenChangeAvatarDialog" StartIcon="@Icons.Material.Filled.Image" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
-                        <MudText Typo="Typo.subtitle1">Change Avatar</MudText>
-                    </MudButton>
-                    @* <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
-                        <ActivatorContent>
-                            <MudFab Color="Color.Secondary"
-                                    StartIcon="@Icons.Material.Filled.Image"
-                                    Label="Load picture" />
-                        </ActivatorContent>
-                    </MudFileUpload>
-                    <MudText Typo="Typo.subtitle2">JPG, GIF or PNG, 1MB max</MudText> *@
-                </MudStack>
-            </MudStack>
             <MudForm @ref="form" Model="@model" Spacing="4">
                 <MudCardContent>
+                    <MudStack Row="true" Breakpoint="Breakpoint.SmAndDown">
+                        <MudImage Src="@model.Avatar" Fluid="true" Width="150" />
+                        <MudStack Justify="Justify.FlexEnd">
+                            <MudButton Class="rounded-2" OnClick="OpenChangeAvatarDialog" StartIcon="@Icons.Material.Filled.Image" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+                                <MudText Typo="Typo.subtitle1">Change Avatar</MudText>
+                            </MudButton>
+                        </MudStack>
+                    </MudStack>
                     <MudStack Spacing="4">
                         <MudStack Breakpoint="Breakpoint.MdAndUp" Spacing="4">
                             <MudTextField @bind-Value="model.FirstName"
@@ -64,23 +56,26 @@ else
 @code
 {
     [Inject] public required IDialogService DialogService { get; init; }
+    [Inject] public required IUsersClient UsersClient { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
 
     [CascadingParameter(Name = "CurrentUser")] public required UserProfileModel? User { get; init; }
 
     private IList<IBrowserFile> files = new List<IBrowserFile>();
     private MudForm form = default!;
     private bool open = true;
-    private UpdateUserProfileModel model = default!;
+    private UpdateUserProfileModel model = null!;
 
     protected override void OnParametersSet()
     {
-        if (User is not null)
+        if (User is not null && model is null)
         {
             model = new UpdateUserProfileModel
             {
                 FirstName = User.FirstName,
                 LastName = User.LastName,
-                Email = User.Email
+                Email = User.Email,
+                Avatar = User.Avatar
             };
         }
     }
@@ -99,9 +94,19 @@ else
     {
         await form.Validate();
 
-        if (form.IsValid)
+        if (form.IsValid || model.Avatar != User?.Avatar)
         {
-            // Snackbar.Add("Submitted!");
+            var updateUserResponse = await UsersClient.UpdateUserProfile(model, default);
+            var userResult = updateUserResponse.ToApiResult();
+
+            if (userResult.IsSuccess)
+            {
+                Snackbar.Add("Updated successfully", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add(userResult.ErrorMessage ?? CommonResource.errors_unknownError, Severity.Error);
+            }
         }
     }
 
@@ -123,9 +128,9 @@ else
         var dialogRef = await DialogService.ShowAsync<ChangeUserAvatarDialog>(null, parameters, options);
         var result = await dialogRef.Result;
 
-        if (result?.Data is not null)
+        if (result?.Data is string selectedAvatar)
         {
-
+            model.Avatar = selectedAvatar;
         }
     }
 }

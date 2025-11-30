@@ -1,4 +1,5 @@
-﻿<MudDialog Gutters="true" TitleClass="mud-width-full" ContentClass="mb-2">
+﻿@using System.Text
+<MudDialog Gutters="true" TitleClass="mud-width-full" ContentClass="mb-2">
     <TitleContent>
         <MudStack>
             <MudText Typo="Typo.h5"><strong>Choose a Predefined Avatar</strong></MudText>
@@ -12,14 +13,16 @@
             {
                 var index = i;
                 <MudItem xs="6" sm="4" md="2">
-                    <MudImage Height="150" Width="150" Src="@avatars[index]" @onclick="@(() => SelectImage(index))"></MudImage>
+                    <MudImage 
+                        Class="@SetSelectedAvatarClass(avatars[index])"
+                        Height="150" Width="150" Src="@avatars[index]" @onclick="@(() => SelectImage(index))"></MudImage>
                 </MudItem>
             }
         </MudGrid>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel" FullWidth="true">Cancel</MudButton>
-        <MudButton Disabled="@(Avatar == selectedAvatar)" Color="Color.Error" FullWidth="true" Variant="Variant.Filled" OnClick="Confirm">Save Changes</MudButton>
+        <MudButton Disabled="@(Avatar == selectedAvatar)" Color="Color.Error" FullWidth="true" Variant="Variant.Filled" OnClick="Confirm">Confirm</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -54,23 +57,23 @@
 
     private void SelectImage(int index)
     {
-        var image = avatars[index];
+        selectedAvatar = avatars[index];
     }
 
     private async Task Confirm()
     {
-        // var roleId = Group.Roles.Where(r => r.Role == selectedRole).First().Id;
-        // var response = await GroupsApi.UpdateMemberGroupRole(Group.Id, User.Id, roleId, default);
+        MudDialog.Close(selectedAvatar);
+    }
 
-        // switch (response.StatusCode)
-        // {
-        //     case HttpStatusCode.NoContent:
-        //         Snackbar.Add(CommonResource.message_groupMemberRoleUpdated, Severity.Success);
-        //         MudDialog.Close(true);
-        //         break;
-        //     default:
-        //         Snackbar.Add(CommonResource.errors_unknownError, Severity.Error);
-        //         break;
-        // }
+    private string SetSelectedAvatarClass(string image)
+    {
+        StringBuilder stringBuilder = new();
+
+        if (image == selectedAvatar)
+        {
+            stringBuilder.Append("border-solid border-2 mud-border-primary rounded");
+        }
+
+        return stringBuilder.ToString();
     }
 }
