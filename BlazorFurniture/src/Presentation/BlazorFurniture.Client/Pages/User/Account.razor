@@ -11,7 +11,7 @@
     <strong>User Profile</strong>
 </MudText>
 
-@if (UserProfile is null)
+@if (UserProfile is null || model is null)
 {
     <MudSkeleton Height="100%" Width="500px">
 
@@ -76,11 +76,6 @@ else
     private void ToggleDrawer()
     {
         open = !open;
-    }
-
-    private void UploadFiles(IBrowserFile file)
-    {
-        files.Add(file);
     }
 
     private async Task Submit()

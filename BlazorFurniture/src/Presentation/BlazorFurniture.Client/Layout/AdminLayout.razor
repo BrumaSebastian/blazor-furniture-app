@@ -13,51 +13,44 @@
               Style="height:100vh; width:100vw;">
     </MudImage>
 </MudOverlay> *@
-<CascadingValue Value="User" Name="CurrentUser">
-    <MudLayout Style="height: 100vh">
-        <MudAppBar Elevation=2>
-            <AdminNavBar @bind-IsDrawerOpen="drawerOpen"></AdminNavBar>
-        </MudAppBar>
-        <MudDrawer @bind-Open="drawerOpen"
-                   Elevation="2"
-                   Variant="DrawerVariant.Persistent">
-            <MudDrawerHeader>
-                <MudText Typo="Typo.h6">Management</MudText>
-            </MudDrawerHeader>
+<MudLayout Style="height: 100vh">
+    <MudAppBar Elevation=2>
+        <AdminNavBar @bind-IsDrawerOpen="drawerOpen"></AdminNavBar>
+    </MudAppBar>
+    <MudDrawer @bind-Open="drawerOpen"
+               Elevation="2"
+               Variant="DrawerVariant.Persistent">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Management</MudText>
+        </MudDrawerHeader>
 
-            <AdminNavMenu />
-        </MudDrawer>
+        <AdminNavMenu />
+    </MudDrawer>
 
-        <MudMainContent>
-            <MudContainer Gutters=true Class="pt-4">
-                <MudBreadcrumbs Items="Breadcrumbs.Items" Class="mx-2" />
-                @Body
-            </MudContainer>
-        </MudMainContent>
-    </MudLayout>
-</CascadingValue>
+    <MudMainContent>
+        <MudContainer Gutters=true Class="pt-4">
+            <MudBreadcrumbs Items="Breadcrumbs.Items" Class="mx-2">
+                <ItemTemplate Context="item">
+                    <MudLink Color="Color.Default" OnClick="@(() => RemoveFromBreadcrumbs(item))" Href="@item.Href">@item.Text</MudLink>
+                </ItemTemplate>
+            </MudBreadcrumbs>
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 @code {
+    [Inject] public required IUserState UserState { get; init; }
+    [Inject] public required NavigationManager NavigationManager { get; init; }
     [Inject] public required IBreadCrumbsService Breadcrumbs { get; init; }
-    [Inject] public required IUsersClient UsersClient { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
 
-    private UserProfileModel? User;
     private bool drawerOpen = true;
 
     protected override async Task OnInitializedAsync()
     {
-        var userResponse = await UsersClient.GetUserProfile(default);
-        var userResult = userResponse.ToApiResult();
-
-        if (userResult.IsSuccess)
-        {
-            User = userResult.Data;
-        }
-        else
-        {
-            Snackbar.Add(userResult.ErrorMessage ?? CommonResource.errors_unknownError, Severity.Error);
-        }
+        UserState.Changed += OnUserChanged;
+        await UserState.Refresh();
     }
 
     protected override void OnInitialized()
@@ -65,8 +58,32 @@
         Breadcrumbs.Changed += StateHasChanged;
     }
 
+    private void OnUserChanged()
+    {
+        StateHasChanged();
+    }
+
+    private void RemoveFromBreadcrumbs(BreadcrumbItem item )
+    {
+        var items = Breadcrumbs.Items.ToList();
+        var index = items.FindIndex(b =>
+            string.Equals(b.Href, item.Href, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(b.Text, item.Text, StringComparison.Ordinal));
+
+        if (index < 0)
+            return;
+
+        var newItems = items.Take(index + 1).ToArray();
+
+        // Replace the service's breadcrumb list
+        Breadcrumbs.Set(newItems);
+        StateHasChanged();
+        // NavigationManager.NavigateTo(item.Href!);
+    }
+
     public void Dispose()
     {
         Breadcrumbs.Changed -= StateHasChanged;
+        UserState.Changed -= OnUserChanged;
     }
 }
