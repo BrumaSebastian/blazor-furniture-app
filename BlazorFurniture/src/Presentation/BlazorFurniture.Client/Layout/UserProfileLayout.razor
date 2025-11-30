@@ -1,4 +1,5 @@
-﻿@using BlazorFurniture.Shared.Resources.Pages.Account
+﻿@using BlazorFurniture.Client.Services.States.Interfaces
+@using BlazorFurniture.Shared.Resources.Pages.Account
 @inherits LayoutComponentBase
 
 @inject IThemeService ThemeService
@@ -9,54 +10,51 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<CascadingValue Value="User" Name="CurrentUser">
-    <MudLayout Style="height: 100vh">
-        <MudAppBar Elevation="1" Fixed="true">
-            <MudContainer Class="d-flex flex-row-reverse">
-                <AuthorizeView>
-                    <NotAuthorized>
-                        <MudNavMenu class="d-none d-md-flex align-center">
-                            <MudNavLink Href="authentication/login" Icon="@Icons.Material.Filled.Logout">
-                                <MudText>@CommonResource.button_login</MudText>
-                            </MudNavLink>
-                        </MudNavMenu>
-                        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-                        <CultureSelector />
-                    </NotAuthorized>
+<MudLayout Style="height: 100vh">
+    <MudAppBar Elevation="1" Fixed="true">
+        <MudContainer Class="d-flex flex-row-reverse">
+            <AuthorizeView>
+                <NotAuthorized>
+                    <MudNavMenu class="d-none d-md-flex align-center">
+                        <MudNavLink Href="authentication/login" Icon="@Icons.Material.Filled.Logout">
+                            <MudText>@CommonResource.button_login</MudText>
+                        </MudNavLink>
+                    </MudNavMenu>
+                    <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+                    <CultureSelector />
+                </NotAuthorized>
 
-                    <Authorized>
-                        <UserMenu User="@User" />
-                        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-                        <CultureSelector />
-                    </Authorized>
-                </AuthorizeView>
-            </MudContainer>
-            @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
-        </MudAppBar>
+                <Authorized>
+                    <UserMenu />
+                    <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+                    <CultureSelector />
+                </Authorized>
+            </AuthorizeView>
+        </MudContainer>
+        @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
+    </MudAppBar>
 
-        <MudDrawer ClipMode="DrawerClipMode.Always" @bind-Open="@drawerOpen" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
-            <MudNavMenu>
-                <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@CommonResource.navigation_home</MudNavLink>
-                <MudNavLink Href="admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-                <MudNavLink Href="/my-profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
-@*                 <MudNavLink Href="/my-profile/groups" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink> *@
-                <MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">Reset password</MudNavLink>
-            </MudNavMenu>
-        </MudDrawer>
+    <MudDrawer ClipMode="DrawerClipMode.Always" @bind-Open="@drawerOpen" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
+        <MudNavMenu>
+            <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@CommonResource.navigation_home</MudNavLink>
+            <MudNavLink Href="admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+            <MudNavLink Href="/my-profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
+            @*                 <MudNavLink Href="/my-profile/groups" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink> *@
+            <MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">Reset password</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
 
-        <MudMainContent Class="mud-height-full">
-            <MudContainer Gutters=true>
-                @Body
-            </MudContainer>
-        </MudMainContent>
-    </MudLayout>
-</CascadingValue>
+    <MudMainContent Class="mud-height-full">
+        <MudContainer Gutters=true>
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 @code {
-    [Inject] public required IUsersClient UsersClient { get; init; }
+    [Inject] public required IUserState UserState { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
 
-    [PersistentState] public UserProfileModel? User { get; set; }
     private bool drawerOpen = true;
     private bool isDarkMode = true;
     private MudTheme? theme;
@@ -66,18 +64,13 @@
         theme = ThemeService.GetTheme(ThemeType.Default);
         isDarkMode = ThemeService.IsDarkMode;
         ThemeService.OnThemeChanged += OnThemeChanged;
+        UserState.Changed += OnUserChanged;
+        await UserState.Refresh();
+    }
 
-        var userResponse = await UsersClient.GetUserProfile(default);
-        var userResult = userResponse.ToApiResult();
-
-        if (userResult.IsSuccess)
-        {
-            User = userResult.Data;
-        }
-        else
-        {
-            Snackbar.Add(userResult.ErrorMessage ?? CommonResource.errors_unknownError, Severity.Error);
-        }
+    private void OnUserChanged()
+    {
+        StateHasChanged();
     }
 
     private void OnThemeChanged()
@@ -97,6 +90,7 @@
     public void Dispose()
     {
         ThemeService.OnThemeChanged -= OnThemeChanged;
+        UserState.Changed -= OnUserChanged;
     }
 }
 

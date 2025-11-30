@@ -1,6 +1,8 @@
 ﻿using BlazorFurniture.Application.Common.Extensions;
 using BlazorFurniture.Client.Services;
 using BlazorFurniture.Client.Services.Interfaces;
+using BlazorFurniture.Client.Services.States;
+using BlazorFurniture.Client.Services.States.Interfaces;
 using BlazorFurniture.Extensions.Handlers;
 using BlazorFurniture.Infrastructure.Extensions;
 using BlazorFurniture.Middlewares;
@@ -69,6 +71,7 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<IThemeService, ThemeService>();
             services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<IBreadCrumbsService, BreadcrumbsService>();
+            services.AddScoped<IUserState, UserState>();
 
             return services;
         }

@@ -5,12 +5,13 @@
 @using Microsoft.Extensions.Localization
 @attribute [Authorize]
 @layout UserProfileLayout
+@implements IDisposable
 
 <MudText Typo="Typo.h4" Class="my-4">
     <strong>User Profile</strong>
 </MudText>
 
-@if (User is null)
+@if (UserProfile is null)
 {
     <MudSkeleton Height="100%" Width="500px">
 
@@ -55,29 +56,21 @@ else
 
 @code
 {
+    [Inject] public required IUserState UserState { get; init; }
     [Inject] public required IDialogService DialogService { get; init; }
     [Inject] public required IUsersClient UsersClient { get; init; }
     [Inject] public required ISnackbar Snackbar { get; init; }
 
-    [CascadingParameter(Name = "CurrentUser")] public required UserProfileModel? User { get; init; }
+    [PersistentState] public UserProfileModel? UserProfile { get; set; }
 
     private IList<IBrowserFile> files = new List<IBrowserFile>();
     private MudForm form = default!;
     private bool open = true;
     private UpdateUserProfileModel model = null!;
 
-    protected override void OnParametersSet()
+    protected override async Task OnInitializedAsync()
     {
-        if (User is not null && model is null)
-        {
-            model = new UpdateUserProfileModel
-            {
-                FirstName = User.FirstName,
-                LastName = User.LastName,
-                Email = User.Email,
-                Avatar = User.Avatar
-            };
-        }
+        UserState.Changed += OnUserStateChanged;
     }
 
     private void ToggleDrawer()
@@ -94,13 +87,14 @@ else
     {
         await form.Validate();
 
-        if (form.IsValid || model.Avatar != User?.Avatar)
+        if (form.IsValid || model.Avatar != UserState.CurrentUser?.Avatar)
         {
             var updateUserResponse = await UsersClient.UpdateUserProfile(model, default);
             var userResult = updateUserResponse.ToApiResult();
 
             if (userResult.IsSuccess)
             {
+                await UserState.Refresh();
                 Snackbar.Add("Updated successfully", Severity.Success);
             }
             else
@@ -122,7 +116,7 @@ else
 
         var parameters = new DialogParameters<ChangeUserAvatarDialog>
         {
-            { x => x.Avatar, User!.Avatar },
+            { x => x.Avatar, UserState.CurrentUser!.Avatar },
         };
 
         var dialogRef = await DialogService.ShowAsync<ChangeUserAvatarDialog>(null, parameters, options);
@@ -132,5 +126,34 @@ else
         {
             model.Avatar = selectedAvatar;
         }
+    }
+
+    private void OnUserStateChanged()
+    {
+        UserProfile = UserState.CurrentUser;
+
+        if (UserProfile is null)
+        {
+            return;
+        }
+
+        if (model is not null)
+        {
+            return;
+        }
+
+        model = new UpdateUserProfileModel
+        {
+            FirstName = UserProfile.FirstName,
+            LastName = UserProfile.LastName,
+            Email = UserProfile.Email,
+            Avatar = UserProfile.Avatar
+        };
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        UserState.Changed -= OnUserStateChanged;
     }
 }

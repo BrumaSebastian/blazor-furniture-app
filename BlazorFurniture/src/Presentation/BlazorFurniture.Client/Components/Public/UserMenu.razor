@@ -1,4 +1,6 @@
-﻿@if (User is null)
+﻿@implements IDisposable
+
+@if (UserState.CurrentUser is null)
 {
     <MudSkeleton Height="100%" Width="32px"></MudSkeleton>
 }
@@ -7,13 +9,13 @@ else
     <MudMenu Color="Color.Primary" AriaLabel="Profile">
         <ActivatorContent>
             <MudAvatar Color="Color.Primary">
-                @if (User.Avatar is null)
+                @if (UserState.CurrentUser.Avatar is null)
                 {
-                    @User.FullName
+                    @UserState.CurrentUser.FullName
                 }
                 else
                 {
-                    <MudImage Src="@User.Avatar" Fluid="true"></MudImage>
+                    <MudImage Src="@UserState.CurrentUser.Avatar" Fluid="true"></MudImage>
                 }
             </MudAvatar>
         </ActivatorContent>
@@ -29,6 +31,23 @@ else
 }
 
 @code {
-    [Parameter] public UserProfileModel? User { get; set; }
+    [Inject] public required IUserState UserState { get; init; }
 
+    [PersistentState] public UserProfileModel? UserProfile { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserState.Changed += OnUserStateChanged;
+    }
+
+    private void OnUserStateChanged()
+    {
+        UserProfile = UserState.CurrentUser;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        UserState.Changed -= OnUserStateChanged;
+    }
 }
