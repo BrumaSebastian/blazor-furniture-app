@@ -21,10 +21,13 @@
             <MudText Typo="Typo.subtitle1">@AdminResource.add_member</MudText>
         </MudButton>
     </MudStack>
-    <MudTabs Outlined="true" @bind-ActivePanelIndex="@tabIndex">
-        <MudTabPanel Text="@AdminResource.groups_users" Icon="@Icons.Material.Filled.Groups" />
-        <MudTabPanel Text="@AdminResource.groups_roles" />
-    </MudTabs>
+    <MudStack Row="true" Class="my-8">
+        <MudTabs Elevation="2" Outlined="true" @bind-ActivePanelIndex="@tabIndex" Border="true" Rounded="true">
+            <MudTabPanel Text="@AdminResource.groups_users" Icon="@Icons.Material.Filled.Groups" />
+            <MudTabPanel Text="@AdminResource.groups_roles" />
+        </MudTabs>
+        <MudSpacer />
+    </MudStack>
 }
 
 @if (tabIndex is 0)
@@ -69,12 +72,14 @@
                             <MudMenu Icon="@Icons.Material.Filled.MoreHoriz"
                                      AriaLabel="Open user actions">
                                 <PermissionAuthorizeView Permission="@Permissions.REMOVE_GROUP_MEMBER" GroupId="@GroupId">
-                                    <Authorized>
+                                    <Authorizing />
+                                    <Authorized Context="removeGroupContext">
                                         <MudMenuItem Label="Remove" OnClick="@(async () => await OpenRemoveMemberDialog(tableContext))" />
                                     </Authorized>
                                 </PermissionAuthorizeView>
                                 <PermissionAuthorizeView Permission="@Permissions.UPDATE_GROUP_MEMBER" GroupId="@GroupId">
-                                    <Authorized>
+                                    <Authorizing />
+                                    <Authorized Context="updateGroupContext">
                                         <MudMenuItem Label="Change Role" OnClick="@(async () => await OpenChangeGroupRoleDialog(tableContext))" />
                                     </Authorized>
                                 </PermissionAuthorizeView>
@@ -101,7 +106,9 @@
     <MudTable T="GroupRoleModel" @ref="rolesTable" ServerData="GetRoles"
               Hover="true"
               RowClass="cursor-pointer"
-              Breakpoint="Breakpoint.Sm">
+              Breakpoint="Breakpoint.Sm"
+              Bordered="true"
+              ContainerClass="rounded">
         <ToolBarContent>
             <MudText Typo="Typo.h6">@AdminResource.groups_roles</MudText>
             <MudSpacer />
@@ -126,7 +133,7 @@
 
 @code {
     [Inject] public required IDialogService DialogService { get; init; }
-    [Inject] public required IGroupsApi GroupsApi { get; init; }
+    [Inject] public required IGroupsClient GroupsApi { get; init; }
     [Inject] public required NavigationManager NavigationManager { get; init; }
     [Inject] public required IStringLocalizer<CommonResource> CommonLocalizer { get; set; }
     [Inject] public required ISnackbar Snackbar { get; init; }
@@ -185,8 +192,8 @@
 
     private void NavigateToUserEvent(TableRowClickEventArgs<GroupUserModel> e)
     {
-        var href = $"/admin/groups/{GroupId}/users/{e.Item!.Id}";
-        Breadcrumbs.Add(new BreadcrumbItem(e.Item!.Email, href: href));
+        var href = $"/admin/users/{e.Item!.Id}";
+        Breadcrumbs.Add(new BreadcrumbItem(e.Item!.FullName, href: href));
         NavigationManager.NavigateTo(href);
     }
 

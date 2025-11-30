@@ -3,9 +3,9 @@ using BlazorFurniture.Application.Common.Interfaces;
 using BlazorFurniture.Application.Common.Models;
 using BlazorFurniture.Application.Features.UserManagement.Commands;
 using BlazorFurniture.Core.Shared.Errors;
+using BlazorFurniture.Domain.Entities.Keycloak;
 using BlazorFurniture.Infrastructure.Constants;
 using BlazorFurniture.Infrastructure.External.Interfaces;
-using BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Mappers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorFurniture.Infrastructure.Implementations.Features.UserManagement.Handlers.Commands;
@@ -26,6 +26,8 @@ internal sealed class UpdateUserProfileCommandHandler(
         userRepresentation.FirstName = command.Request.FirstName;
         userRepresentation.LastName = command.Request.LastName;
         userRepresentation.Email = command.Request.Email;
+        userRepresentation.Attributes ??= [];
+        userRepresentation.Attributes[UserRepresentation.ATTRIBUTE_AVATAR] = [command.Request.Avatar];
 
         var updateUser = await userManagementClient.UpdateProfile(userRepresentation, ct)
             .ToDomainResult(errorMapper, command.UserId);

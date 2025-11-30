@@ -1,0 +1,156 @@
+﻿@page "/my-profile"
+@using BlazorFurniture.Shared.Models.Users.Requests
+@using BlazorFurniture.Shared.Resources.Pages.Account
+@using BlazorFurniture.Shared.Services.API.Interfaces
+@using Microsoft.Extensions.Localization
+@attribute [Authorize]
+@layout UserProfileLayout
+@implements IDisposable
+
+<MudText Typo="Typo.h4" Class="my-4">
+    <strong>User Profile</strong>
+</MudText>
+
+@if (UserProfile is null || model is null)
+{
+    <MudSkeleton Height="100%" Width="500px">
+
+    </MudSkeleton>
+}
+else
+{
+    <MudPaper Elevation="4" Class="pa-4">
+        <MudStack>
+            <MudText Typo="Typo.h5"><strong>Edit Profile</strong></MudText>
+            <MudText Typo="Typo.caption">Update your personal information and avatar</MudText>
+            <MudForm @ref="form" Model="@model" Spacing="4">
+                <MudCardContent>
+                    <MudStack Spacing="4">
+                        <MudStack Row="true" Breakpoint="Breakpoint.SmAndDown">
+                            <MudImage Src="@model.Avatar" Fluid="true" Width="150" />
+                            <MudStack Justify="Justify.FlexEnd">
+                                <MudButton Class="rounded-2" OnClick="OpenChangeAvatarDialog" StartIcon="@Icons.Material.Filled.Image" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+                                    <MudText Typo="Typo.subtitle1">Change Avatar</MudText>
+                                </MudButton>
+                            </MudStack>
+                        </MudStack>
+                        <MudStack Spacing="4">
+                            <MudStack Breakpoint="Breakpoint.MdAndUp" Spacing="4">
+                                <MudTextField @bind-Value="model.FirstName"
+                                              Label="First Name" />
+
+                                <MudTextField @bind-Value="model.LastName"
+                                              Label="Last Name" />
+                            </MudStack>
+
+                            <MudTextField @bind-Value="model.Email"
+                                          Label="Email" />
+                        </MudStack>
+                    </MudStack>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Size="Size.Large" OnClick="@(async () => await Submit())">Save</MudButton>
+                </MudCardActions>
+            </MudForm>
+        </MudStack>
+    </MudPaper>
+}
+
+@code
+{
+    [Inject] public required IUserState UserState { get; init; }
+    [Inject] public required IDialogService DialogService { get; init; }
+    [Inject] public required IUsersClient UsersClient { get; init; }
+    [Inject] public required ISnackbar Snackbar { get; init; }
+
+    [PersistentState] public UserProfileModel? UserProfile { get; set; }
+
+    private IList<IBrowserFile> files = new List<IBrowserFile>();
+    private MudForm form = default!;
+    private bool open = true;
+    private UpdateUserProfileModel model = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserState.Changed += OnUserStateChanged;
+    }
+
+    private void ToggleDrawer()
+    {
+        open = !open;
+    }
+
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid || model.Avatar != UserState.CurrentUser?.Avatar)
+        {
+            var updateUserResponse = await UsersClient.UpdateUserProfile(model, default);
+            var userResult = updateUserResponse.ToApiResult();
+
+            if (userResult.IsSuccess)
+            {
+                await UserState.Refresh();
+                Snackbar.Add("Updated successfully", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add(userResult.ErrorMessage ?? CommonResource.errors_unknownError, Severity.Error);
+            }
+        }
+    }
+
+    private async Task OpenChangeAvatarDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = false,
+            BackdropClick = false,
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true
+        };
+
+        var parameters = new DialogParameters<ChangeUserAvatarDialog>
+        {
+            { x => x.Avatar, UserState.CurrentUser!.Avatar },
+        };
+
+        var dialogRef = await DialogService.ShowAsync<ChangeUserAvatarDialog>(null, parameters, options);
+        var result = await dialogRef.Result;
+
+        if (result?.Data is string selectedAvatar)
+        {
+            model.Avatar = selectedAvatar;
+        }
+    }
+
+    private void OnUserStateChanged()
+    {
+        UserProfile = UserState.CurrentUser;
+
+        if (UserProfile is null)
+        {
+            return;
+        }
+
+        if (model is not null)
+        {
+            return;
+        }
+
+        model = new UpdateUserProfileModel
+        {
+            FirstName = UserProfile.FirstName,
+            LastName = UserProfile.LastName,
+            Email = UserProfile.Email,
+            Avatar = UserProfile.Avatar
+        };
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        UserState.Changed -= OnUserStateChanged;
+    }
+}

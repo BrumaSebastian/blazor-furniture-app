@@ -5,7 +5,7 @@ using Refit;
 
 namespace BlazorFurniture.Shared.Services.API.Interfaces;
 
-public interface IGroupsApi
+public interface IGroupsClient
 {
     [Post("/api/groups")]
     Task<IApiResponse> Create(CreateGroupModel model, CancellationToken ct);

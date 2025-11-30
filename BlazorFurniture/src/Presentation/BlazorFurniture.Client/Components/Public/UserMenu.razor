@@ -1,0 +1,53 @@
+﻿@implements IDisposable
+
+@if (UserState.CurrentUser is null)
+{
+    <MudSkeleton Height="100%" Width="32px"></MudSkeleton>
+}
+else
+{
+    <MudMenu Color="Color.Primary" AriaLabel="Profile">
+        <ActivatorContent>
+            <MudAvatar Color="Color.Primary">
+                @if (UserState.CurrentUser.Avatar is null)
+                {
+                    @UserState.CurrentUser.FullName
+                }
+                else
+                {
+                    <MudImage Src="@UserState.CurrentUser.Avatar" Fluid="true"></MudImage>
+                }
+            </MudAvatar>
+        </ActivatorContent>
+        <ChildContent>
+            <MudNavLink Href="my-profile" Icon="@Icons.Material.Filled.AccountBox">
+                <MudText class="d-none d-md-flex">@CommonResource.button_profile</MudText>
+            </MudNavLink>
+            <MudNavLink Href="authentication/logout" Icon="@Icons.Material.Filled.Login">
+                <MudText class="d-none d-md-flex">@CommonResource.button_logout</MudText>
+            </MudNavLink>
+        </ChildContent>
+    </MudMenu>
+}
+
+@code {
+    [Inject] public required IUserState UserState { get; init; }
+
+    [PersistentState] public UserProfileModel? UserProfile { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserState.Changed += OnUserStateChanged;
+    }
+
+    private void OnUserStateChanged()
+    {
+        UserProfile = UserState.CurrentUser;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        UserState.Changed -= OnUserStateChanged;
+    }
+}

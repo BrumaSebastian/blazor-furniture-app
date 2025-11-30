@@ -1,29 +1,29 @@
 ﻿@using BlazorFurniture.Shared.Resources.Pages.Admin
 
 <MudStack Style="height:100%">
-	<MudNavMenu Color="Color.Info">
-		<MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    <MudNavMenu Color="Color.Info">
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
         <MudNavLink Href="/admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">@AdminResource.nav_dashboard</MudNavLink>
 
-        <AuthorizeView Policy="@Permissions.GetPolicy(Permissions.VIEW_GROUPS)">
+        <PermissionAuthorizeView Permission="@Permissions.LIST_GROUPS">
             <Authorized>
                 <MudNavLink Href="/admin/groups" Icon="@Icons.Material.Filled.Group">@AdminResource.nav_groups</MudNavLink>
             </Authorized>
-        </AuthorizeView>
+        </PermissionAuthorizeView>
 
         <AuthorizeView Policy="@Permissions.GetPolicy(Permissions.VIEW_USERS)">
             <Authorized>
                 <MudNavLink Href="/admin/users" Icon="@Icons.Material.Filled.People">@AdminResource.nav_users</MudNavLink>
             </Authorized>
         </AuthorizeView>
-	</MudNavMenu>
-   
-	<MudSpacer />
+    </MudNavMenu>
 
-	<MudNavMenu Color="Color.Info">
-		<MudDivider />
-		<MudNavLink Href="authentication/logout" Icon="@Icons.Material.Filled.Login">
-			<MudText>@CommonResource.button_logout</MudText>
-		</MudNavLink>
-	</MudNavMenu>
+    <MudSpacer />
+
+    <MudNavMenu Color="Color.Info">
+        <MudDivider />
+        <MudNavLink Href="authentication/logout" Icon="@Icons.Material.Filled.Login">
+            <MudText>@CommonResource.button_logout</MudText>
+        </MudNavLink>
+    </MudNavMenu>
 </MudStack> 
