@@ -22,11 +22,11 @@
         </MudButton>
     </MudStack>
     <MudStack Row="true" Class="my-8">
-        <MudTabs Elevation="2" Outlined="true" @bind-ActivePanelIndex="@tabIndex" Border="true" Rounded="true" >
+        <MudTabs Elevation="2" Outlined="true" @bind-ActivePanelIndex="@tabIndex" Border="true" Rounded="true">
             <MudTabPanel Text="@AdminResource.groups_users" Icon="@Icons.Material.Filled.Groups" />
             <MudTabPanel Text="@AdminResource.groups_roles" />
         </MudTabs>
-        <MudSpacer/>
+        <MudSpacer />
     </MudStack>
 }
 
@@ -72,12 +72,14 @@
                             <MudMenu Icon="@Icons.Material.Filled.MoreHoriz"
                                      AriaLabel="Open user actions">
                                 <PermissionAuthorizeView Permission="@Permissions.REMOVE_GROUP_MEMBER" GroupId="@GroupId">
-                                    <Authorized>
+                                    <Authorizing />
+                                    <Authorized Context="removeGroupContext">
                                         <MudMenuItem Label="Remove" OnClick="@(async () => await OpenRemoveMemberDialog(tableContext))" />
                                     </Authorized>
                                 </PermissionAuthorizeView>
                                 <PermissionAuthorizeView Permission="@Permissions.UPDATE_GROUP_MEMBER" GroupId="@GroupId">
-                                    <Authorized>
+                                    <Authorizing />
+                                    <Authorized Context="updateGroupContext">
                                         <MudMenuItem Label="Change Role" OnClick="@(async () => await OpenChangeGroupRoleDialog(tableContext))" />
                                     </Authorized>
                                 </PermissionAuthorizeView>

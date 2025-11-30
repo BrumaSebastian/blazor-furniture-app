@@ -25,25 +25,27 @@ else
             <MudText Typo="Typo.caption">Update your personal information and avatar</MudText>
             <MudForm @ref="form" Model="@model" Spacing="4">
                 <MudCardContent>
-                    <MudStack Row="true" Breakpoint="Breakpoint.SmAndDown">
-                        <MudImage Src="@model.Avatar" Fluid="true" Width="150" />
-                        <MudStack Justify="Justify.FlexEnd">
-                            <MudButton Class="rounded-2" OnClick="OpenChangeAvatarDialog" StartIcon="@Icons.Material.Filled.Image" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
-                                <MudText Typo="Typo.subtitle1">Change Avatar</MudText>
-                            </MudButton>
-                        </MudStack>
-                    </MudStack>
                     <MudStack Spacing="4">
-                        <MudStack Breakpoint="Breakpoint.MdAndUp" Spacing="4">
-                            <MudTextField @bind-Value="model.FirstName"
-                                          Label="First Name" />
-
-                            <MudTextField @bind-Value="model.LastName"
-                                          Label="Last Name" />
+                        <MudStack Row="true" Breakpoint="Breakpoint.SmAndDown">
+                            <MudImage Src="@model.Avatar" Fluid="true" Width="150" />
+                            <MudStack Justify="Justify.FlexEnd">
+                                <MudButton Class="rounded-2" OnClick="OpenChangeAvatarDialog" StartIcon="@Icons.Material.Filled.Image" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
+                                    <MudText Typo="Typo.subtitle1">Change Avatar</MudText>
+                                </MudButton>
+                            </MudStack>
                         </MudStack>
+                        <MudStack Spacing="4">
+                            <MudStack Breakpoint="Breakpoint.MdAndUp" Spacing="4">
+                                <MudTextField @bind-Value="model.FirstName"
+                                              Label="First Name" />
 
-                        <MudTextField @bind-Value="model.Email"
-                                      Label="Email" />
+                                <MudTextField @bind-Value="model.LastName"
+                                              Label="Last Name" />
+                            </MudStack>
+
+                            <MudTextField @bind-Value="model.Email"
+                                          Label="Email" />
+                        </MudStack>
                     </MudStack>
                 </MudCardContent>
                 <MudCardActions>

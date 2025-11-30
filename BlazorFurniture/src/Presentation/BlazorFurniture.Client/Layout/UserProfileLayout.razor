@@ -37,7 +37,12 @@
     <MudDrawer ClipMode="DrawerClipMode.Always" @bind-Open="@drawerOpen" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
         <MudNavMenu>
             <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@CommonResource.navigation_home</MudNavLink>
-            <MudNavLink Href="admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+            <PermissionAuthorizeView Permission="@Permissions.DASHBOARD_MANAGEMENT">
+                <Authorizing></Authorizing>
+                <Authorized>
+                    <MudNavLink Href="admin/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+                </Authorized>
+            </PermissionAuthorizeView>
             <MudNavLink Href="/my-profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">@Pages_Account.profile</MudNavLink>
             @*                 <MudNavLink Href="/my-profile/groups" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Groups</MudNavLink> *@
             <MudNavLink Href="api/user/reset-password" Icon="@Icons.Material.Filled.Login">Reset password</MudNavLink>
