@@ -25,7 +25,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Components\Admin\Charts\" />
 	  <Folder Include="wwwroot\media\avatars\" />
 	</ItemGroup>
 

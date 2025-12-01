@@ -1,4 +1,5 @@
 ﻿@page "/admin/dashboard"
+@using BlazorFurniture.Client.Components.Admin.Charts
 
 @layout AdminLayout
 @inherits AdminPageBase
@@ -35,6 +36,10 @@
                           SubValue="+3 from yesterday" />
             </MudItem>
         </MudGrid>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <SalesOverviewChart />
     </MudItem>
 
     <MudItem xs="12" md="6">
