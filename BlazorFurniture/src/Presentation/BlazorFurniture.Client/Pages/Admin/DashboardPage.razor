@@ -6,6 +6,37 @@
 
 <h1>@SearchService.SearchTerm</h1>
 <MudGrid Justify="Justify.Center" Spacing="8">
+    <MudItem xs="12">
+        <MudGrid>
+            <MudItem xs="6" md="3">
+                <StatCard Title="Total Revenue (Last 30d)"
+                          Value="$125,430"
+                          SubValue="2.5%"
+                          SubValueColor="@Colors.Green.Default"
+                          SubValueIcon="@Icons.Material.Filled.ArrowCircleUp" />
+            </MudItem>
+            <MudItem xs="6" md="3">
+                <StatCard Title="Orders Today"
+                          Value="28"
+                          SubValue="5.1%"
+                          SubValueColor="@Colors.Green.Default"
+                          SubValueIcon="@Icons.Material.Filled.ArrowCircleUp" />
+            </MudItem>
+            <MudItem xs="6" md="3">
+                <StatCard Title="New Customers (This Week)"
+                          Value="15"
+                          SubValue="1.2%"
+                          SubValueColor="@Colors.Red.Default"
+                          SubValueIcon="@Icons.Material.Filled.ArrowCircleDown" />
+            </MudItem>
+            <MudItem xs="6" md="3">
+                <StatCard Title="Low Stock Alerts"
+                          Value="8"
+                          SubValue="+3 from yesterday" />
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+
     <MudItem xs="12" md="6">
         <CurrentUserGroups Style="height:400px;" />
     </MudItem>

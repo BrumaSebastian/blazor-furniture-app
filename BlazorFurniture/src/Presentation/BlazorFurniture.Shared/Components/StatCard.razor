@@ -1,27 +1,21 @@
-﻿<MudCard Elevation="2">
-    <MudCardContent>
-        <div class="d-flex justify-space-between align-center">
-            <div>
-                <MudText Typo="Typo.subtitle2" Color="Color.Secondary">@Title</MudText>
-                <MudText Typo="Typo.h4">@Value</MudText>
-                @if (!string.IsNullOrEmpty(Subtitle))
-                {
-                    <MudText Typo="Typo.body2" Color="@SubtitleColor">@Subtitle</MudText>
-                }
-            </div>
-            @if (!string.IsNullOrEmpty(Icon))
+﻿<MudPaper Elevation="2" Class="pa-2 mud-height-full">
+    <MudStack Class="mud-height-full" Justify="Justify.Center" StretchItems="StretchItems.Middle">
+        <MudText Typo="Typo.subtitle1">@Title</MudText>
+        <MudText Typo="Typo.h4"><strong>@Value</strong></MudText>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Style=@($"color: {SubValueColor}")>
+            @if (SubValueIcon is not null)
             {
-                <MudIcon Icon="@Icon" Color="@IconColor" Size="Size.Large" />
+                <MudIcon Icon="@SubValueIcon"></MudIcon>
             }
-        </div>
-    </MudCardContent>
-</MudCard>
+            <MudText>@SubValue</MudText>
+        </MudStack>
+    </MudStack>
+</MudPaper>
 
 @code {
-    [Parameter] public string Title { get; set; } = string.Empty;
-    [Parameter] public string Value { get; set; } = string.Empty;
-    [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public Color SubtitleColor { get; set; } = Color.Default;
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public Color IconColor { get; set; } = Color.Primary;
+    [Parameter, EditorRequired] public string Title { get; set; }
+    [Parameter, EditorRequired] public string Value { get; set; }
+    [Parameter, EditorRequired] public string SubValue { get; set; }
+    [Parameter] public string? SubValueColor { get; set; } = Colors.Gray.Default;
+    [Parameter] public string? SubValueIcon { get; set; }
 }
