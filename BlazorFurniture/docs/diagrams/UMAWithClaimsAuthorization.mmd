@@ -15,7 +15,7 @@ sequenceDiagram
     KC->>API: Return Server Client Access Token
 
     Note over API,KC: To send claims to Authorization Service, <br/> a UMA ticket is created by the authorization client
-    Note over API,KC: JSON<br/>[{"resource_id":"groups",<br/>"resource_scopes":["read"],<br/>"claims":{"groupId":["5c98b298-ac1d-4fc8-aa00-fd8660eb606e"]}}]
+    Note over API,KC: JSON<br/>[{"resource_id":"group-users",<br/>"resource_scopes":["list"],<br/>"claims":{"groupId":["5c98b298-ac1d-4fc8-aa00-fd8660eb606e"]}}]
     API->>KC: POST /realms/main/authz/protection/permission <br/>Bearer serverClientAccessToken
     KC->>API: UMA ticket
 

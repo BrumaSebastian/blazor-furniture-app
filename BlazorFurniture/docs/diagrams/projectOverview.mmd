@@ -5,8 +5,7 @@ sequenceDiagram
     participant API as .NET API
     participant KC as Keycloak
 
-    Note over U,B: App launch
-    U->>B: Open app
+    U->>B: Login Button
 
     Note over B,KC: Login via API with OIDC public client
     B->>API: GET /authentication/login
