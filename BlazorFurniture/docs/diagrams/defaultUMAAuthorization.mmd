@@ -1,0 +1,29 @@
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant B as Blazor WebAssembly Client
+    participant API as .NET API
+    participant KC as Keycloak
+
+    Note over U,B: User is logged in and has cookies set
+    U->>B: Access Groups page
+
+    B->>API: GET /api/groups
+
+    Note over API,KC: Form Params<br/>grant_type:urn:ietf:params:oauth:grant-type:uma-ticket<br/>audience:server-client<br/>permission:groups#35;list<br/>response_mode:decision
+    API->>KC: POST /protocol/openid-connect/token <br/>Bearer userAccessToken
+    KC->>API: Authorization Result
+
+    alt Authorized
+        Note over API,KC: Form Params<br/>client_id:server-client<br/>client-secret:secret<br/>grant_type:client_credentials
+        API->>KC: GET /realms/main/protocol/openid-connect/token
+        KC->>API: Return Server Client Access Token
+
+        API->>KC: GET /admin/realms/main/groups-extension <br/> Bearer serverClientAccessToken
+        KC->>API: Return Groups
+        API->>B: Return Groups
+        B->>U: Render Groups
+    else Unauthorized
+        API->>B: Return 403
+        B->>U: Ommit rendering groups
+    end

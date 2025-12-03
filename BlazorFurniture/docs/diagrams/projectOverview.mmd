@@ -1,0 +1,24 @@
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant B as Blazor WebAssembly Client
+    participant API as .NET API
+    participant KC as Keycloak
+
+    Note over U,B: App launch
+    U->>B: Open app
+
+    Note over B,KC: Login via API with OIDC public client
+    B->>API: GET /authentication/login
+    API->>KC: OIDC challenge (client: blazor-app-client)
+    KC->>U: Render Keycloak login
+    U->>KC: Submit credentials
+    KC-->>API: Redirect back with auth code
+    API->>KC: Token request (code)
+    KC-->>API: Tokens
+    API-->>B: Set auth cookies (HttpOnly, Secure, SameSite)
+
+    Note over U,API: Authenticated requests with cookies
+    U->>B: Use app features
+    B->>API: Requests (with auth cookies)
+    API-->>B: Responses
