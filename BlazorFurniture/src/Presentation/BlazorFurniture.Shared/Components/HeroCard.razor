@@ -1,0 +1,18 @@
+<MudStack Class="mud-full-height rounded-lg pa-4" StretchItems="StretchItems.StartAndEnd"
+          Style="@($"background-image: url({Image}); background-position: center; background-size: cover; min-height: {MinHeight};")">
+    <MudFlexBreak />
+    <MudStack Spacing="4" AlignItems="AlignItems.Start" Justify="Justify.Center">
+        <MudText Typo="Typo.h4" Style="@($"color: {Colors.Shades.White}")">@Title</MudText>
+        <MudText Typo="Typo.subtitle2" Style="@($"color: {Colors.Shades.White}")">@Subtitle</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" FullWidth="false">@ActionText</MudButton>
+    </MudStack>
+</MudStack>
+
+
+@code {
+    [Parameter, EditorRequired] public string Image { get; set; }
+    [Parameter, EditorRequired] public string MinHeight { get; set; }
+    [Parameter, EditorRequired] public string Title { get; set; }
+    [Parameter, EditorRequired] public string Subtitle { get; set; }
+    [Parameter, EditorRequired] public string ActionText { get; set; }
+}
