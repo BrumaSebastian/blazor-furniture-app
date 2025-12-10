@@ -1,0 +1,17 @@
+<MudCard>
+    <MudCardMedia Image="@Image" Height="200" Style="cursor: pointer; min-width:200px;" />
+    <MudCardContent>
+        <MudText Typo="Typo.h5">@Title</MudText>
+        <MudText Typo="Typo.body2">@Subtitle</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Text" Color="Color.Primary" FullWidth="true">Add to cart</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter, EditorRequired] public string Image { get; set; }
+    [Parameter, EditorRequired] public string Title { get; set; }
+    [Parameter, EditorRequired] public string Subtitle { get; set; }
+    [Parameter] public string RedirectUrl { get; set; } = "#";
+}

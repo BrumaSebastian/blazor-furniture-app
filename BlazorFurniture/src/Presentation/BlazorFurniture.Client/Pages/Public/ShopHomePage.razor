@@ -1,16 +1,136 @@
 ﻿@page "/shop"
 @attribute [AllowAnonymous]
 
-<MudContainer Class="px-15">
-    <HeroCard MinHeight="450px"
-              Title="Design a Home YOU LOVE"
-              Subtitle="Timeless Pieces, Modern Living. Discover furniture that brings your vision."
-              ActionText="Shop Now"
-              Image="https://lh3.googleusercontent.com/aida-public/AB6AXuASSM8-UgHtkH89YPiho16ByHDXX0ewhrJCXTA7Oeqhgkg3nr-io3POtzFX-AcTQx5aziSrygd-Mbo6VfKeVbVH2t061Meo-AYKTnPykWcRYsuClhUBO1YguYOivG178MGQPVF0J21SUuVVJUOY50VB-s5K01Ag1PE7qORMyLKOLOGORi-sGENutkMhCVnDaEzqtclQ-sQRLE6qS0sGplZnt2MPfEykXP8sGuC9xFaWtCgBHwOlEd8U86ZDJxQ9S60ooDXSIEIJZQ">
-    </HeroCard>
+<MudContainer Class="px-15 py-4 justify-center" MaxWidth="MaxWidth.Large">
+    <MudPaper Elevation="20" Class="rounded-lg">
+        <HeroCard MinHeight="450px"
+                  Title="Design a Home YOU LOVE"
+                  Subtitle="Timeless Pieces, Modern Living. Discover furniture that brings your vision."
+                  ActionText="Shop Now"
+                  Image="https://lh3.googleusercontent.com/aida-public/AB6AXuASSM8-UgHtkH89YPiho16ByHDXX0ewhrJCXTA7Oeqhgkg3nr-io3POtzFX-AcTQx5aziSrygd-Mbo6VfKeVbVH2t061Meo-AYKTnPykWcRYsuClhUBO1YguYOivG178MGQPVF0J21SUuVVJUOY50VB-s5K01Ag1PE7qORMyLKOLOGORi-sGENutkMhCVnDaEzqtclQ-sQRLE6qS0sGplZnt2MPfEykXP8sGuC9xFaWtCgBHwOlEd8U86ZDJxQ9S60ooDXSIEIJZQ">
+        </HeroCard>
+    </MudPaper>
 </MudContainer>
 
 
-@code {
 
+<MudContainer Class="px-15 py-4 justify-center" MaxWidth="MaxWidth.Large">
+    <div @onwheel:preventDefault="true" @onwheel="OnWheelScrollEvent" @ref="scrollContainer" class="overflow-x-auto">
+        <MudStack Row="true" Spacing="10">
+            @foreach (var product in products)
+            {
+                <ItemDetailsPreview Image="@product.ImageUrl" Title="@product.Title" Subtitle="@product.Subtitle" />
+            }
+        </MudStack>
+    </div>
+</MudContainer>
+
+@code {
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+    private IJSObjectReference? hsModule;
+
+    // Sample product items
+    class ProductItem
+    {
+        public required string ImageUrl { get; set; }
+        public required string Title { get; set; }
+        public required string Subtitle { get; set; }
+    }
+
+    private List<ProductItem> products = new()
+    {
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuCxmNvqU0hcL6BorEHlGPqcVsdttJZE9R6ETI75SBYwOQcC6edkPBe2Am_B-52rfiZEMRABdvYJjPlvHiFkT5NbNASBUusy5eHPueTas46OqTkXs3aAS6oFOBn_GGrp2FeF3fV8M0J5utEk-S4fT6pdJ7wqtHrpzilRWyKmnirCEPOFI2aXrZuaPsEHKuuQCr8vKmR4BhMkV9nI-fvAHoBGd_57_1GWZRj8Ay2VoZYJ4VBCC8fbVNIjw9x0H2ASLw48mqlUGONbRQ",
+            Title = "Oak Dining Chair",
+            Subtitle = "$299"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuCzvt9gXczfy1-QICY62FwYx0lCIrtNtL58wD9rzA0_n8d6MI_afc9wdd5b-zpq26GIR5AjIlNDQUiIBtKx2hSHziutJaYscTPLqABwSBTfo1h0HIT6KdRESwwR6mW1d8CPSkXZ8aX3qArD78-Xyn8FtlE93tv51CN9y1lnEeDx-rDLKMMHC6Vk5JflsJbBhDFyoTvjMfk8kXdR6Fy8kOO7-7Rznu3AaAZtFCjYjf56jtTeNCF0ewZzrFvigWJG7olShTMF0GvL5g",
+            Title = "Velvet Sofa",
+            Subtitle = "Comfortable and stylish"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBuPOm-CmagJ_ECF49-sgOR5AsXh3rASW7Y2HirDvP6XCLYrrGqtOexxQKxoneUhSdBYBnrxdOLWLbFp_X0FWVov_nTC8B5LbbSl4dy8gVUFEgX0JQr-Vcy0ThNkswgz__QMzN_s_imQd2K_N498KnRFHqjj_3zto-sdgnACDTAt9_XHV-3Aqu-4SE4QOZRDgHIj1DT0A2bP_T02oH9UQKj8Gi0TrAzVahrI7na_QhUjGPNTx1OIwfhnBBDpOkj7ii6XTOabo-W-w",
+            Title = "Marble Coffee Table",
+            Subtitle = "Elegant and durable"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuDsGveeqH4JNTDYBHG5QHVb4wdYt0DFCzYTPlSNCWMKXdw8edJomSu2DQvIFxZl16YOapSi0t4bDR0QeAn2DgJWchkbImyXDj7lOlrv2qYZGBhoNGQ4PBRUEwUoCp__zoiDinSdkzg9iFbVEEJzRes-uysEZjZ-bz3FMHqrv7bN9ZVtJbxIQBvPlMkr6FPVIPnNS3Ml74ICyzSIP-g_VG8O8Ts-3eti00lPqsA3bC8z_PSlyP9BqarwkcVKpOE_8VM19vGoi1Dwcg",
+            Title = "Geometric Rug",
+            Subtitle = "A centerpiece for your living room"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBuPOm-CmagJ_ECF49-sgOR5AsXh3rASW7Y2HirDvP6XCLYrrGqtOexxQKxoneUhSdBYBnrxdOLWLbFp_X0FWVov_nTC8B5LbbSl4dy8gVUFEgX0JQr-Vcy0ThNkswgz__QMzN_s_imQd2K_N498KnRFHqjj_3zto-sdgnACDTAt9_XHV-3Aqu-4SE4QOZRDgHIj1DT0A2bP_T02oH9UQKj8Gi0TrAzVahrI7na_QhUjGPNTx1OIwfhnBBDpOkj7ii6XTOabo-W-w",
+            Title = "Marble Coffee Table",
+            Subtitle = "Elegant and durable"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuDsGveeqH4JNTDYBHG5QHVb4wdYt0DFCzYTPlSNCWMKXdw8edJomSu2DQvIFxZl16YOapSi0t4bDR0QeAn2DgJWchkbImyXDj7lOlrv2qYZGBhoNGQ4PBRUEwUoCp__zoiDinSdkzg9iFbVEEJzRes-uysEZjZ-bz3FMHqrv7bN9ZVtJbxIQBvPlMkr6FPVIPnNS3Ml74ICyzSIP-g_VG8O8Ts-3eti00lPqsA3bC8z_PSlyP9BqarwkcVKpOE_8VM19vGoi1Dwcg",
+            Title = "Geometric Rug",
+            Subtitle = "A centerpiece for your living room"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuCxmNvqU0hcL6BorEHlGPqcVsdttJZE9R6ETI75SBYwOQcC6edkPBe2Am_B-52rfiZEMRABdvYJjPlvHiFkT5NbNASBUusy5eHPueTas46OqTkXs3aAS6oFOBn_GGrp2FeF3fV8M0J5utEk-S4fT6pdJ7wqtHrpzilRWyKmnirCEPOFI2aXrZuaPsEHKuuQCr8vKmR4BhMkV9nI-fvAHoBGd_57_1GWZRj8Ay2VoZYJ4VBCC8fbVNIjw9x0H2ASLw48mqlUGONbRQ",
+            Title = "Oak Dining Chair",
+            Subtitle = "$299"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuCzvt9gXczfy1-QICY62FwYx0lCIrtNtL58wD9rzA0_n8d6MI_afc9wdd5b-zpq26GIR5AjIlNDQUiIBtKx2hSHziutJaYscTPLqABwSBTfo1h0HIT6KdRESwwR6mW1d8CPSkXZ8aX3qArD78-Xyn8FtlE93tv51CN9y1lnEeDx-rDLKMMHC6Vk5JflsJbBhDFyoTvjMfk8kXdR6Fy8kOO7-7Rznu3AaAZtFCjYjf56jtTeNCF0ewZzrFvigWJG7olShTMF0GvL5g",
+            Title = "Velvet Sofa",
+            Subtitle = "Comfortable and stylish"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBuPOm-CmagJ_ECF49-sgOR5AsXh3rASW7Y2HirDvP6XCLYrrGqtOexxQKxoneUhSdBYBnrxdOLWLbFp_X0FWVov_nTC8B5LbbSl4dy8gVUFEgX0JQr-Vcy0ThNkswgz__QMzN_s_imQd2K_N498KnRFHqjj_3zto-sdgnACDTAt9_XHV-3Aqu-4SE4QOZRDgHIj1DT0A2bP_T02oH9UQKj8Gi0TrAzVahrI7na_QhUjGPNTx1OIwfhnBBDpOkj7ii6XTOabo-W-w",
+            Title = "Marble Coffee Table",
+            Subtitle = "Elegant and durable"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuDsGveeqH4JNTDYBHG5QHVb4wdYt0DFCzYTPlSNCWMKXdw8edJomSu2DQvIFxZl16YOapSi0t4bDR0QeAn2DgJWchkbImyXDj7lOlrv2qYZGBhoNGQ4PBRUEwUoCp__zoiDinSdkzg9iFbVEEJzRes-uysEZjZ-bz3FMHqrv7bN9ZVtJbxIQBvPlMkr6FPVIPnNS3Ml74ICyzSIP-g_VG8O8Ts-3eti00lPqsA3bC8z_PSlyP9BqarwkcVKpOE_8VM19vGoi1Dwcg",
+            Title = "Geometric Rug",
+            Subtitle = "A centerpiece for your living room"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBuPOm-CmagJ_ECF49-sgOR5AsXh3rASW7Y2HirDvP6XCLYrrGqtOexxQKxoneUhSdBYBnrxdOLWLbFp_X0FWVov_nTC8B5LbbSl4dy8gVUFEgX0JQr-Vcy0ThNkswgz__QMzN_s_imQd2K_N498KnRFHqjj_3zto-sdgnACDTAt9_XHV-3Aqu-4SE4QOZRDgHIj1DT0A2bP_T02oH9UQKj8Gi0TrAzVahrI7na_QhUjGPNTx1OIwfhnBBDpOkj7ii6XTOabo-W-w",
+            Title = "Marble Coffee Table",
+            Subtitle = "Elegant and durable"
+        },
+        new ProductItem
+        {
+            ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuDsGveeqH4JNTDYBHG5QHVb4wdYt0DFCzYTPlSNCWMKXdw8edJomSu2DQvIFxZl16YOapSi0t4bDR0QeAn2DgJWchkbImyXDj7lOlrv2qYZGBhoNGQ4PBRUEwUoCp__zoiDinSdkzg9iFbVEEJzRes-uysEZjZ-bz3FMHqrv7bN9ZVtJbxIQBvPlMkr6FPVIPnNS3Ml74ICyzSIP-g_VG8O8Ts-3eti00lPqsA3bC8z_PSlyP9BqarwkcVKpOE_8VM19vGoi1Dwcg",
+            Title = "Geometric Rug",
+            Subtitle = "A centerpiece for your living room"
+        }
+    };
+    private ElementReference? scrollContainer;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hsModule = await JS.InvokeAsync<IJSObjectReference>("import", "/scripts/horizontalScroll.js");
+        }
+    }
+
+    private async Task OnWheelScrollEvent(WheelEventArgs e)
+    {
+        if (hsModule is not null)
+        {
+            await hsModule.InvokeVoidAsync("onWheel", scrollContainer, e.DeltaY);
+        }
+    }
 }
+
+
+
+
