@@ -546,3 +546,4 @@ Thumbs.db
 *.swp
 
 !BlazorFurniture/tests/BlazorFurniture.IntegrationTests/Controllers/Setup/keycloak-spis-all-1.0.0.jar
+!BlazorFurniture/extensions/*
