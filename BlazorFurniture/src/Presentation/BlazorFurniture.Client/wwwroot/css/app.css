@@ -25,3 +25,13 @@
 html{
     height: 100%;
 }
+
+.hide-scrollbar {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge (Chromium) */
+}

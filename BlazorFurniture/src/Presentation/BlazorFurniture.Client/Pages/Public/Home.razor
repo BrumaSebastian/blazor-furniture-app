@@ -18,7 +18,7 @@
     </MudItem>
 
     <MudItem xs="12" md="6">
-        <MasonryMediaWall Sources="@Enumerable.Repeat("/media/placeholder600x400.png", 6).ToList()" />
+        <MasonryMediaWall Sources="@Images" />
     </MudItem>
 </MudGrid>
 
@@ -70,7 +70,7 @@
     </MudItem>
 
     <MudItem xs="12" md="6" class="d-flex justify-center">
-        <MudImage Src="/media/placeholder600x400.png" Fluid=true></MudImage>
+        <MudImage Class="rounded-lg" Src="https://img.freepik.com/free-photo/closeup-couple-receiving-keys-their-new-apartment-from-real-estate-agent_637285-6087.jpg?t=st=1765714157~exp=1765717757~hmac=79aec0d3442bb411defcab25a9ae7f53572bb8a5bd0e6d21ed66bd8b97c7fddf&w=1480" Fluid=true></MudImage>
     </MudItem>
 </MudGrid>
 
@@ -121,15 +121,15 @@
     </MudGrid>
 </MudStack>
 
-<MudContainer id="section-5" class="mx-0 my-10 py-15 w-full"
+<MudContainer id="section-5" class="mx-0 my-10 py-15 w-full rounded-lg"
               MaxWidth="MaxWidth.False"
-              style="background-image: url(media/placeholder600x400.png); background-position: center; background-size: cover;">
+              style="background-image: url(https://img.freepik.com/free-photo/living-room-japandi-interior-design_53876-138124.jpg?t=st=1765715602~exp=1765719202~hmac=548d583e012f9ca38aa297dceef221f26f6c3fc43f6ab1331a422a13301720ef&w=1060); background-position: center; background-size: cover;">
     <MudStack>
-        <MudText Typo="Typo.h3">
+        <MudText Typo="Typo.h3" Style=@($"color: {Colors.Shades.Black};")>
             Unlock your perfect rental today
         </MudText>
 
-        <MudText Typo="Typo.subtitle1">
+        <MudText Typo="Typo.subtitle1" Style=@($"color: {Colors.Shades.Black};")>
             Join our community and find your next rental effortlessly with our user-friendly app.
         </MudText>
 
@@ -165,7 +165,7 @@
     </MudItem>
 
     <MudItem xs="12" md="6" class="d-flex justify-center">
-        <MudImage Src="/media/placeholder600x400.png" Fluid=true></MudImage>
+        <MudImage Class="rounded-lg" Src="https://img.freepik.com/free-photo/modern-district-aerial-panorama-urban-style_169016-68484.jpg?t=st=1765716007~exp=1765719607~hmac=565af4d0f128c11ab62d2e47cf60b034595d27691fc3ba8c4f514ccc139c1505&w=1060" Fluid=true></MudImage>
     </MudItem>
 </MudGrid>
 
@@ -249,60 +249,13 @@
     </MudItem>
 </MudGrid>
 
-@* @code {
-	private UserPermissions? permissions;
-	// private bool isLoading = false;
-	private string? errorMessage;
-
-	// private bool hasAdminPanel = false;
-	// private bool hasGroupView = false;
-	// private bool hasUserView = false;
-
-	// protected override async Task OnInitializedAsync()
-	// {
-	// 	await LoadPermissions();
-	// }
-
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (firstRender)
-		{
-			await LoadPermissions();
-			StateHasChanged(); // Re-render with loaded permissions
-		}
-	}
-
-	private async Task LoadPermissions()
-	{
-		// isLoading = true;
-		errorMessage = null;
-
-		try
-		{
-			permissions = await PermissionsService.GetUserPermissions();
-
-			// if (permissions != null)
-			// {
-			// 	// Test specific permissions
-			// 	hasAdminPanel = await PermissionsService.HasPermission("view-admin-panel");
-			// 	hasGroupView = await PermissionsService.HasPermission("group-management#view");
-			// 	hasUserView = await PermissionsService.HasPermission("user-management#view");
-			// }
-		}
-		catch (Exception ex)
-		{
-			errorMessage = ex.Message;
-		}
-		finally
-		{
-			// isLoading = false;
-		}
-	}
-
-	private async Task RefreshPermissions()
-	{
-		PermissionsService.ClearCache();
-		await LoadPermissions();
-		StateHasChanged();
-	}
-} *@
+@code {
+    private List<string> Images = [
+        "https://img.freepik.com/free-photo/woman-showing-with-one-hand-mini-house-real-state-concept-ai-generative_123827-24098.jpg?t=st=1765713715~exp=1765717315~hmac=ba2b3ddafb27fca8e69804078679bb477ca6b8cb32de43f307e4fd28f2d8552a&w=740",
+        "https://img.freepik.com/free-photo/modern-home-exterior-with-lush-green-lawn-driveway_23-2151974422.jpg?t=st=1765713279~exp=1765716879~hmac=e1c012434ca6e99823a1a74b5d023ec7ef1ed4405735d8bbd5e22063bbf4d99e&w=1480",
+        "https://img.freepik.com/free-photo/modern-minimalist-house-with-pool-sunbeds_23-2151974388.jpg?t=st=1765713543~exp=1765717143~hmac=fbe6a1e85503a0c1bc8c1495dd56dea00e5d2b6e02464609bef0c32db33bc7c1&w=1060",
+        "https://img.freepik.com/free-photo/back-view-family-hugging-admiring-their-home_259150-59357.jpg?t=st=1765713582~exp=1765717182~hmac=d34b8bb707c7f5d57a7af9e4ef61b97fd2a3abcb1578763ebe3879671612697a&w=1480",
+        "https://img.freepik.com/free-photo/3d-rendering-loft-luxury-living-room-with-bookshelf-near-bookshelf_105762-2224.jpg?t=st=1765713642~exp=1765717242~hmac=3f71129d5628c52ec19b72523d186fbc4d1d66fcc3e7b00c2f20851c3e008477&w=1480",
+        "https://img.freepik.com/free-photo/3d-rendering-modern-dining-room-living-room-with-luxury-decor_105762-2203.jpg?t=st=1765713694~exp=1765717294~hmac=4a245d5beab4b6007c8676643c2330b099b169fecd4482149a40d8393ea28160&w=740",
+    ];
+}

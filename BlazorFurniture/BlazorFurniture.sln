@@ -61,6 +61,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{B1D2C289
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorFurniture.Templates", "src\Core\BlazorFurniture.Templates\BlazorFurniture.Templates.csproj", "{16867D89-7CA5-465F-8A9D-65221DF69C3D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "diagrams", "diagrams", "{472549A1-D8A1-4628-9578-77204E27EC6F}"
+	ProjectSection(SolutionItems) = preProject
+		projectOverview.mmd = projectOverview.mmd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -251,6 +256,7 @@ Global
 		{7F08C0CD-B874-473F-8B9E-AF452CC36542} = {8E797605-950B-4B7D-9225-2ADE6F8F4904}
 		{B1D2C289-EBCC-479C-81D5-7E2069891CD4} = {7F08C0CD-B874-473F-8B9E-AF452CC36542}
 		{16867D89-7CA5-465F-8A9D-65221DF69C3D} = {6DB7FAF5-DBDC-4ABF-B9D5-EE3082E045E4}
+		{472549A1-D8A1-4628-9578-77204E27EC6F} = {7F08C0CD-B874-473F-8B9E-AF452CC36542}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E2E717D-D280-4801-AB25-80B6398CDD1F}

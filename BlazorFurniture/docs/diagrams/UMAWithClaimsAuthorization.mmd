@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant B as Blazor WebAssembly Client
+    participant API as .NET API
+    participant KC as Keycloak
+
+    Note over U,B: User is logged in and has cookies set
+    U->>B: Access Sales Group page to view Users
+
+    B->>API: GET /api/groups/5c98b298-ac1d-4fc8-aa00-fd8660eb606e/users
+
+    Note over API,KC: Form Params<br/>client_id:server-client<br/>client-secret:secret<br/>grant_type:client_credentials
+    API->>KC: GET /realms/main/protocol/openid-connect/token
+    KC->>API: Return Server Client Access Token
+
+    Note over API,KC: To send claims to Authorization Service, <br/> a UMA ticket is created by the authorization client
+    Note over API,KC: JSON<br/>[{"resource_id":"group-users",<br/>"resource_scopes":["list"],<br/>"claims":{"groupId":["5c98b298-ac1d-4fc8-aa00-fd8660eb606e"]}}]
+    API->>KC: POST /realms/main/authz/protection/permission <br/>Bearer serverClientAccessToken
+    KC->>API: UMA ticket
+
+    Note over API,KC: Form Params<br/>grant_type:urn:ietf:params:oauth:grant-type:uma-ticket<br/>ticket:UMA ticket<br/>response_mode:decision
+    API->>KC: POST /realms/main/protocol/openid-connect/token <br/>Bearer userAccessToken
+    KC->>API: Authorization Result
+
+    alt Authorized
+        API->>KC: GET /admin/realms/main/groups-extension/5c98b298-ac1d-4fc8-aa00-fd8660eb606e/members <br/> Bearer serverClientAccessToken
+        KC->>API: Return Group Users
+        API->>B: Return Group Users
+        B->>U: Render Group Users
+    else Unauthorized
+        API->>B: Return 403
+        B->>U: Ommit rendering
+    end

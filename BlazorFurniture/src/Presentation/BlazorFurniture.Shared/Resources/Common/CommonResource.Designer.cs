@@ -268,6 +268,15 @@ namespace BlazorFurniture.Shared.Resources.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shop.
+        /// </summary>
+        public static string navigation_shop {
+            get {
+                return ResourceManager.GetString("navigation.shop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Weather.
         /// </summary>
         public static string navigation_weather {

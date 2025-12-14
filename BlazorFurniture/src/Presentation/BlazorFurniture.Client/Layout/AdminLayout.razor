@@ -28,7 +28,7 @@
     </MudDrawer>
 
     <MudMainContent>
-        <MudContainer Gutters=true Class="pt-4">
+        <MudContainer Gutters=true Class="py-4">
             <MudBreadcrumbs Items="Breadcrumbs.Items" Class="mx-2">
                 <ItemTemplate Context="item">
                     <MudLink Color="Color.Default" OnClick="@(() => RemoveFromBreadcrumbs(item))" Href="@item.Href">@item.Text</MudLink>

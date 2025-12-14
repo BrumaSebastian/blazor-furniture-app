@@ -1,0 +1,36 @@
+﻿<MudPaper Class="pa-2 mud-width-full mud-height-full">
+    <MudStack Row="true" StretchItems="StretchItems.Start">
+        <MudStack>
+            <MudText Typo="Typo.subtitle1">Sales Overview</MudText>
+            <MudText Typo="Typo.subtitle1"><strong>@($"${Series[0].Data.Average():F2}")</strong></MudText>
+            <MudText Typo="Typo.subtitle2">vs previous @currentPastDays days <MudText Typo="Typo.subtitle2" Inline="true" Style=@($"color: {Colors.Green.Default}")>+15.3%</MudText></MudText>
+        </MudStack>
+        <MudSpacer />
+        <MudSelect @bind-Value="currentPastDays"
+                   Variant="Variant.Outlined">
+            @foreach (var days in pastDays)
+            {
+                <MudSelectItem Value="days">@($"Last {currentPastDays} Days")</MudSelectItem>
+            }
+        </MudSelect>
+    </MudStack>
+    <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" ChartOptions="options"></MudChart>
+</MudPaper>
+
+@code {
+
+    private int[] pastDays = [7, 14, 21, 30];
+    private int currentPastDays = 7;
+    private ChartOptions options = new ChartOptions();
+    public List<ChartSeries> Series = new List<ChartSeries>()
+    {
+        new ChartSeries() { Data = new double[] { 3800, 4100, 3950, 4200, 3900, 5200, 4800 }, LineDisplayType = LineDisplayType.Area, ShowDataMarkers = true },
+    };
+    public string[] XAxisLabels = Enum.GetValues<DayOfWeek>().Select(e => e.ToString()).ToArray();
+
+    protected override void OnInitialized()
+    {
+        options.InterpolationOption = InterpolationOption.NaturalSpline;
+        options.ShowLegend = false;
+    }
+}
