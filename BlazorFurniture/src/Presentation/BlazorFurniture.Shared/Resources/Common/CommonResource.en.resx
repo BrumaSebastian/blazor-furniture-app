@@ -204,4 +204,7 @@
   <data name="message.groupMemberRoleUpdated" xml:space="preserve">
     <value>Role updated successfully</value>
   </data>
+  <data name="navigation.shop" xml:space="preserve">
+    <value>Shop</value>
+  </data>
 </root>

@@ -1,4 +1,9 @@
 ﻿<MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@CommonResource.navigation_home</MudNavLink>
-<MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">@CommonResource.navigation_counter</MudNavLink>
-<MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">@CommonResource.navigation_weather</MudNavLink>
-<MudNavLink Href="admin/dashboard" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+<MudNavLink Href="shop" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">@CommonResource.navigation_shop</MudNavLink>
+
+<PermissionAuthorizeView Permission="@Permissions.DASHBOARD_MANAGEMENT">
+    <Authorizing />
+    <Authorized>
+        <MudNavLink Href="admin/dashboard" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+    </Authorized>
+</PermissionAuthorizeView>

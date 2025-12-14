@@ -1,7 +1,7 @@
 ﻿@page "/shop"
 @attribute [AllowAnonymous]
 
-<MudContainer Class="px-15 py-4 justify-center" MaxWidth="MaxWidth.Large">
+<MudContainer Class="px-15 my-4 justify-center" MaxWidth="MaxWidth.Large">
     <MudPaper Elevation="20" Class="rounded-lg">
         <HeroCard MinHeight="450px"
                   Title="Design a Home YOU LOVE"
@@ -12,10 +12,8 @@
     </MudPaper>
 </MudContainer>
 
-
-
-<MudContainer Class="px-15 py-4 justify-center" MaxWidth="MaxWidth.Large">
-    <div @onwheel:preventDefault="true" @onwheel="OnWheelScrollEvent" @ref="scrollContainer" class="overflow-x-auto hide-scrollbar">
+<MudContainer Class="px-15 my-4 justify-center" MaxWidth="MaxWidth.Large">
+    <div @onwheel:preventDefault="true" @onwheel="OnWheelScrollEvent" @ref="scrollContainer" class="overflow-x-auto hide-scrollbar pa-5">
         <MudStack Row="true" Spacing="10">
             @foreach (var product in products)
             {
