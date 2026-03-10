@@ -1,0 +1,9 @@
+realm: main
+
+browserFlow: browser
+registrationFlow: registration
+directGrantFlow: direct grant
+resetCredentialsFlow: reset credentials
+clientAuthenticationFlow: clients
+dockerAuthenticationFlow: docker auth
+firstBrokerLoginFlow: first broker login
