@@ -1,233 +1,63 @@
 realm: main
 
-clients:
-  - clientId: blazor-app-client
-    name: blazor-app-client
-    protocol: openid-connect
-    publicClient: true
-    standardFlowEnabled: true
-    directAccessGrantsEnabled: false
-    redirectUris:
-      - $(APP_REDIRECT_URI)
-      - $(APP_REDIRECT_URI_HTTP)
-    webOrigins:
-      - $(APP_ORIGIN)
-    attributes:
-      pkce.code.challenge.method: S256
+roles:
+  client:
+    server-client:
+      - name: dashboard-management
+        description: "Permission to view Management Dashboard"
+      - name: groups-create
+        description: "Permission to create a group"
+      - name: groups-list
+        description: "Permission to retrieve groups"
+      - name: groups-read
+        description: "Permission to retrieve group details"
+      - name: groups-update
+        description: "Permission to update a group"
+      - name: group-users-add
+        description: "Permission to add a user to a group"
+      - name: group-users-remove
+        description: "Permission to remove a user from group"
+      - name: group-users-list
+        description: "Permission to retrieve all users of a group"
+      - name: group-users-update
+        description: "Permission to update a user within a group"
+      - name: uma_protection
 
-  - clientId: scalar-client
-    name: scalar-client
-    protocol: openid-connect
-    publicClient: true
-    standardFlowEnabled: true
-    directAccessGrantsEnabled: false
-    redirectUris:
-      - $(SCALAR_REDIRECT_URI)
-    webOrigins:
-      - $(APP_ORIGIN)
-    attributes:
-      pkce.code.challenge.method: S256
+  realm:
+    - name: user
+      description: "Represents a simple user of the application"
+      composite: false
 
-  - clientId: integration-test-client
-    name: integration-test-client
-    protocol: openid-connect
-    publicClient: true
-    standardFlowEnabled: false
-    directAccessGrantsEnabled: true
+    - name: admin
+      description: "Represent an admin of the application"
+      composite: true
+      composites:
+        client:
+          server-client:
+            - dashboard-management
+            - groups-create
+            - groups-list
 
-  - clientId: server-client
-    name: server-client
-    protocol: openid-connect
-    publicClient: false
-    serviceAccountsEnabled: true
-    authorizationServicesEnabled: true
-    authorizationSettings:
-      allowRemoteResourceManagement: true
-      policyEnforcementMode: ENFORCING
-      decisionStrategy: UNANIMOUS
-      resources:
-        - name: groups
-          type: endpoint
-          ownerManagedAccess: false
-          displayName: "Groups Management"
-          attributes: {}
-          uris: []
-          scopes:
-            - name: read
-            - name: update
-            - name: create
-            - name: list
-          icon_uri: ""
-        - name: group-users
-          type: endpoint
-          ownerManagedAccess: false
-          displayName: "Group Users Management"
-          attributes: {}
-          uris: []
-          scopes:
-            - name: add
-            - name: update
-            - name: remove
-            - name: list
-          icon_uri: ""
-      scopes:
-        - name: list
-          iconUri: ""
-          displayName: List
-        - name: create
-          iconUri: ""
-          displayName: Create
-        - name: read
-          iconUri: ""
-          displayName: Read
-        - name: update
-          iconUri: ""
-          displayName: Update
-        - name: delete
-          iconUri: ""
-          displayName: Delete
-        - name: add
-          iconUri: ""
-          displayName: Add
-        - name: remove
-          iconUri: ""
-          displayName: Remove
-      policies:
-        - name: policy-groups-create
-          description: "Defines the requirement of role groups-create within platform"
-          type: role
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            fetchRoles: "true"
-            roles: '[{"id":"server-client/groups-create","required":true}]'
-        - name: policy-groups-update
-          description: "Defines the requirement of role groups-update within a group"
-          type: groupRole
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            roles: '[{"id":"server-client/groups-update","required":true}]'
-        - name: policy-groups-read
-          description: "Defines the requirement of role groups-read within a group"
-          type: groupRole
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            roles: '[{"id":"server-client/groups-read","required":true}]'
-        - name: policy-groups-list
-          description: "Defines the requirement of role groups-list within platform"
-          type: role
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            fetchRoles: "true"
-            roles: '[{"id":"server-client/groups-list","required":true}]'
-        - name: policy-group-users-list
-          description: "Defines the requirement of role group-users-list within a group"
-          type: groupRole
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            roles: '[{"id":"server-client/group-users-list","required":true}]'
-        - name: policy-admin
-          description: "Defines the requirement of role admin within platform"
-          type: role
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            fetchRoles: "true"
-            roles: '[{"id":"admin","required":true}]'
-        - name: policy-group-users-add
-          description: "Defines the requirement of role group-users-add within a group"
-          type: groupRole
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            roles: '[{"id":"server-client/group-users-add","required":true}]'
-        - name: policy-group-users-remove
-          description: "Defines the requirement of role group-users-remove within a group"
-          type: groupRole
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            roles: '[]'
-        - name: policy-group-users-update
-          description: "Defines the requirement of role group-users-update within a group"
-          type: groupRole
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            roles: '[{"id":"server-client/group-users-update","required":true}]'
-        - name: permission-groups-create
-          description: "Defines rules for creating a group"
-          type: scope
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            resources: '["groups"]'
-            scopes: '["create"]'
-            applyPolicies: '["policy-groups-create"]'
-        - name: permission-groups-update
-          description: "Defines rules for updating a group"
-          type: scope
-          logic: POSITIVE
-          decisionStrategy: AFFIRMATIVE
-          config:
-            resources: '["groups"]'
-            scopes: '["update"]'
-            applyPolicies: '["policy-admin","policy-groups-update"]'
-        - name: permission-groups-list
-          description: ""
-          type: scope
-          logic: POSITIVE
-          decisionStrategy: UNANIMOUS
-          config:
-            resources: '["groups"]'
-            scopes: '["list"]'
-            applyPolicies: '["policy-groups-list"]'
-        - name: permission-group-users-list
-          description: "Defines rules for retrieving all users of a group"
-          type: scope
-          logic: POSITIVE
-          decisionStrategy: AFFIRMATIVE
-          config:
-            resources: '["group-users"]'
-            scopes: '["list"]'
-            applyPolicies: '["policy-admin","policy-group-users-list"]'
-        - name: permission-groups-read
-          description: "Defines rules for retrieving a group"
-          type: scope
-          logic: POSITIVE
-          decisionStrategy: AFFIRMATIVE
-          config:
-            resources: '["groups"]'
-            scopes: '["read"]'
-            applyPolicies: '["policy-groups-read","policy-admin"]'
-        - name: permission-group-users-remove
-          description: "Defines rules for removing a user from the group"
-          type: scope
-          logic: POSITIVE
-          decisionStrategy: AFFIRMATIVE
-          config:
-            resources: '["group-users"]'
-            scopes: '["remove"]'
-            applyPolicies: '["policy-admin","policy-group-users-remove"]'
-        - name: permission-group-users-add
-          description: "Defines rules for adding a user to group"
-          type: scope
-          logic: POSITIVE
-          decisionStrategy: AFFIRMATIVE
-          config:
-            resources: '["group-users"]'
-            scopes: '["add"]'
-            applyPolicies: '["policy-admin","policy-group-users-add"]'
-        - name: permission-group-users-update
-          description: ""
-          type: scope
-          logic: POSITIVE
-          decisionStrategy: AFFIRMATIVE
-          config:
-            resources: '["group-users"]'
-            scopes: '["update"]'
-            applyPolicies: '["policy-group-users-update","policy-admin"]'
+    - name: group-admin
+      description: "Represents an admin of a group"
+      composite: true
+      composites:
+        client:
+          server-client:
+            - group-users-remove
+            - dashboard-management
+            - group-users-add
+            - groups-update
+            - group-users-list
+            - groups-read
+            - group-users-update
+
+    - name: group-member
+      description: "Represents a member of a group"
+      composite: true
+      composites:
+        client:
+          server-client:
+            - dashboard-management
+            - group-users-list
+            - groups-read
