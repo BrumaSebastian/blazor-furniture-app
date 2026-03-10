@@ -1,0 +1,41 @@
+realm: main
+
+roles:
+  realm:
+    - name: user
+      description: "Represents a simple user of the application"
+      composite: false
+
+    - name: admin
+      description: "Represent an admin of the application"
+      composite: true
+      composites:
+        client:
+          server-client:
+            - dashboard-management
+            - groups-create
+            - groups-list
+
+    - name: group-admin
+      description: "Represents an admin of a group"
+      composite: true
+      composites:
+        client:
+          server-client:
+            - group-users-remove
+            - dashboard-management
+            - group-users-add
+            - groups-update
+            - group-users-list
+            - groups-read
+            - group-users-update
+
+    - name: group-member
+      description: "Represents a member of a group"
+      composite: true
+      composites:
+        client:
+          server-client:
+            - dashboard-management
+            - group-users-list
+            - groups-read

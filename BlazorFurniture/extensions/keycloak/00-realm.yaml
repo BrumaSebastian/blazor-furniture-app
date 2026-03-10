@@ -1,0 +1,61 @@
+realm: main
+displayName: "Blazor Management"
+displayNameHtml: "Blazor Management"
+enabled: true
+sslRequired: external
+
+# Login settings
+registrationAllowed: true
+registrationEmailAsUsername: false
+rememberMe: true
+verifyEmail: false
+loginWithEmailAllowed: true
+duplicateEmailsAllowed: false
+resetPasswordAllowed: true
+editUsernameAllowed: false
+
+# Token lifespans (seconds)
+accessTokenLifespan: 300
+accessTokenLifespanForImplicitFlow: 900
+ssoSessionIdleTimeout: 1800
+ssoSessionMaxLifespan: 36000
+offlineSessionIdleTimeout: 2592000
+offlineSessionMaxLifespanEnabled: false
+offlineSessionMaxLifespan: 5184000
+accessCodeLifespan: 60
+accessCodeLifespanUserAction: 86400
+accessCodeLifespanLogin: 1800
+actionTokenGeneratedByAdminLifespan: 43200
+actionTokenGeneratedByUserLifespan: 300
+
+# Security
+defaultSignatureAlgorithm: RS256
+bruteForceProtected: false
+permanentLockout: false
+failureFactor: 30
+maxFailureWaitSeconds: 900
+minimumQuickLoginWaitSeconds: 60
+waitIncrementSeconds: 60
+maxDeltaTimeSeconds: 43200
+
+# SMTP — use env vars so this works across environments
+smtpServer:
+  host: $(env:SMTP_HOST,maildev)
+  port: $(env:SMTP_PORT,1025)
+  from: $(env:SMTP_FROM,something@no-reply.com)
+  ssl: false
+  starttls: false
+  auth: false
+
+# Themes
+loginTheme: ""
+accountTheme: ""
+adminTheme: ""
+emailTheme: ""
+
+# Localization
+internationalizationEnabled: true
+supportedLocales:
+  - en
+  - ro
+defaultLocale: en
