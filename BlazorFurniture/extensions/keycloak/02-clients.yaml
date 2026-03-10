@@ -8,10 +8,10 @@ clients:
     standardFlowEnabled: true
     directAccessGrantsEnabled: false
     redirectUris:
-      - $(env:APP_REDIRECT_URI,https://localhost:7126/*)
-      - $(env:APP_REDIRECT_URI_HTTP,http://localhost:5126/*)
+      - $(APP_REDIRECT_URI)
+      - $(APP_REDIRECT_URI_HTTP)
     webOrigins:
-      - $(env:APP_ORIGIN,https://localhost:7126)
+      - $(APP_ORIGIN)
     attributes:
       pkce.code.challenge.method: S256
 
@@ -22,9 +22,9 @@ clients:
     standardFlowEnabled: true
     directAccessGrantsEnabled: false
     redirectUris:
-      - $(env:SCALAR_REDIRECT_URI,https://localhost:7126/scalar/oauth2-redirect)
+      - $(SCALAR_REDIRECT_URI)
     webOrigins:
-      - $(env:APP_ORIGIN,https://localhost:7126)
+      - $(APP_ORIGIN)
     attributes:
       pkce.code.challenge.method: S256
 
@@ -41,26 +41,6 @@ clients:
     publicClient: false
     serviceAccountsEnabled: true
     authorizationServicesEnabled: true
-    roles:
-      - name: dashboard-management
-        description: "Permission to view Management Dashboard"
-      - name: groups-create
-        description: "Permission to create a group"
-      - name: groups-list
-        description: "Permission to retrieve groups"
-      - name: groups-read
-        description: "Permission to retrieve group details"
-      - name: groups-update
-        description: "Permission to update a group"
-      - name: group-users-add
-        description: "Permission to add a user to a group"
-      - name: group-users-remove
-        description: "Permission to remove a user from group"
-      - name: group-users-list
-        description: "Permission to retrieve all users of a group"
-      - name: group-users-update
-        description: "Permission to update a user within a group"
-      - name: uma_protection
     authorizationSettings:
       allowRemoteResourceManagement: true
       policyEnforcementMode: ENFORCING

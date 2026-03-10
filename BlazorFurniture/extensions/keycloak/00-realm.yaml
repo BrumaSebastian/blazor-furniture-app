@@ -40,9 +40,9 @@ maxDeltaTimeSeconds: 43200
 
 # SMTP — use env vars so this works across environments
 smtpServer:
-  host: $(env:SMTP_HOST,maildev)
-  port: $(env:SMTP_PORT,1025)
-  from: $(env:SMTP_FROM,something@no-reply.com)
+  host: $(SMTP_HOST)
+  port: $(SMTP_PORT)
+  from: $(SMTP_FROM)
   ssl: false
   starttls: false
   auth: false
