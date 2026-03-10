@@ -2,7 +2,7 @@
 @using BlazorFurniture.Shared.Models.Groups
 @using BlazorFurniture.Shared.Services.API.Interfaces
 
-<MudDialog Gutters="true" OnBackdropClick="Cancel">
+<MudDialog Gutters="true" OnBackdropClick="Cancel" Style="min-width: 50vw;">
     <TitleContent>
         <MudText Typo="Typo.subtitle1" GutterBottom="true">Add Member to @Group.Name </MudText>
         <MudText Typo="Typo.subtitle2">Search for an existing user and assign them to the group.</MudText>
@@ -17,7 +17,6 @@
             <HeaderContent>
             </HeaderContent>
             <RowTemplate>
-                <MudStack Row="true" Breakpoint="Breakpoint.Md" Class="my-2">
                     <UserAvatar FullName="@context.FullName" Email="@context.Email" ImageUrl="@context.Avatar" />
                     <MudFlexBreak />
                     @if (context.Groups.Contains(Group.Id))
